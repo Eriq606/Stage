@@ -1,95 +1,63 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+export default function Login(){
+    return(
+        <>
+            <div className="container-fluid position-relative d-flex p-0">
+            <div id="spinner" className="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div className="spinner-border text-primary" style={{width: "3rem", height: "3rem"}} role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+            
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+
+            
+            <div className="container-fluid">
+                <div className="row h-100 align-items-center justify-content-center" style={{minHeight: "100vh"}}>
+                    <div className="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                        <div className="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                            <div className="d-flex align-items-center justify-content-between mb-3">
+                                <a href="index.html" className="">
+                                    <h3 className="text-primary"><i className="fa fa-user-edit me-2"></i>LightPan</h3>
+                                </a>
+                                <h3>Sign In</h3>
+                            </div>
+                            <div className="form-floating mb-3">
+                                <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com"/>
+                                <label htmlFor="floatingInput">Email address</label>
+                            </div>
+                            <div className="form-floating mb-4">
+                                <input type="password" className="form-control" id="floatingPassword" placeholder="Password"/>
+                                <label htmlFor="floatingPassword">Password</label>
+                            </div>
+                            <div className="d-flex align-items-center justify-content-between mb-4">
+                                <div className="form-check">
+                                    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
+                                    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+                                </div>
+                                <a href="">Forgot Password</a>
+                            </div>
+                            <button type="submit" className="btn btn-primary py-3 w-100 mb-4">Sign In</button>
+                            <p className="text-center mb-0">Don't have an Account? <a href="">Sign Up</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+        
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="lib/chart/chart.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="lib/tempusdominus/js/moment.min.js"></script>
+        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+        
+        <script src="js/main.js"></script>
+        </>
+    );
 }
