@@ -15,11 +15,16 @@ java {
 
 repositories {
 	mavenCentral()
+	flatDir{
+		dirs("lib")
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation name:'Veda'
+	implementation name:'HandyMan'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

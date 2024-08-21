@@ -24,3 +24,5 @@ create table historique_role_utilisateurs(
     dateheure timestamp not null,
     etat int default 0
 );
+
+alter table roles add numero varchar unique;
