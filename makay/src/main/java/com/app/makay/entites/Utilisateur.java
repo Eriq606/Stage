@@ -2,13 +2,16 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 
+import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
+import veda.godao.annotations.Table;
 
-public class Utilisateur {
+@Table("utilisateurs")
+public class Utilisateur extends IrisUser{
     @PrimaryKey
     @Column("id")
     private Integer id;
@@ -68,17 +71,18 @@ public class Utilisateur {
     public void setRole(Role role) {
         this.role = role;
     }
-    public static Object[] seConnecter(MyDAO dao, Connection connect, String email, String motDePasse) throws Exception{
-        Object[] reponse=new Object[3];
+    public static Utilisateur seConnecter(MyDAO dao, Connection connect, String email, String motDePasse) throws Exception{
+        Utilisateur utilisateur=null;
         Utilisateur where=new Utilisateur();
         where.setEmail(email);
         where.setMotdepasse(motDePasse);
         Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
         if(target.length==1){
-            reponse[0]=target[0].getId();
-            reponse[1]=target[0].getNom();
-            reponse[2]=target[0].getRole();
+            utilisateur=target[0];
+            utilisateur.setMotdepasse("*******");
+            utilisateur.setIrisRole(utilisateur.getRole().getNumero());
+            utilisateur.setIrisAuthorization(utilisateur.getRole().getAutorisation());
         }
-        return reponse;
+        return utilisateur;
     }
 }

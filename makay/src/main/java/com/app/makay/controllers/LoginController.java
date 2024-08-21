@@ -1,54 +1,54 @@
 package com.app.makay.controllers;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
-import com.app.makay.utilitaire.ReponseREST;
-
+import com.app.makay.utilitaire.MyFilter;
+import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import veda.godao.utils.DAOConnexion;
 
-@RestController
+@Controller
 public class LoginController {
-    private MyDAO dao;
-    @Autowired
-    public LoginController(MyDAO dao){
-        this.dao=dao;
+    private MyDAO dao=new MyDAO();
+    private MyFilter filterChain=new MyFilter();
+    @GetMapping("/login")
+    public String login(HttpServletRequest req, String message, Model model){
+        HttpSession session=req.getSession();
+        session.removeAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        String messageDecoded="";
+        if(message!=null){
+            messageDecoded=HandyManUtils.decodeURL_UTF8(message);
+        }
+        model.addAttribute("title", "Makay - Connexion");
+        model.addAttribute("message", messageDecoded);
+        return "login/login";
     }
     @PostMapping("/login")
-    public ReponseREST login(HttpServletRequest req, @RequestParam("email") String email, @RequestParam("motdepasse") String motDePasse) throws Exception{
-        Connection connect=DAOConnexion.getConnexion(dao);
-        Object[] reponseConnexion=Utilisateur.seConnecter(dao, connect, email, motDePasse);
-        ReponseREST reponse=new ReponseREST();
-        if((int)reponseConnexion[0]==0){
-            reponse.setCode(Constantes.CODE_UTILISATEUR_NON_IDENTIFIE);
-            reponse.setMessage(Constantes.MSG_UTILISATEUR_NON_IDENTIFIE);
-            return reponse;
+    public RedirectView login(HttpServletRequest req, String email, String motDePasse) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Utilisateur utilisateur=Utilisateur.seConnecter(dao, connect, email, motDePasse);
+            if(utilisateur==null){
+                String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_IDENTIFIE);
+                return new RedirectView("/login?message="+message);
+            }
+            HttpSession session=req.getSession();
+            session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+            return filterChain.distributeByRole(utilisateur);
         }
-        HttpSession session=req.getSession();
-        session.setAttribute("idUtilisateur", reponseConnexion[0]);
-        session.setAttribute("nomUtilisateur", reponseConnexion[1]);
-        session.setAttribute("roleUtilisateur", reponseConnexion[2]);
-        reponse.setCode(Constantes.CODE_SUCCES);
-        reponse.setMessage(Constantes.MSG_SUCCES);
-        return reponse;
     }
-    @GetMapping("/logout")
-    public ReponseREST logout(HttpServletRequest req){
-        HttpSession session=req.getSession();
-        session.invalidate();
-        ReponseREST reponse=new ReponseREST();
-        reponse.setCode(Constantes.CODE_SUCCES);
-        reponse.setMessage(Constantes.MSG_SUCCES);
-        return reponse;
+    @GetMapping("/login-success")
+    public String mock(){
+        return "woohoo";
     }
 }
