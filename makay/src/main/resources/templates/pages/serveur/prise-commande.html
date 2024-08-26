@@ -1,0 +1,147 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Prise de commande</h1>
+                <div class="row mb-3">
+                    <label for="inputPassword3" class="col-sm-5 col-form-label">Table</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="inputPassword3">
+                    </div>
+                </div>
+                <hr>
+                <div class="input-group mb-3">
+                    <input type="text" id="recherche-produit" class="form-control" aria-label="Recherche">
+                    <button type="button" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
+                </div>
+                <table class="table table-bordered">
+                    <tbody id="suggestion-table">
+                        <!-- Autocomplete suggestions -->
+                    </tbody>
+                </table>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    let produits=/*[[${produits}]]*/[];
+                    let produitInput=document.getElementById("recherche-produit");
+                    produitInput.addEventListener("input", function(){
+                        const input=this.value.toLowerCase();
+                        const filteredProducts = produits.filter(produit=>
+                            produit.nom.toLowerCase().includes(input)&&input!==""
+                        );
+                        updateTable(filteredProducts);
+                    });
+                    function updateTable(filteredProducts){
+                        const table=document.getElementById("suggestion-table");
+                        table.innerHTML='';
+                        filteredProducts.forEach(product=>{
+                            const row=document.createElement("tr");
+                            const colonneNom=document.createElement("th");
+                            colonneNom.setAttribute("scope", "row");
+                            colonneNom.textContent=product.nom;
+                            const bouton=document.createElement("td");
+                            bouton.innerHTML="<button class=\"btn btn-primary w-100\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal"+product.id+"\"><i class=\"fa fa-plus\"></i></button>";
+
+                            // Create the outermost div for the modal
+                            const modal = document.createElement('div');
+                            modal.className = 'modal';
+                            modal.id = 'exampleModal'+product.id;
+                            modal.tabIndex = -1;
+                            modal.setAttribute('aria-labelledby', 'exampleModalLabel'+product.id);
+                            modal.setAttribute('aria-hidden', 'true');
+
+                            // Create the modal-dialog div
+                            const modalDialog = document.createElement('div');
+                            modalDialog.className = 'modal-dialog modal-dialog-centered';
+
+                            // Create the modal-content div
+                            const modalContent = document.createElement('div');
+                            modalContent.className = 'modal-content';
+
+                            // Create the modal-header div
+                            const modalHeader = document.createElement('div');
+                            modalHeader.className = 'modal-header';
+
+                            // Create the h1 element for the modal title
+                            const modalTitle = document.createElement('h1');
+                            modalTitle.className = 'modal-title fs-5';
+                            modalTitle.id = 'exampleModalLabel'+product.id;
+                            modalTitle.textContent = product.nom;
+
+                            // Create the close button
+                            const closeButton = document.createElement('button');
+                            closeButton.type = 'button';
+                            closeButton.className = 'btn-close';
+                            closeButton.setAttribute('data-bs-dismiss', 'modal');
+                            closeButton.setAttribute('aria-label', 'Close');
+
+                            // Append the title and close button to the modal-header
+                            modalHeader.appendChild(modalTitle);
+                            modalHeader.appendChild(closeButton);
+
+                            // Create the modal-body div
+                            const modalBody = document.createElement('div');
+                            modalBody.className = 'modal-body';
+                            modalBody.textContent = '...'; // Add your content here
+
+                            // Create the modal-footer div
+                            const modalFooter = document.createElement('div');
+                            modalFooter.className = 'modal-footer';
+
+                            // Create the Close button for the footer
+                            const closeFooterButton = document.createElement('button');
+                            closeFooterButton.type = 'button';
+                            closeFooterButton.className = 'btn btn-secondary';
+                            closeFooterButton.setAttribute('data-bs-dismiss', 'modal');
+                            closeFooterButton.textContent = 'Annuler';
+
+                            // Create the Save changes button for the footer
+                            const saveButton = document.createElement('button');
+                            saveButton.type = 'button';
+                            saveButton.className = 'btn btn-primary';
+                            saveButton.textContent = 'Confirmer';
+
+                            // Append the buttons to the modal-footer
+                            modalFooter.appendChild(closeFooterButton);
+                            modalFooter.appendChild(saveButton);
+
+                            // Append all parts to modal-content
+                            modalContent.appendChild(modalHeader);
+                            modalContent.appendChild(modalBody);
+                            modalContent.appendChild(modalFooter);
+
+                            // Append modal-content to modal-dialog
+                            modalDialog.appendChild(modalContent);
+
+                            // Append modal-dialog to the modal
+                            modal.appendChild(modalDialog);
+
+                            row.appendChild(colonneNom);
+                            row.appendChild(bouton);
+                            row.appendChild(modal);
+                            table.appendChild(row);
+                        });
+                    }
+                    /*]]*/
+                </script>
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#commandeModal" type="button">Commande en cours</button>
+                <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="commandeModalLabel">Commande en cours</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Réinitialiser</button>
+                            <button type="button" class="btn btn-success">Envoyer</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

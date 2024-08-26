@@ -22,6 +22,7 @@ import veda.godao.utils.DAOConnexion;
 public class LoginController {
     private MyDAO dao=new MyDAO();
     private MyFilter filterChain=new MyFilter();
+
     @GetMapping("/login")
     public String login(HttpServletRequest req, String message, Model model){
         HttpSession session=req.getSession();
@@ -30,10 +31,11 @@ public class LoginController {
         if(message!=null){
             messageDecoded=HandyManUtils.decodeURL_UTF8(message);
         }
-        model.addAttribute("title", "Makay - Connexion");
-        model.addAttribute("message", messageDecoded);
+        model.addAttribute(Constantes.VAR_TITLE, "Makay - Connexion");
+        model.addAttribute(Constantes.VAR_MESSAGE, messageDecoded);
         return "login/login";
     }
+    
     @PostMapping("/login")
     public RedirectView login(HttpServletRequest req, String email, String motDePasse) throws SQLException, Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
