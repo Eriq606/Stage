@@ -28,7 +28,7 @@ create table historique_role_utilisateurs(
 
 alter table roles add numero varchar unique;
 
--- 28/08/2024
+-- 26/08/2024
 
 create table categories(
     id serial primary key,
@@ -63,6 +63,40 @@ alter table accompagnements drop idproduit;
 create table accompagnement_produits(
     id serial primary key,
     idproduit int not null references produits(id),
+    idaccompagnement int not null references accompagnements(id),
+    etat int default 0
+);
+
+-- 27/08/2024
+create domain quantity as numeric(16,2) check (value>=0);
+
+create table places(
+    id serial primary key,
+    nom varchar unique not null,
+    etat int default 0
+);
+create table commandes(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idplace int not null references places(id),
+    dateheure_ouverture timestamp not null,
+    dateheure_cloture timestamp,
+    montant price not null,
+    etat int default 0
+);
+create table commande_filles(
+    id serial primary key,
+    idcommande int not null references commandes(id),
+    idproduit int not null references produits(id),
+    prix_unitaire price not null,
+    quantite quantity not null,
+    montant price not null,
+    notes text,
+    etat int default 0
+);
+create table accompagnement_commandes(
+    id serial primary key,
+    idcommandefille int not null references commande_filles(id),
     idaccompagnement int not null references accompagnements(id),
     etat int default 0
 );

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+// import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.utilitaire.Constantes;
@@ -21,6 +22,7 @@ import veda.godao.utils.DAOConnexion;
 public class ServeurController {
     private MyFilter filter;
     private Produit[] produits;
+    // private Place[] places;
     private MyDAO dao;
 
     public ServeurController() throws SQLException, Exception{
@@ -28,6 +30,10 @@ public class ServeurController {
         dao=new MyDAO();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             produits=dao.select(connect, Produit.class);
+            for(Produit p:produits){
+                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+            }
+            // places=dao.select(connect, null)
         }
     }
 

@@ -1,5 +1,10 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+import java.util.HashMap;
+
+import com.app.makay.utilitaire.MyDAO;
+
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -19,6 +24,8 @@ public class Produit {
     @ForeignKey(recursive = true)
     @Column("idcategorie")
     private Categorie categorie;
+    private Accompagnement[] accompagnements;
+    
     public Integer getId() {
         return id;
     }
@@ -49,5 +56,31 @@ public class Produit {
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
     }
+    public Accompagnement[] getAccompagnements() {
+        return accompagnements;
+    }
+    public void setAccompagnements(Accompagnement[] accompagnements) {
+        this.accompagnements = accompagnements;
+    }
     
+    public Accompagnement[] getAllAccompagnements(Connection connect, MyDAO dao) throws Exception{
+        AccompagnementProduit where=new AccompagnementProduit();
+        where.setProduit(this);
+        AccompagnementProduit[] accompagnementProduits=dao.select(connect, AccompagnementProduit.class, where);
+        String selectAccompagnements="select * from accompagnements where id in(";
+        for(AccompagnementProduit a:accompagnementProduits){
+            selectAccompagnements+=a.getId()+",";
+        }
+        selectAccompagnements=selectAccompagnements.substring(0, selectAccompagnements.length()-1);
+        selectAccompagnements+=")";
+        HashMap<String, Object>[] query=dao.select(connect, selectAccompagnements);
+        Accompagnement[] accompagnements=new Accompagnement[query.length];
+        for(int i=0;i<accompagnements.length;i++){
+            accompagnements[i]=new Accompagnement();
+            accompagnements[i].setId((int)query[i].get("id"));
+            accompagnements[i].setNom(String.valueOf(query[i].get("nom")));
+            accompagnements[i].setEtat((int)query[i].get("etat"));
+        }
+        return accompagnements;
+    }
 }

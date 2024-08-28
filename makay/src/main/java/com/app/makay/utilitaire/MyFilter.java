@@ -20,6 +20,7 @@ public class MyFilter implements IrisFilter{
         if(irisUser.getIrisRole().equals(targetRole)==false){
             return new RedirectView("/403");
         }
+        model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
         model.addAttribute(Constantes.VAR_VIEWPAGE, viewpage);
         model.addAttribute(Constantes.VAR_LOGINURL, "/login");
