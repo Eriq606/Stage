@@ -1,0 +1,117 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <h1>Plan de table</h1>
+    <div class="row">
+        <div class="col-12">
+            <script th:src="@{js/DragAndDropTouch.js}"></script>
+            <style>
+                .gridd{
+                    display: grid;
+                    grid-template-columns: auto auto auto;
+                }
+                .place{
+                    border: solid 1px;
+                    padding: 10px;
+                    margin-left: 20px;
+                    margin-top: 20px;
+                    color: white;
+                    font-weight: bold;
+                }
+                .place-bar{
+                    border-radius: 100%;
+                    background-color: crimson;
+                }
+                .place-table{
+                    background-color: cornflowerblue;
+                }
+                .place-terrasse{
+                    background-color:mediumseagreen;
+                }
+            </style>
+            <div class="bg-secondary rounded h-100 p-4 gridd" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <button class="btn btn-primary" style="grid-column: 1/4;" data-bs-toggle="modal" data-bs-target="#dispoActuModal">Disposition actuelle</button>
+                <div class="modal fade" id="dispoActuModal" tabindex="-1" aria-labelledby="dispoActuModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="dispoActuModalLabel">Disposition actuelle</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="bg-secondary rounded p-4 gridd">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-primary w-100">Appliquer</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div th:each="p:${places}" th:class="${p.getClasse()}+' no-drop place'" draggable="true" ondragstart="drag(event)" th:data-idplace="${p.id}" th:id="'place'+${p.id}" th:text="${p.nom}"></div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div th:each="r:${rangees}">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-secondary rounded p-4 gridd" style="height: fit-content;" th:data-idrangee="${r.id}" th.id="'rangee'+${r.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h2 class="no-drop" style="grid-column: 1/4;" th:text="${r.nom}"></h2>
+                    <hr class="no-drop" style="grid-column: 1/4;">
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <input type="hidden" name="arrangements" id="arrangements">
+                <button type="submit" class="btn btn-primary w-100">Mettre à jour</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        let arrangements=[];
+        const elementArrangement=document.getElementById("arrangements");
+        elementArrangement.value="[]";
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            const elementid=ev.target.id;
+            const idplace=ev.target.dataset.idplace;
+            for(let i=0;i<arrangements.length;i++){
+                if(arrangements[i].place.id===idplace){
+                    arrangements.splice(i, 1);
+                    break;
+                }
+            }
+            const datas=JSON.stringify({elementid:elementid, idplace:idplace});
+            ev.dataTransfer.setData("text", datas);
+            elementArrangement.value=JSON.stringify(arrangements);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = JSON.parse(ev.dataTransfer.getData("text"));
+            const idrangee=ev.target.dataset.idrangee;
+            const idplace=data.idplace;
+            arrangements.push({rangee:{id:idrangee}, place:{id:idplace}});
+            elementArrangement.value=JSON.stringify(arrangements);
+            var droppedElement = document.getElementById(data.elementid);
+            if(ev.target.className.includes('no-drop')){
+                ev.target.parentNode.appendChild(droppedElement);
+            }else{
+                ev.target.appendChild(droppedElement);
+            }
+        }
+        /*]]*/
+    </script>
+</div>

@@ -4,17 +4,23 @@ import veda.godao.annotations.Column;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
-@Table("roles")
-public class Role {
+@Table("type_places")
+public class TypePlace {
     @PrimaryKey
     @Column("id")
     private Integer id;
-    @Column("numero")
-    private String numero;
     @Column("nom")
     private String nom;
     @Column("etat")
     private Integer etat;
+    @Column("numero")
+    private String numero;
+    public String getNumero() {
+        return numero;
+    }
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
     public Integer getId() {
         return id;
     }
@@ -32,12 +38,6 @@ public class Role {
     }
     public void setEtat(Integer etat) {
         this.etat = etat;
-    }
-    public String getNumero() {
-        return numero;
-    }
-    public void setNumero(String numero) {
-        this.numero = numero;
     }
     
 }

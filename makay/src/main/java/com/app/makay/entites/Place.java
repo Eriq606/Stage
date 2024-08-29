@@ -1,6 +1,9 @@
 package com.app.makay.entites;
 
+import com.app.makay.utilitaire.Constantes;
+
 import veda.godao.annotations.Column;
+import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
@@ -13,6 +16,15 @@ public class Place {
     private String nom;
     @Column("etat")
     private Integer etat;
+    @ForeignKey(recursive = true)
+    @Column("idtypeplace")
+    private TypePlace typePlace;
+    public TypePlace getTypePlace() {
+        return typePlace;
+    }
+    public void setTypePlace(TypePlace typePlace) {
+        this.typePlace = typePlace;
+    }
     public Integer getId() {
         return id;
     }
@@ -31,5 +43,15 @@ public class Place {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
-    
+    public String getClasse(){
+        switch(getTypePlace().getNumero()){
+            case Constantes.PLACE_BAR:
+                return Constantes.CLASSE_BAR;
+            case Constantes.PLACE_SALLE:
+                return Constantes.CLASSE_SALLE;
+            case Constantes.PLACE_TERRASSE:
+                return Constantes.CLASSE_TERRASSE;
+        }
+        return null;
+    }
 }

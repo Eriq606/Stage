@@ -4,13 +4,11 @@ import veda.godao.annotations.Column;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
-@Table("roles")
-public class Role {
+@Table("rangees")
+public class Rangee {
     @PrimaryKey
     @Column("id")
     private Integer id;
-    @Column("numero")
-    private String numero;
     @Column("nom")
     private String nom;
     @Column("etat")
@@ -32,12 +30,6 @@ public class Role {
     }
     public void setEtat(Integer etat) {
         this.etat = etat;
-    }
-    public String getNumero() {
-        return numero;
-    }
-    public void setNumero(String numero) {
-        this.numero = numero;
     }
     
 }

@@ -28,6 +28,8 @@ public class Utilisateur extends IrisUser{
     private Role role;
     @Column("etat")
     private Integer etat;
+    @Column("autorisation")
+    private Integer autorisation;
     
     public Integer getId() {
         return id;
@@ -81,8 +83,14 @@ public class Utilisateur extends IrisUser{
             utilisateur=target[0];
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
-            utilisateur.setIrisAuthorization(utilisateur.getRole().getAutorisation());
+            utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
         }
         return utilisateur;
+    }
+    public Integer getAutorisation() {
+        return autorisation;
+    }
+    public void setAutorisation(Integer autorisation) {
+        this.autorisation = autorisation;
     }
 }

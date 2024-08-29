@@ -22,7 +22,6 @@ import veda.godao.utils.DAOConnexion;
 public class ServeurController {
     private MyFilter filter;
     private Produit[] produits;
-    // private Place[] places;
     private MyDAO dao;
 
     public ServeurController() throws SQLException, Exception{
@@ -33,7 +32,6 @@ public class ServeurController {
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
-            // places=dao.select(connect, null)
         }
     }
 
