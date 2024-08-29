@@ -13,6 +13,39 @@ public class MyFilter implements IrisFilter{
     
 
     @Override
+    public RedirectView checkByAuthorizationPOST(IrisUser irisUser, int minimumAuth) {
+        if(irisUser==null){
+            String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return new RedirectView("/login?message="+message);
+        }
+        if(irisUser.getIrisAuthorization()<minimumAuth==false){
+            return new RedirectView("/403");
+        }
+        return null;
+    }
+
+    @Override
+    public RedirectView checkByRolePOST(IrisUser irisUser, String targetRole) {
+        if(irisUser==null){
+            String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return new RedirectView("/login?message="+message);
+        }
+        if(irisUser.getIrisRole().equals(targetRole)==false&&irisUser.getIrisRole().equals(Constantes.ROLE_SUPERVISEUR)==false){
+            return new RedirectView("/403");
+        }
+        return null;
+    }
+
+    @Override
+    public RedirectView checkIfLoggedInPOST(IrisUser irisUser) {
+        if(irisUser==null){
+            String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return new RedirectView("/login?message="+message);
+        }
+        return null;
+    }
+
+    @Override
     public Object checkIfLoggedIn(IrisUser irisUser, String title, String viewpage, String targetView, Model model) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);

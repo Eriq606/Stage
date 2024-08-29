@@ -1,10 +1,12 @@
 package com.app.makay.entites;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 
 import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -92,5 +94,18 @@ public class Utilisateur extends IrisUser{
     }
     public void setAutorisation(Integer autorisation) {
         this.autorisation = autorisation;
+    }
+    public void mettreAJourPlanTable(Connection connect, MyDAO dao, String arrangementsString) throws Exception{
+        try{
+            RangeePlace[] arrangements=HandyManUtils.fromJson(RangeePlace[].class, arrangementsString);
+            for(RangeePlace r:arrangements){
+                r.setDateheure(LocalDateTime.now());
+                r.setUtilisateur(this);
+                dao.insertWithoutPrimaryKey(connect, r);
+            }
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
     }
 }

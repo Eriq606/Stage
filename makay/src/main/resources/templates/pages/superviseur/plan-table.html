@@ -11,7 +11,6 @@
                 .place{
                     border: solid 1px;
                     padding: 10px;
-                    margin-left: 20px;
                     margin-top: 20px;
                     color: white;
                     font-weight: bold;
@@ -27,8 +26,8 @@
                     background-color:mediumseagreen;
                 }
             </style>
-            <div class="bg-secondary rounded h-100 p-4 gridd" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <button class="btn btn-primary" style="grid-column: 1/4;" data-bs-toggle="modal" data-bs-target="#dispoActuModal">Disposition actuelle</button>
+            <div class="bg-secondary rounded h-100 p-4 gridd" ondrop="defaultDrop(event)" ondragover="allowDrop(event)">
+                <button class="btn btn-primary no-drop" style="grid-column: 1/4;" data-bs-toggle="modal" data-bs-target="#dispoActuModal">Disposition actuelle</button>
                 <div class="modal fade" id="dispoActuModal" tabindex="-1" aria-labelledby="dispoActuModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -37,21 +36,29 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="bg-secondary rounded p-4 gridd">
-                                        
+                            <div th:each="r:${rangees}">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="bg-secondary rounded p-4 gridd" th:id="'rangeeModal'+${r.id}" style="height: fit-content;">
+                                            <h2 style="grid-column: 1/4;" th:text="${r.nom}"></h2>
+                                            <hr style="grid-column: 1/4;">
+                                            <!-- Automatically dropped -->
+                                        </div>
                                     </div>
                                 </div>
+                                <br>
                             </div>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-primary w-100">Appliquer</button>
+                            <button type="button" id="appliqueractu" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <button type="button" id="appliqueractu" class="btn btn-primary">Appliquer</button>
                         </div>
                     </div>
                     </div>
                 </div>
-                <div th:each="p:${places}" th:class="${p.getClasse()}+' no-drop place'" draggable="true" ondragstart="drag(event)" th:data-idplace="${p.id}" th:id="'place'+${p.id}" th:text="${p.nom}"></div>
+                <div class="gridd" id="draggable-places" style="grid-column: 1/4;">
+                    <div th:each="p:${places}" th:class="${p.getClasse()}+' no-drop place'" draggable="true" ondragstart="drag(event)" th:data-idplace="${p.id}" th:id="'place'+${p.id}" th:text="${p.nom}"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -59,9 +66,9 @@
     <div th:each="r:${rangees}">
         <div class="row">
             <div class="col-12">
-                <div class="bg-secondary rounded p-4 gridd" style="height: fit-content;" th:data-idrangee="${r.id}" th.id="'rangee'+${r.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <h2 class="no-drop" style="grid-column: 1/4;" th:text="${r.nom}"></h2>
-                    <hr class="no-drop" style="grid-column: 1/4;">
+                <div class="bg-secondary rounded p-4 gridd" style="height: fit-content;" th:data-idrangee="${r.id}" th:id="'rangee'+${r.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h2 class="no-drop" th:data-idrangee="${r.id}" style="grid-column: 1/4;" th:text="${r.nom}"></h2>
+                    <hr class="no-drop" th:data-idrangee="${r.id}" style="grid-column: 1/4;">
                 </div>
             </div>
         </div>
@@ -70,13 +77,45 @@
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
-                <input type="hidden" name="arrangements" id="arrangements">
-                <button type="submit" class="btn btn-primary w-100">Mettre à jour</button>
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#miseAJourModal">Mettre à jour</button>
+                <div class="modal fade" id="miseAJourModal" tabindex="-1" aria-labelledby="miseAJourModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form action="/plan-de-table" method="post">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="miseAJourModalLabel">Plan de table</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Mettre à jour le plan de table ?</p>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Retour</button>
+                            <input type="hidden" name="arrangements" id="arrangements">
+                            <button type="submit" class="btn btn-success">Confirmer</button>
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <script>
+    <script th:inline="javascript">
         /*<![CDATA[*/
+        const rangees=/*[[${rangees}]]*/[];
+        const places=/*[[${places}]]*/[];
+        let arrangementsActu=/*[[${rangeeplaces}]]*/[];
+        let idplaceActu=[];
+        for(let i=0;i<arrangementsActu.length;i++){
+            const rangee=document.getElementById("rangeeModal"+arrangementsActu[i].rangee.id);
+            const place=document.createElement("div");
+            place.className=arrangementsActu[i].place.classeHTML+" place";
+            place.textContent=arrangementsActu[i].place.nom;
+            rangee.appendChild(place);
+            idplaceActu.push(arrangementsActu[i].place.id);
+        }
+
         let arrangements=[];
         const elementArrangement=document.getElementById("arrangements");
         elementArrangement.value="[]";
@@ -88,7 +127,7 @@
             const elementid=ev.target.id;
             const idplace=ev.target.dataset.idplace;
             for(let i=0;i<arrangements.length;i++){
-                if(arrangements[i].place.id===idplace){
+                if(arrangements[i].place.id==idplace){
                     arrangements.splice(i, 1);
                     break;
                 }
@@ -97,14 +136,9 @@
             ev.dataTransfer.setData("text", datas);
             elementArrangement.value=JSON.stringify(arrangements);
         }
-
-        function drop(ev) {
+        function defaultDrop(ev){
             ev.preventDefault();
             var data = JSON.parse(ev.dataTransfer.getData("text"));
-            const idrangee=ev.target.dataset.idrangee;
-            const idplace=data.idplace;
-            arrangements.push({rangee:{id:idrangee}, place:{id:idplace}});
-            elementArrangement.value=JSON.stringify(arrangements);
             var droppedElement = document.getElementById(data.elementid);
             if(ev.target.className.includes('no-drop')){
                 ev.target.parentNode.appendChild(droppedElement);
@@ -112,6 +146,79 @@
                 ev.target.appendChild(droppedElement);
             }
         }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = JSON.parse(ev.dataTransfer.getData("text"));
+            console.log(ev.target.dataset);
+            const idrangee=ev.target.dataset.idrangee;
+            const idplace=data.idplace;
+            arrangements.push({rangee:{id:idrangee}, place:{id:idplace}});
+            elementArrangement.value=JSON.stringify(arrangements);
+            var droppedElement = document.getElementById(data.elementid);
+            droppedElement.setAttribute("data-idrangee", idrangee);
+            if(ev.target.className.includes('no-drop')){
+                ev.target.parentNode.appendChild(droppedElement);
+            }else{
+                ev.target.appendChild(droppedElement);
+            }
+        }
+
+        function cloneArr(array2){
+            array1=[];
+            array2.forEach(item=>{
+                array1.push(item);
+            })
+            return array1;
+        }
+
+        const appliquerActu=document.getElementById("appliqueractu");
+        let draggablePlaces=document.getElementById("draggable-places");
+        appliquerActu.addEventListener("click", function(){
+            arrangements=cloneArr(arrangementsActu);
+            elementArrangement.value=JSON.stringify(arrangements);
+            draggablePlaces.innerHTML="";
+            for(let i=0;i<rangees.length;i++){
+                const divRangee=document.getElementById("rangee"+rangees[i].id);
+                divRangee.innerHTML="";
+                const divRangeeH2=document.createElement("h2");
+                divRangeeH2.className="no-drop";
+                divRangeeH2.setAttribute("data-idrangee", rangees[i].id);
+                divRangeeH2.style.gridColumn="1/4";
+                divRangeeH2.textContent=rangees[i].nom;
+                const divRangeeHr=document.createElement("hr");
+                divRangeeHr.className="no-drop";
+                divRangeeHr.style.gridColumn="1/4";
+                divRangeeHr.setAttribute("data-idrangee", rangees[i].id);
+                divRangee.appendChild(divRangeeH2);
+                divRangee.appendChild(divRangeeHr);
+            }
+            for(let i=0;i<arrangementsActu.length;i++){
+                const rangee=document.getElementById("rangee"+arrangementsActu[i].rangee.id);
+                const place=document.createElement("div");
+                place.className=arrangementsActu[i].place.classeHTML+" no-drop place";
+                place.draggable=true;
+                place.setAttribute("ondragstart", "drag(event)");
+                place.setAttribute("data-idplace", arrangementsActu[i].place.id);
+                place.setAttribute("data-idrangee", arrangementsActu[i].rangee.id);
+                place.id="place"+arrangementsActu[i].place.id;
+                place.textContent=arrangementsActu[i].place.nom;
+                rangee.appendChild(place);
+            }
+            for(let i=0;i<places.length;i++){
+                if(idplaceActu.includes(places[i].id)){
+                    continue;
+                }
+                const place=document.createElement("div");
+                place.className=places[i].classeHTML+" no-drop place";
+                place.draggable=true;
+                place.setAttribute("ondragstart", "drag(event)");
+                place.setAttribute("data-idplace", places[i].id);
+                place.id="place"+places[i].id;
+                place.textContent=places[i].nom;
+                draggablePlaces.appendChild(place);
+            }
+        });
         /*]]*/
     </script>
 </div>

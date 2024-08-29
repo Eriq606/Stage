@@ -192,18 +192,33 @@ create or replace view v_rangees as
 select *
 from rangees where rangees.etat=0;
 
+create or replace view v_type_places as
+select *
+from type_places where type_places.etat=0;
+
 create or replace view v_dateheure_max_rangee_places as
-select max(dateheure) as max_dateheure
+select date_trunc('minute', max(dateheure)) as max_dateheure
 from rangee_places;
 
 create or replace view v_arrangement_place_part as
-select rp.*, v_rangees.nom as nom_rangee, v_places.nom as nom_place, dm.max_dateheure
+select rp.*, v_rangees.nom as nom_rangee, v_places.nom as nom_place, v_type_places.nom as nom_type_place, v_type_places.numero as numero_type_place, dm.max_dateheure
 from rangee_places rp
 join v_rangees on rp.idrangee=v_rangees.id
 join v_places on rp.idplace=v_places.id
-left join v_dateheure_max_rangee_places dm on rp.dateheure=dm.max_dateheure
+join v_type_places on v_places.idtypeplace=v_type_places.id
+left join v_dateheure_max_rangee_places dm on date_trunc('minute', rp.dateheure)=dm.max_dateheure
 where rp.etat=0;
 
 create or replace view v_arrangement_place as
 select *
 from v_arrangement_place_part where max_dateheure is not null;
+
+insert into rangee_places values(default, 2, 3, current_timestamp, 0, 2);
+insert into rangee_places values(default, 2, 4, current_timestamp, 0, 2);
+insert into rangee_places values(default, 2, 6, current_timestamp, 0, 2);
+insert into rangee_places values(default, 2, 7, current_timestamp, 0, 2);
+
+insert into rangee_places values(default, 3, 1, current_timestamp, 0, 2);
+insert into rangee_places values(default, 3, 2, current_timestamp, 0, 2);
+insert into rangee_places values(default, 3, 8, current_timestamp, 0, 2);
+insert into rangee_places values(default, 3, 10, current_timestamp, 0, 2);

@@ -26,6 +26,10 @@ public class RangeePlace {
     private LocalDateTime dateheure;
     @Column("etat")
     private Integer etat;
+    @ForeignKey(recursive = true)
+    @Column("idutilisateur")
+    private Utilisateur utilisateur;
+    
     public Integer getId() {
         return id;
     }
@@ -58,11 +62,12 @@ public class RangeePlace {
     }
     
     public static RangeePlace[] getArrangementActuel(Connection connect, MyDAO dao) throws Exception{
-        String query="select id, idrangee, idplace, nom_rangee, nom_place from v_arrangement_place";
+        String query="select id, idrangee, idplace, nom_rangee, nom_place, nom_type_place, numero_type_place from v_arrangement_place";
         HashMap<String, Object>[] objets=dao.select(connect, query);
         RangeePlace[] arrangements=new RangeePlace[objets.length];
         Place place;
         Rangee rangee;
+        TypePlace typePlace;
         for(int i=0;i<arrangements.length;i++){
             arrangements[i]=new RangeePlace();
             arrangements[i].setId((int)objets[i].get("id"));
@@ -73,8 +78,18 @@ public class RangeePlace {
             place=new Place();
             place.setId((int)objets[i].get("idplace"));
             place.setNom((String)objets[i].get("nom_place"));
+            typePlace=new TypePlace();
+            typePlace.setNom((String)objets[i].get("nom_type_place"));
+            typePlace.setNumero((String)objets[i].get("numero_type_place"));
+            place.setTypePlace(typePlace);
             arrangements[i].setPlace(place);
         }
         return arrangements;
+    }
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 }
