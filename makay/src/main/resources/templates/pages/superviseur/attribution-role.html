@@ -136,7 +136,9 @@
                 destination:"/notify-redirect"
             });
         }
-        function redirigerVersResetCache(){}
+        function redirigerVersResetCache(){
+            window.location.replace("http://localhost:8080/reset-cache");
+        }
         function receiveNotificationRedirect(){
             stompclient.subscribe("/receive-notify-redirect", ()=>{
                 redirigerVersResetCache();

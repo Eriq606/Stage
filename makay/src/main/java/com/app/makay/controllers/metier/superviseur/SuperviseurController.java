@@ -113,6 +113,21 @@ public class SuperviseurController {
 
     }
 
+    @GetMapping("/reset-cache-superviseur")
+    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)req.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        RedirectView iris=filter.checkByRolePOST(utilisateur, Constantes.ROLE_SUPERVISEUR);
+        if(iris!=null){
+            return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            HistoriqueRoleUtilisateur[] rolesActuels=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            setAttributionRoles(rolesActuels);
+                        
+        }
+    }
+
     public MyFilter getFilter() {
         return filter;
     }
@@ -151,5 +166,37 @@ public class SuperviseurController {
 
     public void setDao(MyDAO dao) {
         this.dao = dao;
+    }
+
+    public UtilisateurSafe[] getUtilisateurs() {
+        return utilisateurs;
+    }
+
+    public void setUtilisateurs(UtilisateurSafe[] utilisateurs) {
+        this.utilisateurs = utilisateurs;
+    }
+
+    public Role[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Role[] roles) {
+        this.roles = roles;
+    }
+
+    public HistoriqueRoleUtilisateur[] getAttributionRoles() {
+        return attributionRoles;
+    }
+
+    public void setAttributionRoles(HistoriqueRoleUtilisateur[] attributionRoles) {
+        this.attributionRoles = attributionRoles;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }
