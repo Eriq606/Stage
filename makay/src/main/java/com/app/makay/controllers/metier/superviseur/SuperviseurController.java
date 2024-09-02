@@ -107,8 +107,8 @@ public class SuperviseurController {
         return ResponseEntity.ok(cat);
     }
 
-    @MessageMapping("/")
-    @SendTo("/topic")
+    @MessageMapping("/notify-redirect")
+    @SendTo("/receive-notify-redirect")
     public void notifierModifications(){
 
     }
