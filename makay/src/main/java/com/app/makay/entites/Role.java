@@ -39,5 +39,10 @@ public class Role {
     public void setNumero(String numero) {
         this.numero = numero;
     }
+    public Role() {
+    }
+    public Role(Integer etat) {
+        this.etat = etat;
+    }
     
 }

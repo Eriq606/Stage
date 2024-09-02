@@ -4,7 +4,12 @@ import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
+
+import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+
+import com.app.makay.utilitaire.MyDAO;
 
 @Table("historique_role_utilisateurs")
 public class HistoriqueRoleUtilisateur {
@@ -51,5 +56,24 @@ public class HistoriqueRoleUtilisateur {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
-    
+    public static HistoriqueRoleUtilisateur[] getRolesActuels(Connection connect, MyDAO dao) throws Exception{
+        String query="select id, idutilisateur, idrole, dateheure, nom_utilisateur, nom_role from v_attribution_roles";
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        HistoriqueRoleUtilisateur[] attributions=new HistoriqueRoleUtilisateur[objets.length];
+        Utilisateur utilisateur;
+        Role role;
+        for(int i=0;i<attributions.length;i++){
+            attributions[i]=new HistoriqueRoleUtilisateur();
+            attributions[i].setId((int)objets[i].get("id"));
+            utilisateur=new Utilisateur();
+            utilisateur.setId((int)objets[i].get("idutilisateur"));
+            utilisateur.setNom((String)objets[i].get("nom_utilisateur"));
+            attributions[i].setUtilisateur(utilisateur);
+            role=new Role();
+            role.setId((int)objets[i].get("idrole"));
+            role.setNom((String)objets[i].get("nom_role"));
+            attributions[i].setRole(role);
+        }
+        return attributions;
+    }
 }

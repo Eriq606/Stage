@@ -1,0 +1,151 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Attribution des rôles aux utilisateurs</h1>
+                <hr>
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#roleActuModal">Rôles actuels</button>
+                <div class="modal fade" id="roleActuModal" tabindex="-1" aria-labelledby="roleActuModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" id="roleActuModalContent">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="roleActuModalLabel">Attribution de rôles actuel</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table">
+                                    <tr th:each="r:${roleutilisateurs}">
+                                        <td th:text="${r.utilisateur.nom}"></td>
+                                        <td th:text="${r.role.nom}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                <button type="button" id="appliquer-roleactu" class="btn btn-primary">Appliquer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br><br>
+                <form id="form-attribution">
+                    <table class="table" id="attribution-table">
+                        <!-- <tr th:each="e:${utilisateurs}">
+                            <td th:text="${e.nom}"></td>
+                            <td>
+                                <select class="form-select mb-3" aria-label="roles">
+                                    <option th:each="r:${roles}" th:text="${r.nom}" th:value="${r.id}"></option>
+                                </select>
+                            </td>
+                        </tr> -->
+                    </table>
+                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#miseAJourModal">Mettre à jour</button>
+                    <div class="modal fade" id="miseAJourModal" tabindex="-1" aria-labelledby="miseAJourModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="miseAJourModalLabel">Attribution des rôles</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Mettre à jour l'attribution des rôles ?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Retour</button>
+                                <button type="submit" class="btn btn-success">Confirmer</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const attributionsActu=/*[[${roleutilisateurs}]]*/[];
+        const roles=/*[[${roles}]]*/[];
+        const utilisateurs=/*[[${utilisateurs}]]*/[];
+        const ip=/*[[${ip}]]*/"";
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const appliquerRoleActu=document.getElementById("appliquer-roleactu");
+        const attributionTable=document.getElementById("attribution-table");
+        for(let i=0;i<utilisateurs.length;i++){
+            const row=document.createElement("tr");
+            const colNom=document.createElement("td");
+            colNom.textContent=utilisateurs[i].nom;
+            const colSelectRole=document.createElement("td");
+            const selectRole=document.createElement("select");
+            selectRole.id="selectRole"+utilisateurs[i].id;
+            selectRole.className="form-select mb-3";
+            for(let j=0;j<roles.length;j++){
+                const option=document.createElement("option");
+                option.textContent=roles[j].nom;
+                option.value=JSON.stringify({utilisateur:{id:utilisateurs[i].id},role:{id:roles[j].id}});
+                selectRole.appendChild(option);
+            }
+            colSelectRole.appendChild(selectRole);
+            row.appendChild(colNom);
+            row.appendChild(colSelectRole);
+            attributionTable.appendChild(row);
+        }
+
+        appliquerRoleActu.addEventListener("click", ()=>{
+            attributionTable.innerHTML="";
+            for(let i=0;i<attributionsActu.length;i++){
+                const row=document.createElement("tr");
+                const colNom=document.createElement("td");
+                colNom.textContent=attributionsActu[i].utilisateur.nom;
+                const colSelectRole=document.createElement("td");
+                const selectRole=document.createElement("select");
+                selectRole.className="form-select mb-3";
+                selectRole.id="selectRole"+attributionsActu[i].utilisateur.id;
+                for(let j=0;j<roles.length;j++){
+                    const option=document.createElement("option");
+                    option.textContent=roles[j].nom;
+                    option.value=JSON.stringify({utilisateur:{id:attributionsActu[i].utilisateur.id},role:{id:roles[j].id}});
+                    if(roles[j].id==attributionsActu[i].role.id){
+                        option.selected=true;
+                    }
+                    selectRole.appendChild(option);
+                }
+                colSelectRole.appendChild(selectRole);
+                row.appendChild(colNom);
+                row.appendChild(colSelectRole);
+                attributionTable.appendChild(row);
+            }
+            const roleActuModalContent=document.getElementById("roleActuModalContent");
+            const alertBox=document.createElement("div");
+            alertBox.className="alert alert-success w-100";
+            alertBox.setAttribute("role", "alert");
+            alertBox.textContent="Attribution appliquée";
+            roleActuModalContent.appendChild(alertBox);
+            setTimeout(()=>{
+                roleActuModalContent.removeChild(alertBox);
+            }, 1000);
+        });
+
+        const formAttribution=document.getElementById("form-attribution");
+        let toSubmit="";
+        let attributions=[];
+        formAttribution.addEventListener("submit", (ev)=>{
+            ev.preventDefault();
+            for(let i=0;i<utilisateurs.length;i++){
+                const select=document.getElementById("selectRole"+utilisateurs[i].id);
+                const selectValue=JSON.parse(select.value);
+                attributions.push(selectValue);
+            }
+            toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions});
+            const api="http://"+ip+":8080/attribution-role-rest";
+            fetch(api, {
+                method:"POST",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:toSubmit})
+            });
+            attributions=[];
+            toSubmit="";
+        });
+        /*]]*/
+    </script>
+</div>

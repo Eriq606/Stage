@@ -12,6 +12,7 @@ public class Constantes {
     public static final String ROLE_CAISSE="4";
     public static final String ROLE_ANALYSTE="5";
     public static final String ROLE_SUPERVISEUR="6";
+    public static final String ROLE_OFF="7";
 
     public static final String VAR_SESSIONUTILISATEUR="utilisateur";
     public static final String VAR_TITLE="title";
@@ -24,6 +25,11 @@ public class Constantes {
     public static final String VAR_PLACES="places";
     public static final String VAR_RANGEES="rangees";
     public static final String VAR_RANGEEPLACES="rangeeplaces";
+    public static final String VAR_UTILISATEURS="utilisateurs";
+    public static final String VAR_ROLES="roles";
+    public static final String VAR_ROLEUTILISATEURS="roleutilisateurs";
+    public static final String VAR_LINKS="links";
+    public static final String VAR_IP="ip";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -31,4 +37,12 @@ public class Constantes {
     public static final String CLASSE_SALLE="place-table";
     public static final String PLACE_TERRASSE="3";
     public static final String CLASSE_TERRASSE="place-terrasse";
+
+    public static final ModelLink[] LINK_SERVEUR={
+        new ModelLink("/serveur-passer-commande", "fa fa-pencil", "Passer une commande")
+    };
+    public static final ModelLink[] LINK_SUPERVISEUR={
+        new ModelLink("/plan-de-table", "fa fa-stool", "Plan de table"),
+        new ModelLink("/attribution-de-roles", "fa fa-user", "Roles")
+    };
 }

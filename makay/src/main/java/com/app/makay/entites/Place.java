@@ -71,4 +71,10 @@ public class Place {
         }
         return null;
     }
+    public Place() {
+    }
+    public Place(Integer etat) {
+        this.etat = etat;
+    }
+    
 }

@@ -26,6 +26,11 @@ public class Produit {
     private Categorie categorie;
     private Accompagnement[] accompagnements;
     
+    public Produit(Integer etat) {
+        this.etat = etat;
+    }
+    public Produit() {
+    }
     public Integer getId() {
         return id;
     }

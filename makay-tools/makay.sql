@@ -196,18 +196,21 @@ create or replace view v_type_places as
 select *
 from type_places where type_places.etat=0;
 
+create or replace view v_rangee_places as
+select *
+from rangee_places where etat=0;
+
 create or replace view v_dateheure_max_rangee_places as
 select date_trunc('minute', max(dateheure)) as max_dateheure
-from rangee_places;
+from v_rangee_places;
 
 create or replace view v_arrangement_place_part as
 select rp.*, v_rangees.nom as nom_rangee, v_places.nom as nom_place, v_type_places.nom as nom_type_place, v_type_places.numero as numero_type_place, dm.max_dateheure
-from rangee_places rp
+from v_rangee_places rp
 join v_rangees on rp.idrangee=v_rangees.id
 join v_places on rp.idplace=v_places.id
 join v_type_places on v_places.idtypeplace=v_type_places.id
-left join v_dateheure_max_rangee_places dm on date_trunc('minute', rp.dateheure)=dm.max_dateheure
-where rp.etat=0;
+left join v_dateheure_max_rangee_places dm on date_trunc('minute', rp.dateheure)=dm.max_dateheure;
 
 create or replace view v_arrangement_place as
 select *
@@ -222,3 +225,48 @@ insert into rangee_places values(default, 3, 1, current_timestamp, 0, 2);
 insert into rangee_places values(default, 3, 2, current_timestamp, 0, 2);
 insert into rangee_places values(default, 3, 8, current_timestamp, 0, 2);
 insert into rangee_places values(default, 3, 10, current_timestamp, 0, 2);
+
+create table utilisateur_roles(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idrole int not null references roles(id),
+    dateheure timestamp not null,
+    etat int default 0
+);
+
+insert into utilisateur_roles values(default, 1, 1, current_timestamp, 0);
+insert into utilisateur_roles values(default, 2, 2, current_timestamp, 0);
+
+drop table utilisateur_roles;
+
+create or replace view v_utilisateurs as
+select id, idrole, nom, email, contact
+from utilisateurs where etat=0;
+
+create or replace view v_roles as
+select *
+from roles where etat=0;
+
+create or replace view v_historique_utilisateur_roles as
+select *
+from historique_role_utilisateurs where etat=0;
+
+create or replace view v_dateheure_max_roles as
+select date_trunc('minute', max(dateheure)) as max_dateheure
+from v_historique_utilisateur_roles;
+
+create or replace view v_attribution_roles_part as
+select vh.*, v_utilisateurs.nom as nom_utilisateur, v_roles.nom as nom_role, vd.max_dateheure
+from v_historique_utilisateur_roles as vh
+join v_utilisateurs on vh.idutilisateur=v_utilisateurs.id
+join v_roles on vh.idrole=v_roles.id
+left join v_dateheure_max_roles as vd on date_trunc('minute', vh.dateheure)=vd.max_dateheure;
+
+create or replace view v_attribution_roles as
+select *
+from v_attribution_roles_part where max_dateheure is not null;
+
+insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp, 0),
+                                               (default, 2, 2, current_timestamp, 0);
+
+insert into roles values(default, 'off', 0, '7');

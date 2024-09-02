@@ -80,6 +80,7 @@ public class Utilisateur extends IrisUser{
         Utilisateur where=new Utilisateur();
         where.setEmail(email);
         where.setMotdepasse(motDePasse);
+        where.setEtat(0);
         Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
         if(target.length==1){
             utilisateur=target[0];
@@ -108,4 +109,21 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public void mettreAJourAttributionsRoles(Connection connect, MyDAO dao, HistoriqueRoleUtilisateur[] attributions) throws Exception{
+        try{
+            for(HistoriqueRoleUtilisateur h:attributions){
+                h.setDateheure(LocalDateTime.now());
+                dao.insertWithoutPrimaryKey(connect, h);
+            }
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
+    public Utilisateur() {
+    }
+    public Utilisateur(Integer etat) {
+        this.etat = etat;
+    }
+    
 }

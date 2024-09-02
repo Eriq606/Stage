@@ -31,5 +31,10 @@ public class Rangee {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
+    public Rangee() {
+    }
+    public Rangee(Integer etat) {
+        this.etat = etat;
+    }
     
 }

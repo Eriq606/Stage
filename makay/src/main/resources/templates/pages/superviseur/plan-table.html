@@ -30,7 +30,7 @@
                 <button class="btn btn-primary no-drop" style="grid-column: 1/4;" data-bs-toggle="modal" data-bs-target="#dispoActuModal">Disposition actuelle</button>
                 <div class="modal fade" id="dispoActuModal" tabindex="-1" aria-labelledby="dispoActuModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+                    <div class="modal-content" id="dispoActuModalContent">
                         <div class="modal-header">
                         <h1 class="modal-title fs-5" id="dispoActuModalLabel">Disposition actuelle</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="appliqueractu" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <button type="button"class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
                             <button type="button" id="appliqueractu" class="btn btn-primary">Appliquer</button>
                         </div>
                     </div>
@@ -218,6 +218,15 @@
                 place.textContent=places[i].nom;
                 draggablePlaces.appendChild(place);
             }
+            const dispoActuModalContent=document.getElementById("dispoActuModalContent");
+            const alertBox=document.createElement("div");
+            alertBox.className="alert alert-success w-100";
+            alertBox.setAttribute("role", "alert");
+            alertBox.textContent="Disposition appliquée";
+            dispoActuModalContent.appendChild(alertBox);
+            setTimeout(()=>{
+                dispoActuModalContent.removeChild(alertBox);
+            }, 1000);
         });
         /*]]*/
     </script>

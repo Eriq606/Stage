@@ -101,7 +101,7 @@ public class MyFilter implements IrisFilter{
             case Constantes.ROLE_SUPERVISEUR:
                 return new RedirectView("/plan-de-table");
         }
-        return new RedirectView("/login-success");
+        return new RedirectView("/login");
     }
 
     @Override
