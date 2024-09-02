@@ -127,6 +127,15 @@
         const formAttribution=document.getElementById("form-attribution");
         let toSubmit="";
         let attributions=[];
+
+        const stompclient=new StompJs.client({
+            brokerURL:'ws://localhost:8080'
+        });
+        function notifierToutUtilisateur(){
+            stompclient.publish({
+                destination:"/notify-redirect"
+            });
+        }
         formAttribution.addEventListener("submit", (ev)=>{
             ev.preventDefault();
             for(let i=0;i<utilisateurs.length;i++){
@@ -145,6 +154,7 @@
             });
             attributions=[];
             toSubmit="";
+            notifierToutUtilisateur();
         });
         /*]]*/
     </script>
