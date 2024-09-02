@@ -124,7 +124,13 @@ public class SuperviseurController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             HistoriqueRoleUtilisateur[] rolesActuels=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
             setAttributionRoles(rolesActuels);
-                        
+            for(HistoriqueRoleUtilisateur h:rolesActuels){
+                if(h.getUtilisateur().getId()==utilisateur.getId()){
+                    utilisateur.setRole(h.getRole());
+                    session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+                    break;
+                }
+            }
         }
     }
 
