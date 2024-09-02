@@ -136,6 +136,12 @@
                 destination:"/notify-redirect"
             });
         }
+        function redirigerVersResetCache(){}
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/receive-notify-redirect", ()=>{
+                redirigerVersResetCache();
+            });
+        }
         formAttribution.addEventListener("submit", (ev)=>{
             ev.preventDefault();
             for(let i=0;i<utilisateurs.length;i++){
