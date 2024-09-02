@@ -3,17 +3,14 @@ package com.app.makay.controllers.metier.superviseur;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.app.makay.entites.Categorie;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
@@ -99,14 +96,6 @@ public class SuperviseurController {
         return iris;
     }
 
-    @GetMapping("/try-me")
-    @ResponseBody
-    public ResponseEntity<Categorie> categorie(){
-        Categorie cat=new Categorie();
-        cat.setNom("Hall");
-        return ResponseEntity.ok(cat);
-    }
-
     @MessageMapping("/notify-redirect")
     @SendTo("/receive-notify-redirect")
     public void notifierModifications(){
@@ -132,6 +121,7 @@ public class SuperviseurController {
                 }
             }
         }
+        return filter.distributeByRole(utilisateur);
     }
 
     public MyFilter getFilter() {
