@@ -1,16 +1,42 @@
 package com.app.makay.utilitaire;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.iris.IrisFilter;
 import com.app.makay.iris.IrisUser;
 
 import handyman.HandyManUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import veda.godao.utils.DAOConnexion;
 
 public class MyFilter implements IrisFilter{
-    
+    public RedirectView resetUserRole(HttpServletRequest req, MyDAO dao, String targetRole) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        RedirectView iris=checkByRolePOST(utilisateur, targetRole);
+        if(iris!=null){
+            return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            HistoriqueRoleUtilisateur[] rolesActuels=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            for(HistoriqueRoleUtilisateur h:rolesActuels){
+                if(h.getUtilisateur().getId()==utilisateur.getId()){
+                    utilisateur.setRole(h.getRole());
+                    utilisateur.setIrisRole(utilisateur.getRole().getNumero());
+                    session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+                    break;
+                }
+            }
+        }
+        return distributeByRole(utilisateur);
+    }
 
     @Override
     public RedirectView checkByAuthorizationPOST(IrisUser irisUser, int minimumAuth) {

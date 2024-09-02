@@ -65,6 +65,7 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_PLACES, places);
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_RANGEEPLACES, rangeePlaces);
+        model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
     @PostMapping("/plan-de-table")
@@ -96,16 +97,23 @@ public class SuperviseurController {
         return iris;
     }
 
-    @MessageMapping("/notify-redirect")
-    @SendTo("/receive-notify-redirect")
-    public void notifierModifications(){
-
+    @MessageMapping("/notify-redirect-superviseur")
+    @SendTo("/notify/receive-notify-redirect-superviseur")
+    public String notifierModifications(){
+        return "reset cache";
     }
 
-    @GetMapping("/reset-cache-superviseur")
+    @GetMapping("/reset-role-superviseur")
+    public RedirectView resetRole(HttpServletRequest req) throws SQLException, Exception{
+        return filter.resetUserRole(req, dao, Constantes.ROLE_SUPERVISEUR);
+    }
+
+    public void resetCacheRoles()
+
+    @GetMapping("/reset-cache-roles-superviseur")
     public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
         HttpSession session=req.getSession();
-        Utilisateur utilisateur=(Utilisateur)req.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         RedirectView iris=filter.checkByRolePOST(utilisateur, Constantes.ROLE_SUPERVISEUR);
         if(iris!=null){
             return iris;
@@ -116,6 +124,7 @@ public class SuperviseurController {
             for(HistoriqueRoleUtilisateur h:rolesActuels){
                 if(h.getUtilisateur().getId()==utilisateur.getId()){
                     utilisateur.setRole(h.getRole());
+                    utilisateur.setIrisRole(utilisateur.getRole().getNumero());
                     session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
                     break;
                 }

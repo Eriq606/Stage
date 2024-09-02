@@ -111,9 +111,14 @@ public class Utilisateur extends IrisUser{
     }
     public void mettreAJourAttributionsRoles(Connection connect, MyDAO dao, HistoriqueRoleUtilisateur[] attributions) throws Exception{
         try{
+            Utilisateur where, change;
             for(HistoriqueRoleUtilisateur h:attributions){
+                where=h.getUtilisateur();
+                change=new Utilisateur();
+                change.setRole(h.getRole());
                 h.setDateheure(LocalDateTime.now());
                 dao.insertWithoutPrimaryKey(connect, h);
+                dao.update(connect, change, where);
             }
         }catch(Exception e){
             connect.rollback();
