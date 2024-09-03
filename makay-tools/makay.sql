@@ -256,17 +256,29 @@ select date_trunc('minute', max(dateheure)) as max_dateheure
 from v_historique_utilisateur_roles;
 
 create or replace view v_attribution_roles_part as
-select vh.*, v_utilisateurs.nom as nom_utilisateur, v_roles.nom as nom_role, vd.max_dateheure
+select vh.*, v_utilisateurs.nom as nom_utilisateur, v_roles.nom as nom_role, vd.max_dateheure, v_roles.numero as numero_role
 from v_historique_utilisateur_roles as vh
 join v_utilisateurs on vh.idutilisateur=v_utilisateurs.id
 join v_roles on vh.idrole=v_roles.id
-left join v_dateheure_max_roles as vd on date_trunc('minute', vh.dateheure)=vd.max_dateheure;
+left join v_dateheure_max_roles as vd on date_trunc('minute', vh.dateheure)=vd.max_dateheure
+order by vh.dateheure desc
+limit (select count(*) from v_utilisateurs);
 
 create or replace view v_attribution_roles as
 select *
-from v_attribution_roles_part where max_dateheure is not null;
+from v_attribution_roles_part where max_dateheure is not null
+order by idutilisateur;
 
 insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp, 0),
                                                (default, 2, 2, current_timestamp, 0);
 
 insert into roles values(default, 'off', 0, '7');
+
+create table session_utilisateurs(
+    id serial primary key,
+    sessionid varchar unique not null,
+    expiration timestamp not null
+);
+
+alter table session_utilisateurs add idutilisateur int not null references utilisateurs(id);
+alter table session_utilisateurs add estvalide int default 0;

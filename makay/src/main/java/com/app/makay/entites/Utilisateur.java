@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 
 import com.app.makay.iris.IrisUser;
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
+import com.app.makay.utilitaire.SessionUtilisateur;
 
 import handyman.HandyManUtils;
+import jakarta.servlet.http.HttpSession;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -90,6 +93,20 @@ public class Utilisateur extends IrisUser{
         }
         return utilisateur;
     }
+    public void seDeconnecter(Connection connect, MyDAO dao, HttpSession session) throws Exception{
+        try{
+            SessionUtilisateur where=new SessionUtilisateur();
+            where.setSessionId(session.getId());
+            where.setUtilisateur(this);
+            SessionUtilisateur change=new SessionUtilisateur();
+            change.setExpiration(LocalDateTime.now());
+            change.setEstValide(Constantes.SESSION_ESTINVALIDE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
     public Integer getAutorisation() {
         return autorisation;
     }
@@ -111,9 +128,14 @@ public class Utilisateur extends IrisUser{
     }
     public void mettreAJourAttributionsRoles(Connection connect, MyDAO dao, HistoriqueRoleUtilisateur[] attributions) throws Exception{
         try{
+            Utilisateur where, change;
             for(HistoriqueRoleUtilisateur h:attributions){
+                where=h.getUtilisateur();
+                change=new Utilisateur();
+                change.setRole(h.getRole());
                 h.setDateheure(LocalDateTime.now());
                 dao.insertWithoutPrimaryKey(connect, h);
+                dao.update(connect, change, where);
             }
         }catch(Exception e){
             connect.rollback();

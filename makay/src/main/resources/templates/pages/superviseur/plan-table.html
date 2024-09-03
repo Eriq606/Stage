@@ -228,6 +228,24 @@
                 dispoActuModalContent.removeChild(alertBox);
             }, 1000);
         });
+
+        const ip=/*[[${ip}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            stompclient.deactivate();
+            window.location.href="http://"+ip+":8080/reset-role-superviseur";
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
         /*]]*/
     </script>
 </div>

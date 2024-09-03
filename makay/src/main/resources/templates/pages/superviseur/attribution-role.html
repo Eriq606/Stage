@@ -65,8 +65,8 @@
         const attributionsActu=/*[[${roleutilisateurs}]]*/[];
         const roles=/*[[${roles}]]*/[];
         const utilisateurs=/*[[${utilisateurs}]]*/[];
-        const ip=/*[[${ip}]]*/"";
         const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
         const appliquerRoleActu=document.getElementById("appliquer-roleactu");
         const attributionTable=document.getElementById("attribution-table");
         for(let i=0;i<utilisateurs.length;i++){
@@ -127,6 +127,33 @@
         const formAttribution=document.getElementById("form-attribution");
         let toSubmit="";
         let attributions=[];
+
+        const ip=/*[[${ip}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function notifierToutUtilisateur(){
+            stompclient.publish({
+                destination:"/makay/notify-redirect-superviseur"
+            });
+            stompclient.publish({
+                destination:"/makay/notify-redirect-serveur"
+            });
+        }
+        function redirigerVersResetCache(){
+            stompclient.deactivate();
+            window.location.href="http://"+ip+":8080/reset-cache-roles-superviseur";
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+
         formAttribution.addEventListener("submit", (ev)=>{
             ev.preventDefault();
             for(let i=0;i<utilisateurs.length;i++){
@@ -134,7 +161,7 @@
                 const selectValue=JSON.parse(select.value);
                 attributions.push(selectValue);
             }
-            toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions});
+            toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions,sessionid:sessionid});
             const api="http://"+ip+":8080/attribution-role-rest";
             fetch(api, {
                 method:"POST",
@@ -142,9 +169,11 @@
                     "Content-type":"application/json"
                 },
                 body:JSON.stringify({restdata:toSubmit})
+            }).then(()=>{
+                attributions=[];
+                toSubmit="";
+                notifierToutUtilisateur();
             });
-            attributions=[];
-            toSubmit="";
         });
         /*]]*/
     </script>

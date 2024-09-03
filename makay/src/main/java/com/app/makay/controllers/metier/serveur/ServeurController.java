@@ -3,17 +3,20 @@ package com.app.makay.controllers.metier.serveur;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
-// import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 
+import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import veda.godao.utils.DAOConnexion;
@@ -22,11 +25,13 @@ import veda.godao.utils.DAOConnexion;
 public class ServeurController {
     private MyFilter filter;
     private Produit[] produits;
+    private String ip;
     private MyDAO dao;
 
     public ServeurController() throws SQLException, Exception{
         filter=new MyFilter();
         dao=new MyDAO();
+        ip=HandyManUtils.getIP();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             produits=dao.select(connect, Produit.class, new Produit(0));
             for(Produit p:produits){
@@ -42,6 +47,18 @@ public class ServeurController {
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Passer une commande", "pages/serveur/prise-commande", "layout/layout", model);
         model.addAttribute(Constantes.VAR_PRODUITS, produits);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
+        model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
+    }
+
+    @MessageMapping("/notify-redirect-serveur")
+    @SendTo("/notify/receive-notify-redirect-serveur")
+    public String notifierModifications(){
+        return "reset cache";
+    }
+
+    @GetMapping("/reset-role-serveur")
+    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
+        return filter.resetUserRole(req, dao, Constantes.ROLE_SERVEUR);
     }
 }

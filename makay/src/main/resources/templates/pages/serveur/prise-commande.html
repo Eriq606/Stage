@@ -395,6 +395,24 @@
                             table.appendChild(row);
                         });
                     }
+
+                    const ip=/*[[${ip}]]*/"";
+                    const stompclient=new StompJs.Client({
+                        brokerURL:'ws://'+ip+':8080/messaging'
+                    });
+                    stompclient.activate();
+                    function redirigerVersResetCache(){
+                        stompclient.deactivate();
+                        window.location.href="http://"+ip+":8080/reset-role-serveur";
+                    }
+                    function receiveNotificationRedirect(){
+                        stompclient.subscribe("/notify/receive-notify-redirect-serveur", (message)=>{
+                            redirigerVersResetCache();
+                        });
+                    }
+                    stompclient.onConnect=(frame)=>{
+                        receiveNotificationRedirect();
+                    }
                     /*]]*/
                 </script>
             </div>
