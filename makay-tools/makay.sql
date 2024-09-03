@@ -273,3 +273,12 @@ insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp
                                                (default, 2, 2, current_timestamp, 0);
 
 insert into roles values(default, 'off', 0, '7');
+
+create table session_utilisateurs(
+    id serial primary key,
+    sessionid varchar unique not null,
+    expiration timestamp not null
+);
+
+alter table session_utilisateurs add idutilisateur int not null references utilisateurs(id);
+alter table session_utilisateurs add estvalide int default 0;

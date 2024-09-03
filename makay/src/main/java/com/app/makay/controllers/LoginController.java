@@ -2,6 +2,7 @@ package com.app.makay.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,8 @@ import com.app.makay.entites.Utilisateur;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
+import com.app.makay.utilitaire.SessionUtilisateur;
+
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +29,8 @@ public class LoginController {
     @GetMapping("/login")
     public String login(HttpServletRequest req, String message, Model model){
         HttpSession session=req.getSession();
-        session.removeAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        session.invalidate();
+        session=req.getSession();
         String messageDecoded="";
         if(message!=null){
             messageDecoded=HandyManUtils.decodeURL_UTF8(message);
@@ -45,9 +49,28 @@ public class LoginController {
                 return new RedirectView("/login?message="+message);
             }
             HttpSession session=req.getSession();
+            SessionUtilisateur sessionUser=new SessionUtilisateur();
+            sessionUser.setSessionId(session.getId());
+            sessionUser.setExpiration(LocalDateTime.now().plusHours(Constantes.SESSION_EXPIRATION.longValue()));
+            sessionUser.setUtilisateur(utilisateur);
+            sessionUser.setEstValide(Constantes.SESSION_ESTVALIDE);
+            sessionUser.enregistrer(connect, dao);
+            connect.commit();
             session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
             return filterChain.distributeByRole(utilisateur);
         }
+    }
+    @GetMapping("/logout")
+    public RedirectView seDeconnecter(HttpServletRequest req) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            if(utilisateur!=null){
+                utilisateur.seDeconnecter(connect, dao, session);
+                connect.commit();
+            }
+        }
+        return new RedirectView("/login");
     }
     @GetMapping("/login-success")
     public String mock(){

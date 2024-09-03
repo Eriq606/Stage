@@ -66,6 +66,7 @@
         const roles=/*[[${roles}]]*/[];
         const utilisateurs=/*[[${utilisateurs}]]*/[];
         const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
         const appliquerRoleActu=document.getElementById("appliquer-roleactu");
         const attributionTable=document.getElementById("attribution-table");
         for(let i=0;i<utilisateurs.length;i++){
@@ -160,7 +161,7 @@
                 const selectValue=JSON.parse(select.value);
                 attributions.push(selectValue);
             }
-            toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions});
+            toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions,sessionid:sessionid});
             const api="http://"+ip+":8080/attribution-role-rest";
             fetch(api, {
                 method:"POST",

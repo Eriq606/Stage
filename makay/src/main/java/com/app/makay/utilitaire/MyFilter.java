@@ -42,7 +42,7 @@ public class MyFilter implements IrisFilter{
     public RedirectView checkByAuthorizationPOST(IrisUser irisUser, int minimumAuth) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisAuthorization()<minimumAuth==false){
             return new RedirectView("/403");
@@ -54,7 +54,7 @@ public class MyFilter implements IrisFilter{
     public RedirectView checkByRolePOST(IrisUser irisUser, String targetRole) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisRole().equals(targetRole)==false&&irisUser.getIrisRole().equals(Constantes.ROLE_SUPERVISEUR)==false){
             return new RedirectView("/403");
@@ -66,7 +66,7 @@ public class MyFilter implements IrisFilter{
     public RedirectView checkIfLoggedInPOST(IrisUser irisUser) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         return null;
     }
@@ -75,12 +75,12 @@ public class MyFilter implements IrisFilter{
     public Object checkIfLoggedIn(IrisUser irisUser, String title, String viewpage, String targetView, Model model) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
         model.addAttribute(Constantes.VAR_VIEWPAGE, viewpage);
-        model.addAttribute(Constantes.VAR_LOGINURL, "/login");
+        model.addAttribute(Constantes.VAR_LOGINURL, "/logout");
         model.addAttribute(Constantes.VAR_CURRENTUSER, ((Utilisateur)irisUser).getNom());
         return targetView;
     }
@@ -89,7 +89,7 @@ public class MyFilter implements IrisFilter{
     public Object checkByRole(IrisUser irisUser, String targetRole, String title, String viewpage, String targetView, Model model) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisRole().equals(targetRole)==false&&irisUser.getIrisRole().equals(Constantes.ROLE_SUPERVISEUR)==false){
             return new RedirectView("/403");
@@ -97,7 +97,7 @@ public class MyFilter implements IrisFilter{
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
         model.addAttribute(Constantes.VAR_VIEWPAGE, viewpage);
-        model.addAttribute(Constantes.VAR_LOGINURL, "/login");
+        model.addAttribute(Constantes.VAR_LOGINURL, "/logout");
         model.addAttribute(Constantes.VAR_CURRENTUSER, ((Utilisateur)irisUser).getNom());
         return targetView;
     }
@@ -106,7 +106,7 @@ public class MyFilter implements IrisFilter{
     public Object checkByAuthorization(IrisUser irisUser, int minimumAuth, String title, String viewpage, String targetView, Model model) {
         if(irisUser==null){
             String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-            return new RedirectView("/login?message="+message);
+            return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisAuthorization()<minimumAuth==false){
             return new RedirectView("/403");
@@ -114,7 +114,7 @@ public class MyFilter implements IrisFilter{
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
         model.addAttribute(Constantes.VAR_VIEWPAGE, viewpage);
-        model.addAttribute(Constantes.VAR_LOGINURL, "/login");
+        model.addAttribute(Constantes.VAR_LOGINURL, "/logout");
         model.addAttribute(Constantes.VAR_CURRENTUSER, ((Utilisateur)irisUser).getNom());
         return targetView;
     }
@@ -127,7 +127,7 @@ public class MyFilter implements IrisFilter{
             case Constantes.ROLE_SUPERVISEUR:
                 return new RedirectView("/plan-de-table");
         }
-        return new RedirectView("/login");
+        return new RedirectView("/logout");
     }
 
     @Override

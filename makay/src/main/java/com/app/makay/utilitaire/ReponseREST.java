@@ -1,20 +1,14 @@
 package com.app.makay.utilitaire;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 
 public class ReponseREST {
-    private LinkedList<Object> donnees;
+    private HashMap<String, Object> donnees;
     private String code;
     private String message;
     
     public ReponseREST() {
-        setDonnees(new LinkedList<Object>());
-    }
-    public LinkedList<Object> getDonnees() {
-        return donnees;
-    }
-    public void setDonnees(LinkedList<Object> donnees) {
-        this.donnees = donnees;
+        donnees=new HashMap<>();
     }
     public String getCode() {
         return code;
@@ -27,6 +21,12 @@ public class ReponseREST {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+    public HashMap<String, Object> getDonnees() {
+        return donnees;
+    }
+    public void addItem(String key, String value){
+        getDonnees().put(key, value);
     }
     
 }
