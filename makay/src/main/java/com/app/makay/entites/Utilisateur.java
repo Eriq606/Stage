@@ -117,10 +117,9 @@ public class Utilisateur extends IrisUser{
         try{
             RangeePlace[] arrangements=HandyManUtils.fromJson(RangeePlace[].class, arrangementsString);
             for(RangeePlace r:arrangements){
-                r.setDateheure(LocalDateTime.now());
                 r.setUtilisateur(this);
-                dao.insertWithoutPrimaryKey(connect, r);
             }
+            dao.insertWithoutPrimaryKey(connect, RangeePlace.class, arrangements);
         }catch(Exception e){
             connect.rollback();
             throw e;
@@ -129,12 +128,11 @@ public class Utilisateur extends IrisUser{
     public void mettreAJourAttributionsRoles(Connection connect, MyDAO dao, HistoriqueRoleUtilisateur[] attributions) throws Exception{
         try{
             Utilisateur where, change;
+            dao.insertWithoutPrimaryKey(connect, HistoriqueRoleUtilisateur.class, attributions);
             for(HistoriqueRoleUtilisateur h:attributions){
                 where=h.getUtilisateur();
                 change=new Utilisateur();
                 change.setRole(h.getRole());
-                h.setDateheure(LocalDateTime.now());
-                dao.insertWithoutPrimaryKey(connect, h);
                 dao.update(connect, change, where);
             }
         }catch(Exception e){

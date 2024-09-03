@@ -1,5 +1,10 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+import java.util.HashMap;
+
+import com.app.makay.utilitaire.MyDAO;
+
 import veda.godao.annotations.Column;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
@@ -13,6 +18,8 @@ public class Rangee {
     private String nom;
     @Column("etat")
     private Integer etat;
+    private Utilisateur[] utilisateurs;
+    
     public Integer getId() {
         return id;
     }
@@ -36,5 +43,24 @@ public class Rangee {
     public Rangee(Integer etat) {
         this.etat = etat;
     }
-    
+    public Utilisateur[] getUtilisateurs() {
+        return utilisateurs;
+    }
+    public void setUtilisateurs(Utilisateur[] utilisateurs) {
+        this.utilisateurs = utilisateurs;
+    }
+    public Utilisateur[] getDispatchUtilisateursActuel(Connection connect, MyDAO dao) throws Exception{
+        String query="select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur from v_dispatch_staff where idrangee="+getId();
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Utilisateur[] utilisateurs=new Utilisateur[objets.length];
+        for(int i=0;i<utilisateurs.length;i++){
+            utilisateurs[i]=new Utilisateur();
+            utilisateurs[i].setId((int)objets[i].get("idutilisateur"));
+            utilisateurs[i].setNom((String)objets[i].get("nom_utilisateur"));
+            utilisateurs[i].setEmail((String)objets[i].get("email_utilisateur"));
+            utilisateurs[i].setContact((String)objets[i].get("contact_utilisateur"));
+        }
+        setUtilisateurs(utilisateurs);
+        return utilisateurs;
+    }
 }

@@ -282,3 +282,66 @@ create table session_utilisateurs(
 
 alter table session_utilisateurs add idutilisateur int not null references utilisateurs(id);
 alter table session_utilisateurs add estvalide int default 0;
+alter table historique_role_utilisateurs alter column dateheure drop not null;
+alter table historique_role_utilisateurs alter column dateheure set default now();
+
+alter table rangee_places alter column dateheure drop not null;
+alter table rangee_places alter column dateheure set default now();
+
+create or replace view v_dateheure_max_rangee_places as
+select max(dateheure) as max_dateheure
+from v_rangee_places;
+
+create or replace view v_arrangement_place_part as
+select rp.*, v_rangees.nom as nom_rangee, v_places.nom as nom_place, v_type_places.nom as nom_type_place, v_type_places.numero as numero_type_place, dm.max_dateheure
+from v_rangee_places rp
+join v_rangees on rp.idrangee=v_rangees.id
+join v_places on rp.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+left join v_dateheure_max_rangee_places dm on rp.dateheure=dm.max_dateheure;
+
+create or replace view v_arrangement_place as
+select *
+from v_arrangement_place_part where max_dateheure is not null;
+
+create or replace view v_dateheure_max_roles as
+select max(dateheure) as max_dateheure
+from v_historique_utilisateur_roles;
+
+create or replace view v_attribution_roles_part as
+select vh.*, v_utilisateurs.nom as nom_utilisateur, v_roles.nom as nom_role, vd.max_dateheure, v_roles.numero as numero_role
+from v_historique_utilisateur_roles as vh
+join v_utilisateurs on vh.idutilisateur=v_utilisateurs.id
+join v_roles on vh.idrole=v_roles.id
+left join v_dateheure_max_roles as vd on vh.dateheure=vd.max_dateheure;
+
+create or replace view v_attribution_roles as
+select *
+from v_attribution_roles_part where max_dateheure is not null;
+
+create table rangee_utilisateurs(
+    id serial primary key,
+    idrangee int not null references rangees(id),
+    idutilisateur int not null references utilisateurs(id),
+    dateheure timestamp default now(),
+    etat int default 0
+);
+
+create or replace view v_rangee_utilisateurs as
+select *
+from rangee_utilisateurs where etat=0;
+
+create or replace view v_dateheure_max_rangee_users as
+select max(dateheure) as max_dateheure
+from v_rangee_utilisateurs;
+
+create or replace view v_dispatch_staff_part as
+select vu.*, v_rangees.nom as nom_rangee, v_utilisateurs.nom as nom_utilisateur, v_utilisateurs.email as email_utilisateur, v_utilisateurs.contact as contact_utilisateur, vdm.max_dateheure
+from v_rangee_utilisateurs vu
+join v_rangees on vu.idrangee=v_rangees.id
+join v_utilisateurs on vu.idutilisateur=v_utilisateurs.id
+left join v_dateheure_max_rangee_users vdm on vu.dateheure=vdm.max_dateheure;
+
+create or replace view v_dispatch_staff as
+select *
+from v_dispatch_staff_part where max_dateheure is not null;

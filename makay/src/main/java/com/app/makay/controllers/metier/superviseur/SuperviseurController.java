@@ -120,6 +120,9 @@ public class SuperviseurController {
                 p.setClasseHTML(p.getClasse());
             }
             rangees=dao.select(connect, Rangee.class, new Rangee(0));
+            for(Rangee r:rangees){
+                r.getDispatchUtilisateursActuel(connect, dao);
+            }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
             utilisateurs=dao.select(connect, UtilisateurSafe.class);
             roles=dao.select(connect, Role.class, new Role(0));
@@ -209,6 +212,8 @@ public class SuperviseurController {
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Dispatch des rangs de table au staff", "pages/superviseur/dispatch-tables-staff", "layout/layout", model);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        model.addAttribute(Constantes.VAR_RANGEES, rangees);
+        model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
         return iris;
     }
 }

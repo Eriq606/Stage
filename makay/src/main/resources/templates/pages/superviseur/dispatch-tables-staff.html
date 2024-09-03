@@ -7,46 +7,66 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
-                            <tr>
-                                <td>Bar</td>
+                            <tr th:each="r:${rangees}">
+                                <td th:text="${r.nom}"></td>
                                 <td><ul>
-                                    <li>Jean</li>
-                                    <li>Jules</li>
-                                    <li>Marc</li>
+                                    <li th:each="e:${r.utilisateurs}" th:text="${e.nom}"></li>
                                 </ul></td>
                                 <td>
-                                    <button type="button" class="btn btn-success w-100">Ajouter</button>
+                                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#ajoutDispatchModal">Ajouter</button>
+                                    <div class="modal" id="ajoutDispatchModal" tabindex="-1" aria-labelledby="ajoutDispatchModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="ajoutDispatchModalLabel" th:text="'Ajouter un staff à '+${r.nom}"></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr th:each="u:${utilisateurs}">
+                                                            <td th:text="${u.nom}"></td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-success w-100 ajout-dispatch" th:data-idrangee="${r.id}" th:data-idutilisateur="${u.id}" th:data-nomutilisateur="${u.nom}"><i class="fa-solid fa-plus"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-warning w-100">Modifier</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Bar</td>
-                                <td><ul>
-                                    <li>Jean</li>
-                                    <li>Jules</li>
-                                    <li>Marc</li>
-                                </ul></td>
-                                <td>
-                                    <button type="button" class="btn btn-success w-100">Ajouter</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-warning w-100">Modifier</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Bar</td>
-                                <td><ul>
-                                    <li>Jean</li>
-                                    <li>Jules</li>
-                                    <li>Marc</li>
-                                </ul></td>
-                                <td>
-                                    <button type="button" class="btn btn-success w-100">Ajouter</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-warning w-100">Modifier</button>
+                                    <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#modifDispatchModal">Modifier</button>
+                                    <div class="modal fade" id="modifDispatchModal" tabindex="-1" aria-labelledby="modifDispatchModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="modifDispatchModalLabel" th:text="'Retirer un staff de '+${r.nom}"></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table">
+                                                    <tbody th:id="'dispatchRow'+${r.id}">
+                                                        <tr th:each="u:${r.utilisateurs}" th:id="'modifDispatchRow'+${r.id}+'-'+${u.id}">
+                                                            <td th:text="${u.nom}"></td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger w-100 modif-dispatch" th:data-idrangee="${r.id}" th:data-idutilisateur="${u.id}"><i class="fa-solid fa-minus"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -60,4 +80,68 @@
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function removeDispatchRow(modifDispatch, dispatchs){
+            const idrangee=modifDispatch.dataset.idrangee;
+            const idutilisateur=modifDispatch.dataset.idutilisateur;
+            for(let j=0;j<dispatchs.length;j++){
+                if(dispatchs[j].rangee.id==idrangee&&dispatchs[j].utilisateur.id==idutilisateur){
+                    dispatchs.splice(j, 1);
+                    break;
+                }
+            }
+            const dispatchRow=document.getElementById("dispatchRow"+idrangee);
+            const toRemove=document.getElementById("modifDispatchRow"+idrangee+"-"+idutilisateur);
+            dispatchRow.removeChild(toRemove);
+        }
+
+        const ajoutDispatch=document.getElementsByClassName("ajout-dispatch");
+        let dispatchs=[];
+        for(let i=0;i<ajoutDispatch.length;i++){
+            ajoutDispatch[i].onclick=()=>{
+                const idrangee=ajoutDispatch[i].dataset.idrangee;
+                const idutilisateur=ajoutDispatch[i].dataset.idutilisateur;
+                const nomutilisateur=ajoutDispatch[i].dataset.nomutilisateur;
+                for(let j=0;j<dispatchs.length;j++){
+                    if(dispatchs[j].rangee.id==idrangee&&dispatchs[j].utilisateur.id==idutilisateur){
+                        return;
+                    }
+                }
+                dispatchs.push({rangee:{id:idrangee}, utilisateur:{id:idutilisateur}});
+
+                const modifDispatchRow=document.createElement("tr");
+                modifDispatchRow.id="modifDispatchRow"+idrangee+"-"+idutilisateur;
+                const modifDispatchRowNom=document.createElement("td");
+                modifDispatchRowNom.textContent=nomutilisateur;
+                const modifDispatchRowButtonCol=document.createElement("td");
+                const modifDispatchRowButton=document.createElement("button");
+                modifDispatchRowButton.className="btn btn-danger w-100 modif-dispatch";
+                modifDispatchRowButton.setAttribute("data-idrangee", idrangee);
+                modifDispatchRowButton.setAttribute("data-idutilisateur", idutilisateur);
+                const modifDispatchRowButtonIcon=document.createElement("i");
+                modifDispatchRowButtonIcon.className="fa-solid fa-minus";
+
+                modifDispatchRowButton.appendChild(modifDispatchRowButtonIcon);
+                modifDispatchRowButtonCol.appendChild(modifDispatchRowButton);
+                modifDispatchRow.appendChild(modifDispatchRowNom);
+                modifDispatchRow.appendChild(modifDispatchRowButtonCol);
+
+                const dispatchRow=document.getElementById("dispatchRow"+idrangee);
+                dispatchRow.appendChild(modifDispatchRow);
+                
+                modifDispatchRowButton.addEventListener("click", ()=>{
+                    removeDispatchRow(modifDispatchRowButton, dispatchs)
+                });
+            }
+        }
+
+        const modifDispatch=document.getElementsByClassName("modif-dispatch");
+        for(let i=0;i<modifDispatch.length;i++){
+            modifDispatch[i].addEventListener("click", ()=>{
+                removeDispatchRow(modifDispatch[i], dispatchs)
+            });
+        }
+        /*]]*/
+    </script>
 </div>
