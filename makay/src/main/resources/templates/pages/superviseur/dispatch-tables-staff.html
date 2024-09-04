@@ -48,8 +48,8 @@
                                     </div>
                                     </div>
                                 </div>
-                                <td><ul>
-                                    <li th:each="e:${r.utilisateurs}" th:text="${e.nom}"></li>
+                                <td><ul th:id="'listeStaffRangee'+${r.id}">
+                                    <li th:each="e:${r.utilisateurs}" id="'listeStaffRangee'+${r.id}+'User'+${e.id}" th:text="${e.nom}"></li>
                                 </ul></td>
                                 <td>
                                     <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" th:data-bs-target="'#ajoutDispatchModal'+${r.id}">Ajouter</button>
@@ -133,6 +133,9 @@
             const dispatchRow=document.getElementById("dispatchRow"+idrangee);
             const toRemove=document.getElementById("modifDispatchRow"+idrangee+"-"+idutilisateur);
             dispatchRow.removeChild(toRemove);
+            const listeStaffRangee=document.getElementById("listeStaffRangee"+idrangee);
+            const listeStaffRangeeLi=document.getElementById("listeStaffRangee"+idrangee+"User"+idutilisateur);
+            listeStaffRangee.removeChild(listeStaffRangeeLi);
         }
 
         const ajoutDispatch=document.getElementsByClassName("ajout-dispatch");
@@ -172,6 +175,12 @@
                 modifDispatchRowButton.addEventListener("click", ()=>{
                     removeDispatchRow(modifDispatchRowButton, dispatchs)
                 });
+
+                const listeStaffRangee=document.getElementById("listeStaffRangee"+idrangee);
+                const listeStaffRangeeLi=document.createElement("li");
+                listeStaffRangeeLi.id="listeStaffRangee"+idrangee+"User"+idutilisateur;
+                listeStaffRangeeLi.textContent=nomutilisateur;
+                listeStaffRangee.appendChild(listeStaffRangeeLi);
             }
         }
 
