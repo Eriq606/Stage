@@ -236,7 +236,7 @@
         stompclient.activate();
         function redirigerVersResetCache(){
             stompclient.deactivate();
-            window.location.href="http://"+ip+":8080/reset-role-superviseur";
+            window.location.href="http://"+ip+":8080/reset-cache-superviseur";
         }
         function receiveNotificationRedirect(){
             stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{

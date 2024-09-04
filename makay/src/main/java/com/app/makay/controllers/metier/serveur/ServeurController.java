@@ -61,4 +61,17 @@ public class ServeurController {
     public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
         return filter.resetUserRole(req, dao, Constantes.ROLE_SERVEUR);
     }
+
+    @GetMapping("/reset-cache-serveur")
+    public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            produits=dao.select(connect, Produit.class, new Produit(0));
+            for(Produit p:produits){
+                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+            }
+        }
+        return filter.distributeByRole(utilisateur);
+    }
 }

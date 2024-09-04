@@ -345,3 +345,5 @@ left join v_dateheure_max_rangee_users vdm on vu.dateheure=vdm.max_dateheure;
 create or replace view v_dispatch_staff as
 select *
 from v_dispatch_staff_part where max_dateheure is not null;
+
+alter table rangee_utilisateurs add idutilisateur_responsable int not null references utilisateurs(id);

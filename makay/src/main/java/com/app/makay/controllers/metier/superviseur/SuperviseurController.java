@@ -2,6 +2,7 @@ package com.app.makay.controllers.metier.superviseur;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -9,9 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
+import com.app.makay.entites.ModificationDispatchREST;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
 import com.app.makay.entites.RangeePlace;
@@ -21,6 +25,9 @@ import com.app.makay.entites.UtilisateurSafe;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
+import com.app.makay.utilitaire.ReponseREST;
+import com.app.makay.utilitaire.RestData;
+import com.app.makay.utilitaire.SessionUtilisateur;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -122,6 +129,7 @@ public class SuperviseurController {
             rangees=dao.select(connect, Rangee.class, new Rangee(0));
             for(Rangee r:rangees){
                 r.getDispatchUtilisateursActuel(connect, dao);
+                r.recupererPlaces(connect, dao);
             }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
             utilisateurs=dao.select(connect, UtilisateurSafe.class);
@@ -154,6 +162,9 @@ public class SuperviseurController {
             utilisateur.mettreAJourPlanTable(connect, dao, arrangements);
             connect.commit();
             setRangeePlaces(RangeePlace.getArrangementActuel(connect, dao));
+            for(Rangee r:getRangees()){
+                r.recupererPlaces(connect, dao);
+            }
             return new RedirectView("/plan-de-table");
         }
     }
@@ -205,7 +216,6 @@ public class SuperviseurController {
         }
         return filter.distributeByRole(utilisateur);
     }
-
     @GetMapping("/dispatch-tables-staff")
     public Object dispatchRangsStaff(HttpServletRequest req, Model model){
         HttpSession session=req.getSession();
@@ -214,6 +224,55 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
+    @PostMapping("/dispatch-tables-staff")
+    @ResponseBody
+    public ReponseREST mettreAJourDispatchStaff(@RequestBody RestData datas) throws Exception{
+        ReponseREST response=new ReponseREST();
+        ModificationDispatchREST modifs=HandyManUtils.fromJson(ModificationDispatchREST.class, datas.getRestdata());
+        SessionUtilisateur where=new SessionUtilisateur();
+        where.setSessionId(modifs.getSessionid());
+        where.setUtilisateur(modifs.getUtilisateur());
+        where.setEstValide(Constantes.SESSION_ESTVALIDE);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
+            if(sessionUser.length!=1){
+                response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+                return response;
+            }
+            if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
+                response.setMessage(Constantes.MSG_SESSION_EXPIREE);
+                return response;
+            }
+            modifs.getUtilisateur().mettreAJourDispatchStaff(connect, dao, modifs.getDispatchs());
+            connect.commit();
+            response.setMessage(Constantes.MSG_SUCCES);
+            return response;
+        }
+    }
+
+    @GetMapping("/reset-cache-superviseur")
+    public RedirectView resetCacheRangees(HttpServletRequest req) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            places=dao.select(connect, Place.class, new Place(0));
+            for(Place p:places){
+                p.setClasseHTML(p.getClasse());
+            }
+            rangees=dao.select(connect, Rangee.class, new Rangee(0));
+            for(Rangee r:rangees){
+                r.getDispatchUtilisateursActuel(connect, dao);
+                r.recupererPlaces(connect, dao);
+            }
+            rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
+            utilisateurs=dao.select(connect, UtilisateurSafe.class);
+            roles=dao.select(connect, Role.class, new Role(0));
+            attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+        }
+        return resetRole(req);
+    }
+
 }

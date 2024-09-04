@@ -2,6 +2,7 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.Constantes;
@@ -139,6 +140,33 @@ public class Utilisateur extends IrisUser{
             connect.rollback();
             throw e;
         }
+    }
+    public void mettreAJourDispatchStaff(Connection connect, MyDAO dao, RangeeUtilisateur[] rangeesUser) throws Exception{
+        try{
+            for(RangeeUtilisateur r:rangeesUser){
+                r.setUtilisateurResponsable(this);
+            }
+            dao.insertWithoutPrimaryKey(connect, RangeeUtilisateur.class, rangeesUser);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
+
+    public Role getRoleActuel(Connection connect, MyDAO dao) throws Exception{
+        String query="select idrole, nom_role, numero_role from v_attribution_roles where idutilisateur="+getId();
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Role role=null;
+        if(objets.length!=1){
+            return role;
+        }
+        role=new Role();
+        role.setId((int)objets[0].get("idrole"));
+        role.setNom((String)objets[0].get("nom_role"));
+        role.setNumero((String)objets[0].get("numero_role"));
+        setRole(role);
+        setIrisRole(role.getNumero());
+        return role;
     }
     public Utilisateur() {
     }

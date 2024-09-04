@@ -11,5 +11,6 @@ public interface IrisFilter {
     public abstract RedirectView checkByRolePOST(IrisUser irisUser, String targetRole);
     public abstract RedirectView checkByAuthorizationPOST(IrisUser irisUser, int minimumAuth);
     public abstract RedirectView distributeByRole(IrisUser irisUser);
+    public abstract RedirectView distributeByRoleToResetCache(IrisUser irisUser);
     public abstract RedirectView distributeByAuthorization(IrisUser irisUser);
 }
