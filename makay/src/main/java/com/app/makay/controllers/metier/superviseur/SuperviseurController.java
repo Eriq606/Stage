@@ -211,7 +211,9 @@ public class SuperviseurController {
     }
 
     @GetMapping("/reset-cache-superviseur")
-    public RedirectView resetCacheRangees() throws SQLException, Exception{
+    public RedirectView resetCacheRangees(HttpServletRequest req) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             places=dao.select(connect, Place.class, new Place(0));
             for(Place p:places){
@@ -227,7 +229,7 @@ public class SuperviseurController {
             roles=dao.select(connect, Role.class, new Role(0));
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
         }
-        return new RedirectView("/plan-de-table");
+        return filter.distributeByRole(utilisateur);
     }
 
     @GetMapping("/dispatch-tables-staff")

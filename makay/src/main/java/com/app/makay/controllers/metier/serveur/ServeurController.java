@@ -63,13 +63,15 @@ public class ServeurController {
     }
 
     @GetMapping("/reset-cache-serveur")
-    public RedirectView resetCacheProduits() throws Exception{
+    public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             produits=dao.select(connect, Produit.class, new Produit(0));
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
         }
-        return new RedirectView("/serveur-passer-commande");
+        return filter.distributeByRole(utilisateur);
     }
 }

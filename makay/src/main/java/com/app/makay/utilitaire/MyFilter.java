@@ -123,6 +123,17 @@ public class MyFilter implements IrisFilter{
     }
 
     @Override
+    public RedirectView distributeByRoleToResetCache(IrisUser irisUser) {
+        switch(irisUser.getIrisRole()){
+            case Constantes.ROLE_SERVEUR:
+                return new RedirectView("/reset-cache-serveur");
+            case Constantes.ROLE_SUPERVISEUR:
+                return new RedirectView("/reset-cache-superviseur");
+        }
+        return new RedirectView("/logout");
+    }
+
+    @Override
     public RedirectView distributeByAuthorization(IrisUser irisUser) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'distributeByAuthorization'");
