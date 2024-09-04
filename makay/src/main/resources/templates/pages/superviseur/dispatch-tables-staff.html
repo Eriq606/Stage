@@ -32,7 +32,7 @@
                         <tbody>
                             <tr th:each="r:${rangees}">
                                 <td><a href="#" th:text="${r.nom}" data-bs-toggle="modal" th:data-bs-target="'#rangeeModal'+${r.id}"></a></td>
-                                <div class="modal fade" th:id="'rangeeModal'+${r.id}" tabindex="-1" th:aria-labelledby="'rangeeModalLabel'+${r.id}" aria-hidden="true">
+                                <div class="modal" th:id="'rangeeModal'+${r.id}" tabindex="-1" th:aria-labelledby="'rangeeModalLabel'+${r.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
