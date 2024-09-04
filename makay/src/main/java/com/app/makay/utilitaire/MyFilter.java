@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.iris.IrisFilter;
 import com.app.makay.iris.IrisUser;
@@ -25,15 +24,8 @@ public class MyFilter implements IrisFilter{
             return iris;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            HistoriqueRoleUtilisateur[] rolesActuels=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
-            for(HistoriqueRoleUtilisateur h:rolesActuels){
-                if(h.getUtilisateur().getId()==utilisateur.getId()){
-                    utilisateur.setRole(h.getRole());
-                    utilisateur.setIrisRole(utilisateur.getRole().getNumero());
-                    session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
-                    break;
-                }
-            }
+            utilisateur.getRoleActuel(connect, dao);
+            session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         }
         return distributeByRole(utilisateur);
     }
