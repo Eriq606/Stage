@@ -6,7 +6,10 @@
                 <div class="row mb-3">
                     <label for="tableOuter" class="col-3 offset-6 col-form-label">Table</label>
                     <div class="col-3">
-                        <input type="text" class="form-control" id="tableOuter">
+                        <!-- <input type="text" class="form-control" id="tableOuter"> -->
+                        <select class="form-select mb-3" aria-label="Table">
+                            <option th:each="p:${places}" th:text="${p.nom}" value=""></option>
+                        </select>
                     </div>
                 </div>
                 <hr>
@@ -31,7 +34,10 @@
                             <div class="row mb-3">
                                 <label for="tableInner" class="col-3 offset-6 col-form-label">Table</label>
                                 <div class="col-3">
-                                    <input type="text" class="form-control" id="tableInner">
+                                    <!-- <input type="text" class="form-control" id="tableInner"> -->
+                                    <select class="form-select mb-3" aria-label="Table">
+                                        <option th:each="p:${places}" th:text="${p.nom}"></option>
+                                    </select>
                                 </div>
                                 <input type="hidden" name="commandes" id="submitCommand">
                             </div>
