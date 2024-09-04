@@ -135,7 +135,6 @@ public class MyFilter implements IrisFilter{
 
     @Override
     public RedirectView distributeByAuthorization(IrisUser irisUser) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'distributeByAuthorization'");
     }
     
