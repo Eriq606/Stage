@@ -347,3 +347,8 @@ select *
 from v_dispatch_staff_part where max_dateheure is not null;
 
 alter table rangee_utilisateurs add idutilisateur_responsable int not null references utilisateurs(id);
+
+create or replace view v_places_utilisateurs as
+select vds.*, vap.idplace, vap.nom_place, vap.nom_type_place, vap.numero_type_place
+from v_dispatch_staff vds
+join v_arrangement_place vap on vds.idrangee=vap.idrangee;

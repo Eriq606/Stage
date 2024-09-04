@@ -36,6 +36,7 @@ public class Utilisateur extends IrisUser{
     private Integer etat;
     @Column("autorisation")
     private Integer autorisation;
+    private Place[] places;
     
     public Integer getId() {
         return id;
@@ -91,6 +92,7 @@ public class Utilisateur extends IrisUser{
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
             utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
+            utilisateur.getPlacesActuels(connect, dao);
         }
         return utilisateur;
     }
@@ -168,10 +170,33 @@ public class Utilisateur extends IrisUser{
         setIrisRole(role.getNumero());
         return role;
     }
+    public Place[] getPlacesActuels(Connection connect, MyDAO dao) throws Exception{
+        String query="select idplace, nom_place, nom_type_place, numero_type_place from v_places_utilisateurs where idutilisateur="+getId();
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Place[] places=new Place[objets.length];
+        TypePlace type;
+        for(int i=0;i<places.length;i++){
+            places[i]=new Place();
+            places[i].setId((int)objets[i].get("idplace"));
+            places[i].setNom((String)objets[i].get("nom_place"));
+            type=new TypePlace();
+            type.setNom((String)objets[i].get("nom_type_place"));
+            type.setNumero((String)objets[i].get("numero_type_place"));
+            places[i].setTypePlace(type);
+        }
+        setPlaces(places);
+        return places;
+    }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {
         this.etat = etat;
+    }
+    public Place[] getPlaces() {
+        return places;
+    }
+    public void setPlaces(Place[] places) {
+        this.places = places;
     }
     
 }
