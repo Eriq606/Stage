@@ -31,16 +31,16 @@
                     <table class="table">
                         <tbody>
                             <tr th:each="r:${rangees}">
-                                <td><a href="#" th:text="${r.nom}" data-bs-toggle="modal" data-bs-target="#rangeeModal"></a></td>
-                                <div class="modal fade" id="rangeeModal" tabindex="-1" aria-labelledby="rangeeModalLabel" aria-hidden="true">
+                                <td><a href="#" th:text="${r.nom}" data-bs-toggle="modal" th:data-bs-target="'#rangeeModal'+${r.id}"></a></td>
+                                <div class="modal fade" th:id="'rangeeModal'+${r.id}" tabindex="-1" th:aria-labelledby="'rangeeModalLabel'+${r.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="rangeeModalLabel" th:text="${r.nom}"></h1>
+                                            <h1 class="modal-title fs-5" th:id="'rangeeModalLabel'+${r.id}" th:text="${r.nom}"></h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            ...
+                                        <div class="modal-body gridd">
+                                            <div th:each="p:${r.places}" th:class="'place '+${p.classeHTML}" th:text="${p.nom}"></div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>

@@ -155,6 +155,9 @@ public class SuperviseurController {
             utilisateur.mettreAJourPlanTable(connect, dao, arrangements);
             connect.commit();
             setRangeePlaces(RangeePlace.getArrangementActuel(connect, dao));
+            for(Rangee r:getRangees()){
+                r.recupererPlaces(connect, dao);
+            }
             return new RedirectView("/plan-de-table");
         }
     }
