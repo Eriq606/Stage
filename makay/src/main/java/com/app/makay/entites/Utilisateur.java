@@ -141,6 +141,18 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public void mettreAJourDispatchStaff(Connection connect, MyDAO dao, RangeeUtilisateur[] rangeesUser) throws Exception{
+        try{
+            for(RangeeUtilisateur r:rangeesUser){
+                r.setUtilisateurResponsable(this);
+            }
+            dao.insertWithoutPrimaryKey(connect, RangeeUtilisateur.class, rangeesUser);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
+
     public Role getRoleActuel(Connection connect, MyDAO dao) throws Exception{
         String query="select idrole, nom_role, numero_role from v_attribution_roles where idutilisateur="+getId();
         HashMap<String, Object>[] objets=dao.select(connect, query);

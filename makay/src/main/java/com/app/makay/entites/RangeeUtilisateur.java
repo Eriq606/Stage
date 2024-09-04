@@ -22,6 +22,10 @@ public class RangeeUtilisateur {
     private LocalDateTime dateheure;
     @Column("etat")
     private Integer etat;
+    @ForeignKey(recursive = true)
+    @Column("idutilisateur_responsable")
+    private Utilisateur utilisateurResponsable;
+    
     public Integer getId() {
         return id;
     }
@@ -51,6 +55,12 @@ public class RangeeUtilisateur {
     }
     public void setEtat(Integer etat) {
         this.etat = etat;
+    }
+    public Utilisateur getUtilisateurResponsable() {
+        return utilisateurResponsable;
+    }
+    public void setUtilisateurResponsable(Utilisateur utilisateurResponsable) {
+        this.utilisateurResponsable = utilisateurResponsable;
     }
     
 }
