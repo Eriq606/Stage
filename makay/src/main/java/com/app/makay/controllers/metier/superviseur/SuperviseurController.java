@@ -122,6 +122,7 @@ public class SuperviseurController {
             rangees=dao.select(connect, Rangee.class, new Rangee(0));
             for(Rangee r:rangees){
                 r.getDispatchUtilisateursActuel(connect, dao);
+                r.recupererPlaces(connect, dao);
             }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
             utilisateurs=dao.select(connect, UtilisateurSafe.class);

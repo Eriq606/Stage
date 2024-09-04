@@ -19,6 +19,8 @@ public class Rangee {
     @Column("etat")
     private Integer etat;
     private Utilisateur[] utilisateurs;
+    private Place[] places;
+    
     
     public Integer getId() {
         return id;
@@ -49,6 +51,12 @@ public class Rangee {
     public void setUtilisateurs(Utilisateur[] utilisateurs) {
         this.utilisateurs = utilisateurs;
     }
+    public Place[] getPlaces() {
+        return places;
+    }
+    public void setPlaces(Place[] places) {
+        this.places = places;
+    }
     public Utilisateur[] getDispatchUtilisateursActuel(Connection connect, MyDAO dao) throws Exception{
         String query="select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur from v_dispatch_staff where idrangee="+getId();
         HashMap<String, Object>[] objets=dao.select(connect, query);
@@ -62,5 +70,22 @@ public class Rangee {
         }
         setUtilisateurs(utilisateurs);
         return utilisateurs;
+    }
+    public Place[] recupererPlaces(Connection connect, MyDAO dao) throws Exception{
+        String query="select idplace, nom_place, nom_type_place, numero_type_place from v_arrangement_place where idrangee="+getId();
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Place[] places=new Place[objets.length];
+        TypePlace type;
+        for(int i=0;i<places.length;i++){
+            places[i]=new Place();
+            places[i].setId((int)objets[i].get("idplace"));
+            places[i].setNom((String)objets[i].get("nom_place"));
+            type=new TypePlace();
+            type.setNom((String)objets[i].get("nom_type_place"));
+            type.setNumero((String)objets[i].get("numero_type_place"));
+            places[i].setTypePlace(type);
+        }
+        setPlaces(places);
+        return places;
     }
 }
