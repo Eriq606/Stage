@@ -226,6 +226,9 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
     @PostMapping("/dispatch-tables-staff")
@@ -256,8 +259,6 @@ public class SuperviseurController {
 
     @GetMapping("/reset-cache-superviseur")
     public RedirectView resetCacheRangees(HttpServletRequest req) throws SQLException, Exception{
-        HttpSession session=req.getSession();
-        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             places=dao.select(connect, Place.class, new Place(0));
             for(Place p:places){
@@ -273,7 +274,7 @@ public class SuperviseurController {
             roles=dao.select(connect, Role.class, new Role(0));
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
         }
-        return filter.distributeByRole(utilisateur);
+        return resetRole(req);
     }
 
 }
