@@ -3,6 +3,7 @@
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
                 <h1>Prise de commande</h1>
+                <div id="alerte-envoye"></div>
                 <div class="row mb-3">
                     <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
                     <div class="col-6">
@@ -456,7 +457,7 @@
 
                     const envoyerCommande=document.getElementById("envoyer-commande");
                     envoyerCommande.addEventListener("click", ()=>{
-                        const montant=0;
+                        let montant=0;
                         for(let i=0;i<commandes.length;i++){
                             montant+=commandes[i].produit.prix*commandes[i].quantite;
                         }
@@ -496,6 +497,15 @@
                         }).then(()=>{
                             commandes=[];
                             commandeAjout.innerHTML="";
+                            const alerteEnvoye=document.getElementById("alerte-envoye");
+                            const alert=document.createElement("div");
+                            alert.className="alert alert-success w-100";
+                            alert.setAttribute("role", "alert");
+                            alert.textContent="Commande envoyée";
+                            alerteEnvoye.appendChild(alert);
+                            setTimeout(()=>{
+                                alerteEnvoye.removeChild(alert);
+                            }, 1000);
                         });
                     });
                     /*]]*/
