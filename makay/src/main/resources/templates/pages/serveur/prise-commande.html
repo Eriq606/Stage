@@ -96,8 +96,9 @@
                             if (commandes[i].produit.id === newProduct.id && 
                                 commandes[i].notes === notes && 
                                 commandes[i].accompagnements.length===accompagnements.length && 
-                                commandes[i].accompsID.every((element)=>accompsID.includes(element))) {
-
+                                commandes[i].accompsID.every((element)=>accompsID.includes(element))&&
+                                accompsID.every((element)=>commandes[i].accompsID.includes(element))) {
+    
                                 let newQuantite=Number(commandes[i].quantite)+Number(quantite);
                                 commandes[i].quantite=newQuantite;
                                 return;
@@ -112,6 +113,14 @@
                         commandes.push(commande);
                     }
                     
+                    function cloneArr(array2){
+                        array1=[];
+                        array2.forEach(item=>{
+                            array1.push(item);
+                        })
+                        return array1;
+                    }
+
                     function updateTable(commandes, filteredProducts, orderList, submitCommandes){
                         const table=document.getElementById("suggestion-table");
                         table.innerHTML='';
@@ -228,7 +237,7 @@
                                 accompsID.push(selectAccomp.id);
                                 const tableAccomp=document.getElementById("accompProd"+product.id);
                                 const newRow=document.createElement("tr");
-                                newRow.id="accompRowProd"+product.id;
+                                newRow.id="accompRowProd"+product.id+"Accomp"+selectAccomp.id;
                                 const tableAccompNom=document.createElement("td");
                                 tableAccompNom.textContent=selectAccomp.nom;
                                 const tableAccompRemoveCol=document.createElement("td");
@@ -240,7 +249,7 @@
                                     const indexAccompID=accompsID.indexOf(selectAccomp.id);
                                     accomps.splice(indexAccomp, 1);
                                     accompsID.splice(indexAccompID, 1);
-                                    tableAccomp.removeChild(document.getElementById("accompRowProd"+product.id));
+                                    tableAccomp.removeChild(document.getElementById("accompRowProd"+product.id+"Accomp"+selectAccomp.id));
                                 }
                                 tableAccompRemoveCol.appendChild(tableAccompRemove);
                                 newRow.appendChild(tableAccompNom);
@@ -302,7 +311,9 @@
                             saveButton.onclick=()=>{
                                 const qte=document.getElementById("inputQuantite"+product.id).value;
                                 const notes=document.getElementById("notesArea"+product.id).value;
-                                addCommande(commandes, product, qte, notes, accomps, accompsID);
+                                const newAccomps=cloneArr(accomps);
+                                const newAccompsID=cloneArr(accompsID);
+                                addCommande(commandes, product, qte, notes, newAccomps, newAccompsID);
                                 let toSubmit=JSON.stringify(commandes);
                                 submitCommandes.value=toSubmit;
                                 orderList.innerHTML="";
