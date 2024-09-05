@@ -7,15 +7,15 @@
                     <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
                     <div class="col-6">
                         <!-- <input type="text" class="form-control" id="tableOuter"> -->
-                        <select class="form-select mb-3" aria-label="Table">
-                            <option th:each="p:${places}" th:text="${p.nom}" value=""></option>
+                        <select class="form-select mb-3" aria-label="Table" id="tableInner">
+                            <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
                         </select>
                     </div>
                 </div>
                 <hr>
                 <div class="input-group mb-3">
                     <input type="text" id="recherche-produit" class="form-control" aria-label="Recherche">
-                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>     
+                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
                 </div>
                 <table class="table">
                     <tbody id="suggestion-table">
@@ -35,8 +35,8 @@
                                 <label for="tableInner" class="col-3 offset-3 col-form-label">Table</label>
                                 <div class="col-6">
                                     <!-- <input type="text" class="form-control" id="tableInner"> -->
-                                    <select class="form-select mb-3" aria-label="Table">
-                                        <option th:each="p:${places}" th:text="${p.nom}"></option>
+                                    <select class="form-select mb-3" aria-label="Table" id="tableOuter">
+                                        <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
                                     </select>
                                 </div>
                                 <input type="hidden" name="commandes" id="submitCommand">
@@ -58,14 +58,33 @@
                 </div>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                    // const tableOuter=document.getElementById("tableOuter");
-                    // const tableInner=document.getElementById("tableInner");
-                    // tableOuter.addEventListener("input", function(){
-                    //     tableInner.value=tableOuter.value;
-                    // });
-                    // tableInner.addEventListener("input", function(){
-                    //     tableOuter.value=tableInner.value;
-                    // });
+                    const places=/*[[${places}]]*/[];
+                    const tableOuter=document.getElementById("tableOuter");
+                    const tableInner=document.getElementById("tableInner");
+                    tableOuter.addEventListener("change", function(){
+                        tableInner.innerHTML="";
+                        for(let i=0;i<places.length;i++){
+                            const tableInnerOption=document.createElement("option");
+                            tableInnerOption.textContent=places[i].nom;
+                            tableInnerOption.value=places[i].id;
+                            if(places[i].id==tableOuter.value){
+                                tableInnerOption.selected=true;
+                            }
+                            tableInner.appendChild(tableInnerOption);
+                        }
+                    });
+                    tableInner.addEventListener("change", function(){
+                        tableOuter.innerHTML="";
+                        for(let i=0;i<places.length;i++){
+                            const tableOuterOption=document.createElement("option");
+                            tableOuterOption.textContent=places[i].nom;
+                            tableOuterOption.value=places[i].id;
+                            if(places[i].id==tableInner.value){
+                                tableOuterOption.selected=true;
+                            }
+                            tableOuter.appendChild(tableOuterOption);
+                        }
+                    });
 
                     let produits=/*[[${produits}]]*/[];
                     let produitInput=document.getElementById("recherche-produit");
