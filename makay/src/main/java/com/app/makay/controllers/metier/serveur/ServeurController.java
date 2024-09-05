@@ -48,6 +48,7 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_PRODUITS, produits);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
         model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }

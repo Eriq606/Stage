@@ -50,8 +50,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button>
-                            <button type="button" class="btn btn-success">Envoyer</button>
+                            <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
+                            <button type="button" class="btn btn-success" id="envoyer-commande">Envoyer</button>
                         </div>
                     </div>
                     </div>
@@ -59,6 +59,7 @@
                 <script th:inline="javascript">
                     /*<![CDATA[*/
                     const places=/*[[${places}]]*/[];
+                    const utilisateur=/*[[${utilisateur}]]*/{};
                     const tableOuter=document.getElementById("tableOuter");
                     const tableInner=document.getElementById("tableInner");
                     tableOuter.addEventListener("change", function(){
@@ -433,6 +434,21 @@
                             table.appendChild(row);
                         });
                     }
+
+                    const envoyerCommande=document.getElementById("envoyer-commande");
+                    envoyerCommande.addEventListener("click", ()=>{
+                        const montant=0;
+                        for(let i=0;i<commandes.length;i++){
+                            montant+=commandes[i].produit.prix*commandes[i].quantite;
+                        }
+                        const commande={
+                            utilisateur:utilisateur,
+                            place:{
+                                id:tableInner.value
+                            },
+                            montant:montant
+                        };
+                    });
 
                     const ip=/*[[${ip}]]*/"";
                     const stompclient=new StompJs.Client({
