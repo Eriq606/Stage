@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.Constantes;
@@ -192,10 +193,22 @@ public class Utilisateur extends IrisUser{
             commande.setOuverture(LocalDateTime.now());
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
             commande.setId(idCommande);
+            int idcommandeFille;
+            LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
+            AccompagnementCommande accompCommande;
             for(int i=0;i<commandeFilles.length;i++){
                 commandeFilles[i].setCommande(commande);
+                idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
+                commandeFilles[i].setId(idcommandeFille);
+                for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
+                    accompCommande=new AccompagnementCommande();
+                    accompCommande.setCommandeFille(commandeFilles[i]);
+                    accompCommande.setAccompagnement(commandeFilles[i].getAccompagnements()[j]);
+                    accompCommandes.add(accompCommande);
+                }
             }
-            dao.insertWithoutPrimaryKey(connect, CommandeFille.class, commandeFilles);
+            AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
+            dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
         }catch(Exception e){
             connect.rollback();
             throw e;
