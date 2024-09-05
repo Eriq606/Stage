@@ -26,6 +26,8 @@ public class CommandeFille {
     private String notes;
     @Column("etat")
     private Integer etat;
+    private Accompagnement[] accompagnements;
+    
     public Integer getId() {
         return id;
     }
@@ -74,6 +76,12 @@ public class CommandeFille {
     }
     public void setPu(Double pu) {
         this.pu = pu;
+    }
+    public Accompagnement[] getAccompagnements() {
+        return accompagnements;
+    }
+    public void setAccompagnements(Accompagnement[] accompagnements) {
+        this.accompagnements = accompagnements;
     }
     
 }

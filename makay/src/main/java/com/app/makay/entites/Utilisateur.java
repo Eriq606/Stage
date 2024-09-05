@@ -187,6 +187,20 @@ public class Utilisateur extends IrisUser{
         setPlaces(places);
         return places;
     }
+    public void passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
+        try{
+            commande.setOuverture(LocalDateTime.now());
+            int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
+            commande.setId(idCommande);
+            for(int i=0;i<commandeFilles.length;i++){
+                commandeFilles[i].setCommande(commande);
+            }
+            dao.insertWithoutPrimaryKey(connect, CommandeFille.class, commandeFilles);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {
