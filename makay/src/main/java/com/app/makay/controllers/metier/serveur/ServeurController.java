@@ -49,6 +49,7 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }

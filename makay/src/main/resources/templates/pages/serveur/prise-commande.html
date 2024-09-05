@@ -60,6 +60,7 @@
                     /*<![CDATA[*/
                     const places=/*[[${places}]]*/[];
                     const utilisateur=/*[[${utilisateur}]]*/{};
+                    const sessionid=/*[[${sessionid}]]*/"";
                     const tableOuter=document.getElementById("tableOuter");
                     const tableInner=document.getElementById("tableInner");
                     tableOuter.addEventListener("change", function(){
@@ -97,11 +98,11 @@
                     }
 
                     let commandes=[];
-                    let resetCommande=document.getElementById("reset-commande");
-                    resetCommande.onclick=()=>{
-                        commandes=[];
-                        commandeAjout.innerHTML="";
-                    }
+                    // let resetCommande=document.getElementById("reset-commande");
+                    // resetCommande.onclick=()=>{
+                    //     commandes=[];
+                    //     commandeAjout.innerHTML="";
+                    // }
 
                     produitInput.addEventListener("input", function(){
                         const input=this.value.toLowerCase();
@@ -447,6 +448,12 @@
                                 id:tableInner.value
                             },
                             montant:montant
+                        };
+                        const envoicommande={
+                            utilisateur:utilisateur,
+                            sessionid:sessionid,
+                            commande:commande,
+                            commandeFilles:commandes
                         };
                     });
 

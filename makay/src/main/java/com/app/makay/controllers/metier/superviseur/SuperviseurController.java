@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
-import com.app.makay.entites.ModificationDispatchREST;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
 import com.app.makay.entites.RangeePlace;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
+import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
