@@ -51,7 +51,7 @@
                         </div>
                         <div class="modal-footer">
                             <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
-                            <button type="button" class="btn btn-success" id="envoyer-commande">Envoyer</button>
+                            <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
                         </div>
                     </div>
                     </div>
@@ -494,7 +494,8 @@
                             },
                             body:JSON.stringify({restdata:JSON.stringify(envoicommande)})
                         }).then(()=>{
-                            
+                            commandes=[];
+                            commandeAjout.innerHTML="";
                         });
                     });
                     /*]]*/
