@@ -4,8 +4,8 @@
             <div class="bg-secondary rounded h-100 p-4">
                 <h1>Prise de commande</h1>
                 <div class="row mb-3">
-                    <label for="tableOuter" class="col-3 offset-6 col-form-label">Table</label>
-                    <div class="col-3">
+                    <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
+                    <div class="col-6">
                         <!-- <input type="text" class="form-control" id="tableOuter"> -->
                         <select class="form-select mb-3" aria-label="Table">
                             <option th:each="p:${places}" th:text="${p.nom}" value=""></option>
@@ -32,8 +32,8 @@
                         </div>
                         <div class="modal-body">
                             <div class="row mb-3">
-                                <label for="tableInner" class="col-3 offset-6 col-form-label">Table</label>
-                                <div class="col-3">
+                                <label for="tableInner" class="col-3 offset-3 col-form-label">Table</label>
+                                <div class="col-6">
                                     <!-- <input type="text" class="form-control" id="tableInner"> -->
                                     <select class="form-select mb-3" aria-label="Table">
                                         <option th:each="p:${places}" th:text="${p.nom}"></option>
@@ -56,14 +56,14 @@
                 </div>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                    const tableOuter=document.getElementById("tableOuter");
-                    const tableInner=document.getElementById("tableInner");
-                    tableOuter.addEventListener("input", function(){
-                        tableInner.value=tableOuter.value;
-                    });
-                    tableInner.addEventListener("input", function(){
-                        tableOuter.value=tableInner.value;
-                    });
+                    // const tableOuter=document.getElementById("tableOuter");
+                    // const tableInner=document.getElementById("tableInner");
+                    // tableOuter.addEventListener("input", function(){
+                    //     tableInner.value=tableOuter.value;
+                    // });
+                    // tableInner.addEventListener("input", function(){
+                    //     tableOuter.value=tableInner.value;
+                    // });
 
                     let produits=/*[[${produits}]]*/[];
                     let produitInput=document.getElementById("recherche-produit");
