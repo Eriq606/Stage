@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.Constantes;
@@ -36,6 +37,7 @@ public class Utilisateur extends IrisUser{
     private Integer etat;
     @Column("autorisation")
     private Integer autorisation;
+    private Place[] places;
     
     public Integer getId() {
         return id;
@@ -91,6 +93,7 @@ public class Utilisateur extends IrisUser{
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
             utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
+            utilisateur.getPlacesActuels(connect, dao);
         }
         return utilisateur;
     }
@@ -168,10 +171,59 @@ public class Utilisateur extends IrisUser{
         setIrisRole(role.getNumero());
         return role;
     }
+    public Place[] getPlacesActuels(Connection connect, MyDAO dao) throws Exception{
+        String query="select idplace, nom_place, nom_type_place, numero_type_place from v_places_utilisateurs where idutilisateur="+getId();
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Place[] places=new Place[objets.length];
+        TypePlace type;
+        for(int i=0;i<places.length;i++){
+            places[i]=new Place();
+            places[i].setId((int)objets[i].get("idplace"));
+            places[i].setNom((String)objets[i].get("nom_place"));
+            type=new TypePlace();
+            type.setNom((String)objets[i].get("nom_type_place"));
+            type.setNumero((String)objets[i].get("numero_type_place"));
+            places[i].setTypePlace(type);
+        }
+        setPlaces(places);
+        return places;
+    }
+    public void passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
+        try{
+            commande.setOuverture(LocalDateTime.now());
+            int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
+            commande.setId(idCommande);
+            int idcommandeFille;
+            LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
+            AccompagnementCommande accompCommande;
+            for(int i=0;i<commandeFilles.length;i++){
+                commandeFilles[i].setCommande(commande);
+                idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
+                commandeFilles[i].setId(idcommandeFille);
+                for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
+                    accompCommande=new AccompagnementCommande();
+                    accompCommande.setCommandeFille(commandeFilles[i]);
+                    accompCommande.setAccompagnement(commandeFilles[i].getAccompagnements()[j]);
+                    accompCommandes.add(accompCommande);
+                }
+            }
+            AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
+            dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {
         this.etat = etat;
+    }
+    public Place[] getPlaces() {
+        return places;
+    }
+    public void setPlaces(Place[] places) {
+        this.places = places;
     }
     
 }

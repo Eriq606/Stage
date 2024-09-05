@@ -61,7 +61,7 @@ public class LoginController {
         }
     }
     @GetMapping("/logout")
-    public RedirectView seDeconnecter(HttpServletRequest req) throws SQLException, Exception{
+    public RedirectView seDeconnecter(HttpServletRequest req, String message) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
@@ -70,7 +70,11 @@ public class LoginController {
                 connect.commit();
             }
         }
-        return new RedirectView("/login");
+        String messageDecoded="";
+        if(message!=null){
+            messageDecoded=message;
+        }
+        return new RedirectView("/login?message="+messageDecoded);
     }
     @GetMapping("/login-success")
     public String mock(){

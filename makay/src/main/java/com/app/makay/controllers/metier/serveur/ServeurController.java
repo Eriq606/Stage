@@ -2,19 +2,27 @@ package com.app.makay.controllers.metier.serveur;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
+import com.app.makay.utilitaire.ReponseREST;
+import com.app.makay.utilitaire.RestData;
+import com.app.makay.utilitaire.SessionUtilisateur;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +56,37 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_PRODUITS, produits);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
         model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        if(utilisateur!=null){
+            model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        }
         return iris;
+    }
+    @PostMapping("/serveur-passer-commande")
+    @ResponseBody
+    public ReponseREST passerCommande(@RequestBody RestData datas) throws SQLException, Exception{
+        ReponseREST response=new ReponseREST();
+        EnvoiCommandeREST modifs=HandyManUtils.fromJson(EnvoiCommandeREST.class, datas.getRestdata());
+        SessionUtilisateur where=new SessionUtilisateur();
+        where.setSessionId(modifs.getSessionid());
+        where.setUtilisateur(modifs.getUtilisateur());
+        where.setEstValide(Constantes.SESSION_ESTVALIDE);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
+            if(sessionUser.length!=1){
+                response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+                return response;
+            }
+            if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
+                response.setMessage(Constantes.MSG_SESSION_EXPIREE);
+                return response;
+            }
+            modifs.getUtilisateur().passerCommande(connect, dao, modifs.getCommande(), modifs.getCommandeFilles());
+            connect.commit();
+            response.setMessage(Constantes.MSG_SUCCES);
+            return response;
+        }
     }
 
     @MessageMapping("/notify-redirect-serveur")

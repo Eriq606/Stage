@@ -3,16 +3,20 @@
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
                 <h1>Prise de commande</h1>
+                <div id="alerte-envoye"></div>
                 <div class="row mb-3">
-                    <label for="tableOuter" class="col-3 offset-6 col-form-label">Table</label>
-                    <div class="col-3">
-                        <input type="text" class="form-control" id="tableOuter">
+                    <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
+                    <div class="col-6">
+                        <!-- <input type="text" class="form-control" id="tableOuter"> -->
+                        <select class="form-select mb-3" aria-label="Table" id="tableInner">
+                            <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
+                        </select>
                     </div>
                 </div>
                 <hr>
                 <div class="input-group mb-3">
                     <input type="text" id="recherche-produit" class="form-control" aria-label="Recherche">
-                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>     
+                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
                 </div>
                 <table class="table">
                     <tbody id="suggestion-table">
@@ -29,34 +33,60 @@
                         </div>
                         <div class="modal-body">
                             <div class="row mb-3">
-                                <label for="tableInner" class="col-3 offset-6 col-form-label">Table</label>
-                                <div class="col-3">
-                                    <input type="text" class="form-control" id="tableInner">
+                                <label for="tableInner" class="col-3 offset-3 col-form-label">Table</label>
+                                <div class="col-6">
+                                    <!-- <input type="text" class="form-control" id="tableInner"> -->
+                                    <select class="form-select mb-3" aria-label="Table" id="tableOuter">
+                                        <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
+                                    </select>
                                 </div>
                                 <input type="hidden" name="commandes" id="submitCommand">
                             </div>
-                            <table class="table w-auto">
-                                <tbody id="commandes-ajoutees">
-                                    <!-- Commandes ajoutées -->
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody id="commandes-ajoutees">
+                                        <!-- Commandes ajoutées -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button>
-                            <button type="button" class="btn btn-success">Envoyer</button>
+                            <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
+                            <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
                         </div>
                     </div>
                     </div>
                 </div>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
+                    const places=/*[[${places}]]*/[];
+                    const utilisateur=/*[[${utilisateur}]]*/{};
+                    const sessionid=/*[[${sessionid}]]*/"";
                     const tableOuter=document.getElementById("tableOuter");
                     const tableInner=document.getElementById("tableInner");
-                    tableOuter.addEventListener("input", function(){
-                        tableInner.value=tableOuter.value;
+                    tableOuter.addEventListener("change", function(){
+                        tableInner.innerHTML="";
+                        for(let i=0;i<places.length;i++){
+                            const tableInnerOption=document.createElement("option");
+                            tableInnerOption.textContent=places[i].nom;
+                            tableInnerOption.value=places[i].id;
+                            if(places[i].id==tableOuter.value){
+                                tableInnerOption.selected=true;
+                            }
+                            tableInner.appendChild(tableInnerOption);
+                        }
                     });
-                    tableInner.addEventListener("input", function(){
-                        tableOuter.value=tableInner.value;
+                    tableInner.addEventListener("change", function(){
+                        tableOuter.innerHTML="";
+                        for(let i=0;i<places.length;i++){
+                            const tableOuterOption=document.createElement("option");
+                            tableOuterOption.textContent=places[i].nom;
+                            tableOuterOption.value=places[i].id;
+                            if(places[i].id==tableInner.value){
+                                tableOuterOption.selected=true;
+                            }
+                            tableOuter.appendChild(tableOuterOption);
+                        }
                     });
 
                     let produits=/*[[${produits}]]*/[];
@@ -69,11 +99,11 @@
                     }
 
                     let commandes=[];
-                    let resetCommande=document.getElementById("reset-commande");
-                    resetCommande.onclick=()=>{
-                        commandes=[];
-                        commandeAjout.innerHTML="";
-                    }
+                    // let resetCommande=document.getElementById("reset-commande");
+                    // resetCommande.onclick=()=>{
+                    //     commandes=[];
+                    //     commandeAjout.innerHTML="";
+                    // }
 
                     produitInput.addEventListener("input", function(){
                         const input=this.value.toLowerCase();
@@ -88,8 +118,9 @@
                             if (commandes[i].produit.id === newProduct.id && 
                                 commandes[i].notes === notes && 
                                 commandes[i].accompagnements.length===accompagnements.length && 
-                                commandes[i].accompsID.every((element)=>accompsID.includes(element))) {
-
+                                commandes[i].accompsID.every((element)=>accompsID.includes(element))&&
+                                accompsID.every((element)=>commandes[i].accompsID.includes(element))) {
+    
                                 let newQuantite=Number(commandes[i].quantite)+Number(quantite);
                                 commandes[i].quantite=newQuantite;
                                 return;
@@ -104,6 +135,14 @@
                         commandes.push(commande);
                     }
                     
+                    function cloneArr(array2){
+                        array1=[];
+                        array2.forEach(item=>{
+                            array1.push(item);
+                        })
+                        return array1;
+                    }
+
                     function updateTable(commandes, filteredProducts, orderList, submitCommandes){
                         const table=document.getElementById("suggestion-table");
                         table.innerHTML='';
@@ -220,7 +259,7 @@
                                 accompsID.push(selectAccomp.id);
                                 const tableAccomp=document.getElementById("accompProd"+product.id);
                                 const newRow=document.createElement("tr");
-                                newRow.id="accompRowProd"+product.id;
+                                newRow.id="accompRowProd"+product.id+"Accomp"+selectAccomp.id;
                                 const tableAccompNom=document.createElement("td");
                                 tableAccompNom.textContent=selectAccomp.nom;
                                 const tableAccompRemoveCol=document.createElement("td");
@@ -232,7 +271,7 @@
                                     const indexAccompID=accompsID.indexOf(selectAccomp.id);
                                     accomps.splice(indexAccomp, 1);
                                     accompsID.splice(indexAccompID, 1);
-                                    tableAccomp.removeChild(document.getElementById("accompRowProd"+product.id));
+                                    tableAccomp.removeChild(document.getElementById("accompRowProd"+product.id+"Accomp"+selectAccomp.id));
                                 }
                                 tableAccompRemoveCol.appendChild(tableAccompRemove);
                                 newRow.appendChild(tableAccompNom);
@@ -294,7 +333,9 @@
                             saveButton.onclick=()=>{
                                 const qte=document.getElementById("inputQuantite"+product.id).value;
                                 const notes=document.getElementById("notesArea"+product.id).value;
-                                addCommande(commandes, product, qte, notes, accomps, accompsID);
+                                const newAccomps=cloneArr(accomps);
+                                const newAccompsID=cloneArr(accompsID);
+                                addCommande(commandes, product, qte, notes, newAccomps, newAccompsID);
                                 let toSubmit=JSON.stringify(commandes);
                                 submitCommandes.value=toSubmit;
                                 orderList.innerHTML="";
@@ -413,6 +454,60 @@
                     stompclient.onConnect=(frame)=>{
                         receiveNotificationRedirect();
                     }
+
+                    const envoyerCommande=document.getElementById("envoyer-commande");
+                    envoyerCommande.addEventListener("click", ()=>{
+                        let montant=0;
+                        for(let i=0;i<commandes.length;i++){
+                            montant+=commandes[i].produit.prix*commandes[i].quantite;
+                        }
+                        const commande={
+                            utilisateur:utilisateur,
+                            place:{
+                                id:tableInner.value
+                            },
+                            montant:montant
+                        };
+                        const commandeFilles=[];
+                        for(let i=0;i<commandes.length;i++){
+                            commandeFilles.push(
+                                {
+                                    produit:commandes[i].produit,
+                                    pu:commandes[i].produit.prix,
+                                    quantite:commandes[i].quantite,
+                                    notes:commandes[i].notes,
+                                    accompagnements:commandes[i].accompagnements,
+                                    montant:commandes[i].produit.prix*commandes[i].quantite
+                                }
+                            )
+                        }
+                        const envoicommande={
+                            utilisateur:utilisateur,
+                            sessionid:sessionid,
+                            commande:commande,
+                            commandeFilles:commandeFilles
+                        };
+                        const api="http://"+ip+":8080/serveur-passer-commande";
+                        fetch(api, {
+                            method:"POST",
+                            headers:{
+                                "Content-type":"application/json"
+                            },
+                            body:JSON.stringify({restdata:JSON.stringify(envoicommande)})
+                        }).then(()=>{
+                            commandes=[];
+                            commandeAjout.innerHTML="";
+                            const alerteEnvoye=document.getElementById("alerte-envoye");
+                            const alert=document.createElement("div");
+                            alert.className="alert alert-success w-100";
+                            alert.setAttribute("role", "alert");
+                            alert.textContent="Commande envoyée";
+                            alerteEnvoye.appendChild(alert);
+                            setTimeout(()=>{
+                                alerteEnvoye.removeChild(alert);
+                            }, 1000);
+                        });
+                    });
                     /*]]*/
                 </script>
             </div>
