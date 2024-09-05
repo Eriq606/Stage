@@ -436,27 +436,6 @@
                         });
                     }
 
-                    const envoyerCommande=document.getElementById("envoyer-commande");
-                    envoyerCommande.addEventListener("click", ()=>{
-                        const montant=0;
-                        for(let i=0;i<commandes.length;i++){
-                            montant+=commandes[i].produit.prix*commandes[i].quantite;
-                        }
-                        const commande={
-                            utilisateur:utilisateur,
-                            place:{
-                                id:tableInner.value
-                            },
-                            montant:montant
-                        };
-                        const envoicommande={
-                            utilisateur:utilisateur,
-                            sessionid:sessionid,
-                            commande:commande,
-                            commandeFilles:commandes
-                        };
-                    });
-
                     const ip=/*[[${ip}]]*/"";
                     const stompclient=new StompJs.Client({
                         brokerURL:'ws://'+ip+':8080/messaging'
@@ -474,6 +453,50 @@
                     stompclient.onConnect=(frame)=>{
                         receiveNotificationRedirect();
                     }
+
+                    const envoyerCommande=document.getElementById("envoyer-commande");
+                    envoyerCommande.addEventListener("click", ()=>{
+                        const montant=0;
+                        for(let i=0;i<commandes.length;i++){
+                            montant+=commandes[i].produit.prix*commandes[i].quantite;
+                        }
+                        const commande={
+                            utilisateur:utilisateur,
+                            place:{
+                                id:tableInner.value
+                            },
+                            montant:montant
+                        };
+                        const commandeFilles=[];
+                        for(let i=0;i<commandes.length;i++){
+                            commandeFilles.push(
+                                {
+                                    produit:commandes[i].produit,
+                                    pu:commandes[i].produit.prix,
+                                    quantite:commandes[i].quantite,
+                                    notes:commandes[i].notes,
+                                    accompagnements:commandes[i].accompagnements,
+                                    montant:commandes[i].produit.prix*commandes[i].quantite
+                                }
+                            )
+                        }
+                        const envoicommande={
+                            utilisateur:utilisateur,
+                            sessionid:sessionid,
+                            commande:commande,
+                            commandeFilles:commandeFilles
+                        };
+                        const api="http://"+ip+":8080/serveur-passer-commande";
+                        fetch(api, {
+                            method:"POST",
+                            headers:{
+                                "Content-type":"application/json"
+                            },
+                            body:JSON.stringify({restdata:JSON.stringify(envoicommande)})
+                        }).then(()=>{
+                            
+                        });
+                    });
                     /*]]*/
                 </script>
             </div>
