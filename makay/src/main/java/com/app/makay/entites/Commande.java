@@ -1,6 +1,9 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
+
+import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
@@ -76,5 +79,11 @@ public class Commande {
     public void setCommandeFilles(CommandeFille[] commandeFilles) {
         this.commandeFilles = commandeFilles;
     }
-    
+    public CommandeFille[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
+        CommandeFille where=new CommandeFille();
+        where.setCommande(this);
+        CommandeFille[] commandeFilles=dao.select(connect, CommandeFille.class, where);
+        setCommandeFilles(commandeFilles);
+        return commandeFilles;
+    }
 }

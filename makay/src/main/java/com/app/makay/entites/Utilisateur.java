@@ -214,9 +214,15 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
-    // public Object[] getCommandesEnCours(Connection connect, MyDAO dao){
-    //     // String query="select id"
-    // }
+    public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao, int offset) throws Exception{
+        CommandeEnCours where=new CommandeEnCours();
+        where.setUtilisateur(this);
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset);
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
+    }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {
