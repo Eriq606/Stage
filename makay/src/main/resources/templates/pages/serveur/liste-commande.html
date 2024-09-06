@@ -13,54 +13,46 @@
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="col-12">
-            <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" data-bs-target="#detailCommandeModal">
-                <h2>Table : 16 bis</h2>
-                <p>14h30</p>
-            </div>
-            <div class="modal fade" id="detailCommandeModal" tabindex="-1" aria-labelledby="detailCommandeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="detailCommandeModalLabel">Table : 16 bis</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body table-responsive">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Souris d'agneau</td>
-                                    <td>
-                                        <ul>
-                                            <li>Riz</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Souris d'agneau sans salade</td>
-                                    <td>
-                                        <ul>
-                                            <li>Frites</li>
-                                            <li>Riz</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-                    <button type="button" class="btn btn-warning">Addition</button>
-                    </div>
+    <div th:each="c:${commandes}">
+        <div class="row">
+            <div class="col-12">
+                <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
+                    <h2 th:text="${c.getPlaceLabel()}+' : '+${c.place.nom}"></h2>
+                    <p th:text="${c.getHeure()}"></p>
                 </div>
+                <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}+' : '+${c.place.nom}"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr th:each="cf:${c.commandeFilles}">
+                                        <td th:text="${cf.quantite}"></td>
+                                        <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                        <button type="button" class="btn btn-warning">Addition</button>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <br>
     </div>
-    <br>
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item">

@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;
@@ -30,6 +31,30 @@ public class Commande {
     @Column("etat")
     private Integer etat;
     private CommandeFille[] commandeFilles;
+    public String getPlaceLabel(){
+        switch(getPlace().getTypePlace().getNumero()){
+            case Constantes.PLACE_BAR:
+                return Constantes.LABEL_BAR;
+            case Constantes.PLACE_SALLE:
+                return Constantes.LABEL_SALLE;
+            case Constantes.PLACE_TERRASSE:
+                return Constantes.LABEL_TERRASSE;
+        }
+        return "Place";
+    }
+    public String getHeure(){
+        int heure=getOuverture().getHour();
+        String heureStr=String.valueOf(heure);
+        if(heure<10){
+            heureStr="0"+heureStr;
+        }
+        int minute=getOuverture().getMinute();
+        String minuteStr=String.valueOf(minute);
+        if(minute<10){
+            minuteStr="0"+minuteStr;
+        }
+        return heureStr+"h"+minuteStr;
+    }
     
     public Integer getId() {
         return id;

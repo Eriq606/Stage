@@ -98,8 +98,12 @@ public class ServeurController {
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(utilisateur);
+        int indice_actu_controller=1;
+        if(indice_actu!=null){
+            indice_actu_controller=indice_actu;
+        }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu-1)*Constantes.PAGINATION_LIMIT);
+            CommandeEnCours[] commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indice_actu);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
