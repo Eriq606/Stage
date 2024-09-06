@@ -1,9 +1,48 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
     <div class="row">
         <div class="col-12">
-            <div class="btn btn-outline-primary pt-4 w-100">
+            <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" data-bs-target="#detailCommandeModal">
                 <h2>Table : 16 bis</h2>
                 <p>14h30</p>
+            </div>
+            <div class="modal fade" id="detailCommandeModal" tabindex="-1" aria-labelledby="detailCommandeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="detailCommandeModalLabel">Table : 16 bis</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Souris d'agneau</td>
+                                    <td>
+                                        <ul>
+                                            <li>Riz</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Souris d'agneau sans salade</td>
+                                    <td>
+                                        <ul>
+                                            <li>Frites</li>
+                                            <li>Riz</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                    <button type="button" class="btn btn-warning">Addition</button>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </div>

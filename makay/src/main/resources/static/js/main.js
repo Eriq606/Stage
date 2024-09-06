@@ -209,4 +209,20 @@
 
     
 })(jQuery);
+// const pleinEcran=document.getElementById("plein-ecran");
+// function requestFullscreen() {
+//     const element = document.documentElement; // Fullscreen the entire page
 
+//     if (element.requestFullscreen) {
+//         element.requestFullscreen();
+//     } else if (element.mozRequestFullScreen) { // For Firefox
+//         element.mozRequestFullScreen();
+//     } else if (element.webkitRequestFullscreen) { // For Chrome, Safari and Opera
+//         element.webkitRequestFullscreen();
+//     } else if (element.msRequestFullscreen) { // For IE/Edge
+//         element.msRequestFullscreen();
+//     }
+// }
+// pleinEcran.onclick=()=>{
+//     requestFullscreen();
+// };
