@@ -88,6 +88,14 @@ public class ServeurController {
             return response;
         }
     }
+    @GetMapping("/liste-commande")
+    public Object listeCommande(HttpServletRequest req, Model model){
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
+        return iris;
+    }
 
     @MessageMapping("/notify-redirect-serveur")
     @SendTo("/notify/receive-notify-redirect-serveur")

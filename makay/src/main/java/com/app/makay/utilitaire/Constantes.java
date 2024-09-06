@@ -46,7 +46,8 @@ public class Constantes {
     public static final Integer SESSION_ESTVALIDE=1;
 
     public static final ModelLink[] LINK_SERVEUR={
-        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande")
+        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
+        new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours")
     };
     public static final ModelLink[] LINK_SUPERVISEUR={
         new ModelLink("/plan-de-table", "fa-solid fa-chair", "Plan de table"),
