@@ -26,6 +26,8 @@ public class Commande {
     private Double montant;
     @Column("etat")
     private Integer etat;
+    private CommandeFille[] commandeFilles;
+    
     public Integer getId() {
         return id;
     }
@@ -67,6 +69,12 @@ public class Commande {
     }
     public void setEtat(Integer etat) {
         this.etat = etat;
+    }
+    public CommandeFille[] getCommandeFilles() {
+        return commandeFilles;
+    }
+    public void setCommandeFilles(CommandeFille[] commandeFilles) {
+        this.commandeFilles = commandeFilles;
     }
     
 }

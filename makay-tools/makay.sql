@@ -352,3 +352,39 @@ create or replace view v_places_utilisateurs as
 select vds.*, vap.idplace, vap.nom_place, vap.nom_type_place, vap.numero_type_place
 from v_dispatch_staff vds
 join v_arrangement_place vap on vds.idrangee=vap.idrangee;
+
+-- ETATS COMMANDE:
+-- 0: CRÉÉE
+-- 10: ADDITION
+-- 20: PAYÉE
+-- 30: ANNULÉE
+-- 40: SUPPRIMÉE
+create or replace view v_commandes as
+select *
+from commandes where etat<20;
+
+create or replace view v_commande_filles as
+select *
+from commande_filles where etat=0;
+
+create or replace view v_produits as
+select *
+from produits where etat=0;
+
+create or replace view v_categories as
+select *
+from categories where etat=0;
+
+create or replace view v_commande_avec_details_en_cours as
+select vc.*,
+       vcf.id as idcmdfille, vcf.prix_unitaire, vcf.quantite, vcf.montant as montant_cmd_fille, vcf.notes,
+       vu.nom as nom_utilisateur, vu.email, vu.contact,
+       v_places.nom as nom_place,
+       vp.id as idproduit, vp.nom as nom_produit,
+       v_categories.id as idcategorie, v_categories.nom as nom_categorie
+from v_commandes vc
+join v_commande_filles vcf on vc.id=vcf.idcommande
+join v_utilisateurs vu on vc.idutilisateur=vu.id
+join v_places on vc.idplace=v_places.id
+join v_produits vp on vcf.idproduit=vp.id
+join v_categories on vp.idcategorie=v_categories.id;

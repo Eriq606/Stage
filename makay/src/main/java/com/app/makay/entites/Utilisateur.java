@@ -214,6 +214,9 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    // public Object[] getCommandesEnCours(Connection connect, MyDAO dao){
+    //     // String query="select id"
+    // }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {

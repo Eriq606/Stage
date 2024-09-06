@@ -1,6 +1,20 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
     <div class="row">
         <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="row mb-3">
+                    <label for="recherche-table" class="col-sm-2 col-form-label">Table: </label>
+                    <div class="input-group mb-3 col-sm-5" id="recherche-table">
+                        <input type="text" class="form-control" aria-label="Recherche">
+                        <button type="button" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
             <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" data-bs-target="#detailCommandeModal">
                 <h2>Table : 16 bis</h2>
                 <p>14h30</p>
@@ -46,6 +60,7 @@
             </div>
         </div>
     </div>
+    <br>
     <script th:inline="javascript">
         /*<![CDATA[*/
         /*]]*/
