@@ -2,6 +2,7 @@ package com.app.makay.utilitaire;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.RedirectView;
@@ -16,6 +17,37 @@ import jakarta.servlet.http.HttpSession;
 import veda.godao.utils.DAOConnexion;
 
 public class MyFilter implements IrisFilter{
+    
+    @Override
+    public Object checkByRole(IrisUser irisUser, String[] targetRole, String title, String viewpage, String targetView,
+            Model model) {
+        if(irisUser==null){
+            String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return new RedirectView("/logout?message="+message);
+        }
+        if(Arrays.asList(targetRole).contains(irisUser.getIrisRole())==false){
+            return new RedirectView("/403");
+        }
+        model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
+        model.addAttribute(Constantes.VAR_TITLE, title);
+        model.addAttribute(Constantes.VAR_VIEWPAGE, viewpage);
+        model.addAttribute(Constantes.VAR_LOGINURL, "/logout");
+        model.addAttribute(Constantes.VAR_CURRENTUSER, ((Utilisateur)irisUser).getNom());
+        return targetView;
+    }
+
+    @Override
+    public RedirectView checkByRolePOST(IrisUser irisUser, String[] targetRole) {
+        if(irisUser==null){
+            String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return new RedirectView("/logout?message="+message);
+        }
+        if(Arrays.asList(targetRole).contains(irisUser.getIrisRole())==false){
+            return new RedirectView("/403");
+        }
+        return null;
+    }
+
     public RedirectView resetUserRole(HttpServletRequest req, MyDAO dao, String targetRole) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
