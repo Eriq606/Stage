@@ -3,11 +3,16 @@
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
                 <div class="row mb-3">
+                <form action="/liste-commande" method="get">
                     <label for="recherche-table" class="col-sm-2 col-form-label">Table: </label>
                     <div class="input-group mb-3 col-sm-5" id="recherche-table">
-                        <input type="text" class="form-control" aria-label="Recherche">
-                        <button type="button" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                        <input type="text" class="form-control" id="recherche-table-input" name="table" aria-label="Recherche">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
                     </div>
+                    <table class="table">
+                        <tbody id="recherche-table-suggestion"></tbody>
+                    </table>
+                </form>
                 </div>
             </div>
         </div>
@@ -74,6 +79,31 @@
     </nav>
     <script th:inline="javascript">
         /*<![CDATA[*/
+        const places=/*[[${places}]]*/[];
+        const rechercheTableInput=document.getElementById("recherche-table-input");
+        const rechercheTableSuggestion=document.getElementById("recherche-table-suggestion");
+        rechercheTableInput.oninput=()=>{
+            rechercheTableSuggestion.innerHTML="";
+            for(let i=0;i<places.length;i++){
+                if(places[i].nom.includes(rechercheTableInput.value.toLowerCase())&&rechercheTableInput.value!==''){
+                    const suggestion=document.createElement("tr");
+                    const suggestionTdNom=document.createElement("td");
+                    suggestionTdNom.textContent=places[i].nom;
+                    const suggestionTdBtnCol=document.createElement("td");
+                    const suggestionTdBtn=document.createElement("button");
+                    suggestionTdBtn.type="button";
+                    suggestionTdBtn.innerHTML='<i class="fa-solid fa-plus"></i>';
+                    suggestionTdBtn.className="btn btn-primary w-100";
+                    suggestionTdBtn.onclick=()=>{
+                        rechercheTableInput.value=places[i].nom;
+                    };
+                    suggestion.appendChild(suggestionTdNom);
+                    suggestionTdBtnCol.appendChild(suggestionTdBtn);
+                    suggestion.appendChild(suggestionTdBtnCol);
+                    rechercheTableSuggestion.appendChild(suggestion);
+                }
+            }
+        };
         /*]]*/
     </script>
 </div>

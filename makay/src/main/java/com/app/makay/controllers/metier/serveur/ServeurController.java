@@ -92,18 +92,24 @@ public class ServeurController {
         }
     }
     @GetMapping("/liste-commande")
-    public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu) throws SQLException, Exception{
+    public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(utilisateur);
+        where.setNomPlace(table);
         int indice_actu_controller=1;
         if(indice_actu!=null){
             indice_actu_controller=indice_actu;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT);
+            CommandeEnCours[] commandes;
+            if(table!=null){
+                commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
+            }else{
+                commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT);
+            }
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             //     put("indice_premier", indice_premier);
             //     put("indice_precedent", indice_precedent);
@@ -119,6 +125,7 @@ public class ServeurController {
             }
         }
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
+        model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         return iris;
     }
 

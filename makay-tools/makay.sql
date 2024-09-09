@@ -388,3 +388,10 @@ join v_utilisateurs vu on vc.idutilisateur=vu.id
 join v_places on vc.idplace=v_places.id
 join v_produits vp on vcf.idproduit=vp.id
 join v_categories on vp.idcategorie=v_categories.id;
+
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+where commandes.etat<20;

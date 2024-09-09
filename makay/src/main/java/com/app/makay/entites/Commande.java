@@ -25,7 +25,7 @@ public class Commande {
     private Place place;
     @Column("dateheure_ouverture")
     private LocalDateTime ouverture;
-    @Column("dateheure_fermeture")
+    @Column("dateheure_cloture")
     private LocalDateTime cloture;
     @Column("montant")
     private Double montant;

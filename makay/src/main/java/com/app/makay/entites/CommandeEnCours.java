@@ -22,9 +22,11 @@ public class CommandeEnCours{
     @ForeignKey(recursive = true)
     @Column("idplace")
     private Place place;
+    @Column("nom_place")
+    private String nomPlace;
     @Column("dateheure_ouverture")
     private LocalDateTime ouverture;
-    @Column("dateheure_fermeture")
+    @Column("dateheure_cloture")
     private LocalDateTime cloture;
     @Column("montant")
     private Double montant;
@@ -42,6 +44,7 @@ public class CommandeEnCours{
         }
         return "Place";
     }
+    
     public String getHeure(){
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
@@ -111,5 +114,13 @@ public class CommandeEnCours{
     }
     public void setCommandeFilles(CommandeFilleEnCours[] commandeFilles) {
         this.commandeFilles = commandeFilles;
+    }
+
+    public String getNomPlace() {
+        return nomPlace;
+    }
+
+    public void setNomPlace(String nomPlace) {
+        this.nomPlace = nomPlace;
     }
 }
