@@ -221,7 +221,7 @@ public class Utilisateur extends IrisUser{
     public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao, int offset) throws Exception{
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(this);
-        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset);
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture desc"});
         for(int i=0;i<commandes.length;i++){
             commandes[i].recupererCommandeFilles(connect, dao);
         }
