@@ -71,7 +71,6 @@ public class ServeurController {
     public ReponseREST passerCommande(@RequestBody RestData datas) throws SQLException, Exception{
         ReponseREST response=new ReponseREST();
         EnvoiCommandeREST modifs=HandyManUtils.fromJson(EnvoiCommandeREST.class, datas.getRestdata());
-        System.out.println(modifs);
         SessionUtilisateur where=new SessionUtilisateur();
         where.setSessionId(modifs.getSessionid());
         where.setUtilisateur(modifs.getUtilisateur());
@@ -106,6 +105,14 @@ public class ServeurController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
+            //     put("indice_premier", indice_premier);
+            //     put("indice_precedent", indice_precedent);
+            //     put("indice_suivant", indice_suivant);
+            //     put("indice_dernier", indice_dernier);
+            //     put("bouton_precedent", bouton_precedent);
+            //     put("bouton_suivant", bouton_suivant);
+            // }};
+            // response.put("indice_actu", indice_actu);
             HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indice_actu);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
