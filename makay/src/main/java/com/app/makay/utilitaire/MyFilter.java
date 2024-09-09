@@ -25,6 +25,7 @@ public class MyFilter implements IrisFilter{
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             utilisateur.getRoleActuel(connect, dao);
+            utilisateur.getPlacesActuels(connect, dao);
             session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         }
         return distributeByRole(utilisateur);
