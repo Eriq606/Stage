@@ -106,6 +106,9 @@ public class CommandeEnCours{
         CommandeFilleEnCours where=new CommandeFilleEnCours();
         where.setCommande(this);
         CommandeFilleEnCours[] commandeFilles=dao.select(connect, CommandeFilleEnCours.class, where);
+        for(int i=0;i<commandeFilles.length;i++){
+            commandeFilles[i].recupererAccompagnements(connect, dao);
+        }
         setCommandeFilles(commandeFilles);
         return commandeFilles;
     }

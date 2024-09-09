@@ -1,5 +1,9 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+
+import com.app.makay.utilitaire.MyDAO;
+
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -82,6 +86,13 @@ public class CommandeFilleEnCours {
     }
     public void setAccompagnements(Accompagnement[] accompagnements) {
         this.accompagnements = accompagnements;
+    }
+    public Accompagnement[] recupererAccompagnements(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where id in(select idaccompagnement from accompagnement_commandes where idcommandefille=%s)";
+        addOn=String.format(addOn, getId());
+        Accompagnement[] accompagnements=dao.select(connect, Accompagnement.class, addOn);
+        setAccompagnements(accompagnements);
+        return accompagnements;
     }
     
 }
