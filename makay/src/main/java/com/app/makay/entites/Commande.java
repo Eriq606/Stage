@@ -2,6 +2,7 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -110,5 +111,11 @@ public class Commande {
         CommandeFille[] commandeFilles=dao.select(connect, CommandeFille.class, where);
         setCommandeFilles(commandeFilles);
         return commandeFilles;
+    }
+    @Override
+    public String toString() {
+        return "Commande [id=" + id + ", utilisateur=" + utilisateur + ", place=" + place + ", ouverture=" + ouverture
+                + ", cloture=" + cloture + ", montant=" + montant + ", etat=" + etat + ", commandeFilles="
+                + Arrays.toString(commandeFilles) + "]";
     }
 }

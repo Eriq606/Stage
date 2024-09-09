@@ -42,5 +42,10 @@ public class AccompagnementCommande {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
+    @Override
+    public String toString() {
+        return "AccompagnementCommande [id=" + id + ", commandeFille=" + commandeFille + ", accompagnement="
+                + accompagnement + ", etat=" + etat + "]";
+    }
     
 }

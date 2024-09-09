@@ -487,6 +487,7 @@
                             commande:commande,
                             commandeFilles:commandeFilles
                         };
+                        console.log(envoicommande);
                         const api="http://"+ip+":8080/serveur-passer-commande";
                         fetch(api, {
                             method:"POST",

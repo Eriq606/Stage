@@ -9,6 +9,11 @@ import veda.godao.annotations.Table;
 
 @Table("places")
 public class Place {
+    @Override
+    public String toString() {
+        return "Place [id=" + id + ", nom=" + nom + ", etat=" + etat + ", typePlace=" + typePlace + ", classeHTML="
+                + classeHTML + "]";
+    }
     @PrimaryKey
     @Column("id")
     private Integer id;

@@ -2,6 +2,7 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -207,6 +208,9 @@ public class Utilisateur extends IrisUser{
                     accompCommandes.add(accompCommande);
                 }
             }
+            if(accompCommandes.size()==0){
+                return;
+            }
             AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
             dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
         }catch(Exception e){
@@ -233,6 +237,12 @@ public class Utilisateur extends IrisUser{
     }
     public void setPlaces(Place[] places) {
         this.places = places;
+    }
+    @Override
+    public String toString() {
+        return "Utilisateur [id=" + id + ", nom=" + nom + ", email=" + email + ", contact=" + contact + ", motdepasse="
+                + motdepasse + ", role=" + role + ", etat=" + etat + ", autorisation=" + autorisation + ", places="
+                + Arrays.toString(places) + "]";
     }
     
 }

@@ -71,6 +71,7 @@ public class ServeurController {
     public ReponseREST passerCommande(@RequestBody RestData datas) throws SQLException, Exception{
         ReponseREST response=new ReponseREST();
         EnvoiCommandeREST modifs=HandyManUtils.fromJson(EnvoiCommandeREST.class, datas.getRestdata());
+        System.out.println(modifs);
         SessionUtilisateur where=new SessionUtilisateur();
         where.setSessionId(modifs.getSessionid());
         where.setUtilisateur(modifs.getUtilisateur());

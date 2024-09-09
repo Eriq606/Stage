@@ -1,5 +1,7 @@
 package com.app.makay.entites;
 
+import java.util.Arrays;
+
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -82,6 +84,12 @@ public class CommandeFille {
     }
     public void setAccompagnements(Accompagnement[] accompagnements) {
         this.accompagnements = accompagnements;
+    }
+    @Override
+    public String toString() {
+        return "CommandeFille [id=" + id + ", commande=" + commande + ", produit=" + produit + ", pu=" + pu
+                + ", quantite=" + quantite + ", montant=" + montant + ", notes=" + notes + ", etat=" + etat
+                + ", accompagnements=" + Arrays.toString(accompagnements) + "]";
     }
     
 }
