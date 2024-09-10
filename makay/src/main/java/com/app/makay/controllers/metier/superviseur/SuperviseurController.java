@@ -126,7 +126,7 @@ public class SuperviseurController {
             for(Place p:places){
                 p.setClasseHTML(p.getClasse());
             }
-            rangees=dao.select(connect, Rangee.class, new Rangee(0));
+            rangees=Rangee.getRangees(connect, dao);
             for(Rangee r:rangees){
                 r.getDispatchUtilisateursActuel(connect, dao);
                 r.recupererPlaces(connect, dao);
@@ -148,6 +148,8 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_RANGEEPLACES, rangeePlaces);
         model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_INUTILISEEID, Constantes.INUTILISEE_ID);
+        model.addAttribute(Constantes.VAR_OFFID, Constantes.OFF_ID);
         return iris;
     }
     @PostMapping("/plan-de-table")
@@ -227,6 +229,7 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_OFFID, Constantes.OFF_ID);
         return iris;
     }
     @PostMapping("/dispatch-tables-staff")
@@ -262,7 +265,7 @@ public class SuperviseurController {
             for(Place p:places){
                 p.setClasseHTML(p.getClasse());
             }
-            rangees=dao.select(connect, Rangee.class, new Rangee(0));
+            rangees=Rangee.getRangees(connect, dao);
             for(Rangee r:rangees){
                 r.getDispatchUtilisateursActuel(connect, dao);
                 r.recupererPlaces(connect, dao);

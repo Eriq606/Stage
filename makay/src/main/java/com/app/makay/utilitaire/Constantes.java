@@ -34,6 +34,8 @@ public class Constantes {
     public static final String VAR_IP="ip";
     public static final String VAR_SESSIONID="sessionid";
     public static final String VAR_COMMANDES="commandes";
+    public static final String VAR_INUTILISEEID="inutiliseeid";
+    public static final String VAR_OFFID="offid";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -44,6 +46,9 @@ public class Constantes {
     public static final String PLACE_TERRASSE="3";
     public static final String CLASSE_TERRASSE="place-terrasse";
     public static final String LABEL_TERRASSE="Terrasse";
+
+    public static final int INUTILISEE_ID=0;
+    public static final int OFF_ID=-1;
 
     public static final Double SESSION_EXPIRATION=24.;
     public static final Integer SESSION_ESTINVALIDE=0;
