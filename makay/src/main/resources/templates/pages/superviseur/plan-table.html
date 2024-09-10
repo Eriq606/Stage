@@ -106,6 +106,8 @@
         const rangees=/*[[${rangees}]]*/[];
         const places=/*[[${places}]]*/[];
         let arrangementsActu=/*[[${rangeeplaces}]]*/[];
+        const inutiliseeID=/*[[${inutiliseeid}]]*/0;
+        const offID=/*[[${offid}]]*/0;
         let idplaceActu=[];
         for(let i=0;i<arrangementsActu.length;i++){
             const rangee=document.getElementById("rangeeModal"+arrangementsActu[i].rangee.id);
@@ -117,6 +119,9 @@
         }
 
         let arrangements=[];
+        for(let i=0;i<places.length;i++){
+            arrangements.push({rangee:{id:inutiliseeID}, place:{id:places[i].id}});
+        }
         const elementArrangement=document.getElementById("arrangements");
         elementArrangement.value="[]";
         function allowDrop(ev) {
@@ -128,7 +133,7 @@
             const idplace=ev.target.dataset.idplace;
             for(let i=0;i<arrangements.length;i++){
                 if(arrangements[i].place.id==idplace){
-                    arrangements.splice(i, 1);
+                    arrangements[i].rangee.id=inutiliseeID;
                     break;
                 }
             }
@@ -153,7 +158,13 @@
             console.log(ev.target.dataset);
             const idrangee=ev.target.dataset.idrangee;
             const idplace=data.idplace;
-            arrangements.push({rangee:{id:idrangee}, place:{id:idplace}});
+            for(let i=0;i<arrangements.length;i++){
+                if(arrangements[i].place.id==idplace){
+                    arrangements[i].rangee.id=idrangee;
+                    break;
+                }
+            }
+            // arrangements.push({rangee:{id:idrangee}, place:{id:idplace}});
             elementArrangement.value=JSON.stringify(arrangements);
             var droppedElement = document.getElementById(data.elementid);
             droppedElement.setAttribute("data-idrangee", idrangee);

@@ -88,4 +88,9 @@ public class Rangee {
         setPlaces(places);
         return places;
     }
+    public static Rangee[] getRangees(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where etat=0 and id>0";
+        Rangee[] rangees=dao.select(connect, Rangee.class, addOn);
+        return rangees;
+    }
 }

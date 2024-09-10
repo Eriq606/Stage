@@ -395,3 +395,13 @@ from commandes
 join v_places on commandes.idplace=v_places.id
 join v_type_places on v_places.idtypeplace=v_type_places.id
 where commandes.etat<20;
+
+insert into rangees values(default, 'inutilisee', 0),
+                          (default, 'off', 0);
+
+delete from rangees where id>5;
+
+alter sequence rangees_id_seq restart with 5;
+
+insert into rangees values(0, 'inutilisee', 0),
+                         (-1, 'off', 0);
