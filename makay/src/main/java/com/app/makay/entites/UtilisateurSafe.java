@@ -1,5 +1,9 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+
+import com.app.makay.utilitaire.MyDAO;
+
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -49,5 +53,7 @@ public class UtilisateurSafe {
     public void setRole(Role role) {
         this.role = role;
     }
-    
+    // public static UtilisateurSafe[] recupererServeursEnCours(Connection connect, MyDAO dao){
+
+    // }
 }
