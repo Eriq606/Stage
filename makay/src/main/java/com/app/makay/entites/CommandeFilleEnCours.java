@@ -1,20 +1,22 @@
 package com.app.makay.entites;
 
-import java.util.Arrays;
+import java.sql.Connection;
+
+import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
-@Table("commande_filles")
-public class CommandeFille {
+@Table("v_commande_filles")
+public class CommandeFilleEnCours {
     @PrimaryKey
     @Column("id")
     private Integer id;
     @ForeignKey(recursive = true)
     @Column("idcommande")
-    private Commande commande;
+    private CommandeEnCours commande;
     @ForeignKey(recursive = true)
     @Column("idproduit")
     private Produit produit;
@@ -36,10 +38,10 @@ public class CommandeFille {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Commande getCommande() {
+    public CommandeEnCours getCommande() {
         return commande;
     }
-    public void setCommande(Commande commande) {
+    public void setCommande(CommandeEnCours commande) {
         this.commande = commande;
     }
     public Produit getProduit() {
@@ -85,11 +87,12 @@ public class CommandeFille {
     public void setAccompagnements(Accompagnement[] accompagnements) {
         this.accompagnements = accompagnements;
     }
-    @Override
-    public String toString() {
-        return "CommandeFille [id=" + id + ", commande=" + commande + ", produit=" + produit + ", pu=" + pu
-                + ", quantite=" + quantite + ", montant=" + montant + ", notes=" + notes + ", etat=" + etat
-                + ", accompagnements=" + Arrays.toString(accompagnements) + "]";
+    public Accompagnement[] recupererAccompagnements(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where id in(select idaccompagnement from accompagnement_commandes where idcommandefille=%s)";
+        addOn=String.format(addOn, getId());
+        Accompagnement[] accompagnements=dao.select(connect, Accompagnement.class, addOn);
+        setAccompagnements(accompagnements);
+        return accompagnements;
     }
     
 }

@@ -2,7 +2,6 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -12,8 +11,8 @@ import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
-@Table("commandes")
-public class Commande {
+@Table("v_commandes")
+public class CommandeEnCours{
     @PrimaryKey
     @Column("id")
     private Integer id;
@@ -23,6 +22,8 @@ public class Commande {
     @ForeignKey(recursive = true)
     @Column("idplace")
     private Place place;
+    @Column("nom_place")
+    private String nomPlace;
     @Column("dateheure_ouverture")
     private LocalDateTime ouverture;
     @Column("dateheure_cloture")
@@ -31,7 +32,7 @@ public class Commande {
     private Double montant;
     @Column("etat")
     private Integer etat;
-    private CommandeFille[] commandeFilles;
+    private CommandeFilleEnCours[] commandeFilles;
     public String getPlaceLabel(){
         switch(getPlace().getTypePlace().getNumero()){
             case Constantes.PLACE_BAR:
@@ -43,6 +44,7 @@ public class Commande {
         }
         return "Place";
     }
+    
     public String getHeure(){
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
@@ -99,23 +101,29 @@ public class Commande {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
-    public CommandeFille[] getCommandeFilles() {
-        return commandeFilles;
-    }
-    public void setCommandeFilles(CommandeFille[] commandeFilles) {
-        this.commandeFilles = commandeFilles;
-    }
-    public CommandeFille[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
-        CommandeFille where=new CommandeFille();
+    
+    public CommandeFilleEnCours[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
+        CommandeFilleEnCours where=new CommandeFilleEnCours();
         where.setCommande(this);
-        CommandeFille[] commandeFilles=dao.select(connect, CommandeFille.class, where);
+        CommandeFilleEnCours[] commandeFilles=dao.select(connect, CommandeFilleEnCours.class, where);
+        for(int i=0;i<commandeFilles.length;i++){
+            commandeFilles[i].recupererAccompagnements(connect, dao);
+        }
         setCommandeFilles(commandeFilles);
         return commandeFilles;
     }
-    @Override
-    public String toString() {
-        return "Commande [id=" + id + ", utilisateur=" + utilisateur + ", place=" + place + ", ouverture=" + ouverture
-                + ", cloture=" + cloture + ", montant=" + montant + ", etat=" + etat + ", commandeFilles="
-                + Arrays.toString(commandeFilles) + "]";
+    public CommandeFilleEnCours[] getCommandeFilles() {
+        return commandeFilles;
+    }
+    public void setCommandeFilles(CommandeFilleEnCours[] commandeFilles) {
+        this.commandeFilles = commandeFilles;
+    }
+
+    public String getNomPlace() {
+        return nomPlace;
+    }
+
+    public void setNomPlace(String nomPlace) {
+        this.nomPlace = nomPlace;
     }
 }

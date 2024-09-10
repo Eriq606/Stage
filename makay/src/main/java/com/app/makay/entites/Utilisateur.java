@@ -2,6 +2,7 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -207,12 +208,34 @@ public class Utilisateur extends IrisUser{
                     accompCommandes.add(accompCommande);
                 }
             }
+            if(accompCommandes.size()==0){
+                return;
+            }
             AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
             dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
         }catch(Exception e){
             connect.rollback();
             throw e;
         }
+    }
+    public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao, int offset) throws Exception{
+        CommandeEnCours where=new CommandeEnCours();
+        where.setUtilisateur(this);
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture desc"});
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
+    }
+    public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao, int offset, String table) throws Exception{
+        CommandeEnCours where=new CommandeEnCours();
+        where.setUtilisateur(this);
+        where.setNomPlace(table);
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture desc"});
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
     }
     public Utilisateur() {
     }
@@ -224,6 +247,12 @@ public class Utilisateur extends IrisUser{
     }
     public void setPlaces(Place[] places) {
         this.places = places;
+    }
+    @Override
+    public String toString() {
+        return "Utilisateur [id=" + id + ", nom=" + nom + ", email=" + email + ", contact=" + contact + ", motdepasse="
+                + motdepasse + ", role=" + role + ", etat=" + etat + ", autorisation=" + autorisation + ", places="
+                + Arrays.toString(places) + "]";
     }
     
 }

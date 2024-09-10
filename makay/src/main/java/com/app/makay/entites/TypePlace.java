@@ -39,5 +39,9 @@ public class TypePlace {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
+    @Override
+    public String toString() {
+        return "TypePlace [id=" + id + ", nom=" + nom + ", etat=" + etat + ", numero=" + numero + "]";
+    }
     
 }

@@ -31,4 +31,8 @@ public class Accompagnement {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
+    @Override
+    public String toString() {
+        return "Accompagnement [id=" + id + ", nom=" + nom + ", etat=" + etat + "]";
+    }
 }

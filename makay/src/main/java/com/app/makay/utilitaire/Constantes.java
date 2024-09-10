@@ -33,24 +33,37 @@ public class Constantes {
     public static final String VAR_LINKS="links";
     public static final String VAR_IP="ip";
     public static final String VAR_SESSIONID="sessionid";
+    public static final String VAR_COMMANDES="commandes";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
+    public static final String LABEL_BAR="Bar";
     public static final String PLACE_SALLE="2";
     public static final String CLASSE_SALLE="place-table";
+    public static final String LABEL_SALLE="Table";
     public static final String PLACE_TERRASSE="3";
     public static final String CLASSE_TERRASSE="place-terrasse";
+    public static final String LABEL_TERRASSE="Terrasse";
 
     public static final Double SESSION_EXPIRATION=24.;
     public static final Integer SESSION_ESTINVALIDE=0;
     public static final Integer SESSION_ESTVALIDE=1;
 
+    public static final int COMMANDE_CREEE=0;
+    public static final int COMMANDE_ADDITION=10;
+    public static final int COMMANDE_PAYEE=20;
+    public static final int COMMANDE_ANNULEE=30;
+    public static final int COMMANDE_SUPPRIMEE=40;
+
     public static final ModelLink[] LINK_SERVEUR={
-        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande")
+        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
+        new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours")
     };
     public static final ModelLink[] LINK_SUPERVISEUR={
         new ModelLink("/plan-de-table", "fa-solid fa-chair", "Plan de table"),
         new ModelLink("/attribution-de-roles", "fa-solid fa-user", "Roles"),
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff")
     };
+
+    public static final int PAGINATION_LIMIT=5;
 }
