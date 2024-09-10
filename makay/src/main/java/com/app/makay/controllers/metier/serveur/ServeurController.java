@@ -98,8 +98,10 @@ public class ServeurController {
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(utilisateur);
-        table=table.trim();
-        where.setNomPlace(table);
+        if(table!=null){
+            table=table.trim();
+            where.setNomPlace(table);
+        }
         int indice_actu_controller=1;
         if(indice_actu!=null){
             indice_actu_controller=indice_actu;
