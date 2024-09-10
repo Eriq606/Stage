@@ -265,7 +265,7 @@ public class SuperviseurController {
             for(Place p:places){
                 p.setClasseHTML(p.getClasse());
             }
-            rangees=dao.select(connect, Rangee.class, new Rangee(0));
+            rangees=Rangee.getRangees(connect, dao);
             for(Rangee r:rangees){
                 r.getDispatchUtilisateursActuel(connect, dao);
                 r.recupererPlaces(connect, dao);
