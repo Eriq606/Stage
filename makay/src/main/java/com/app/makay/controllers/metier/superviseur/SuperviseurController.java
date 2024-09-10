@@ -229,6 +229,7 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_OFFID, Constantes.OFF_ID);
         return iris;
     }
     @PostMapping("/dispatch-tables-staff")

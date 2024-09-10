@@ -142,6 +142,27 @@
         const sessionid=/*[[${sessionid}]]*/"";
         const ip=/*[[${ip}]]*/"";
         const rangees=/*[[${rangees}]]*/[];
+        const offID=/*[[${offid}]]*/0;
+        const utilisateurs=/*[[${utilisateurs}]]*/[];
+        let dispatchs=[];
+
+        for(let i=0;i<utilisateurs.length;i++){
+            let free=true;
+            for(let j=0;j<rangees.length;j++){
+                for(let k=0;k<rangees[j].utilisateurs.length;k++){
+                    if(utilisateurs[i].id==rangees[j].utilisateurs[k].id){
+                        free=false;
+                        break;
+                    }
+                }
+                if(free===false){
+                    break;
+                }
+            }
+            if(free){
+                dispatchs.push({rangee:{id:offID}, utilisateur:{id:utilisateurs[i].id}});
+            }
+        }
 
         function removeDispatchRow(modifDispatch, dispatchs){
             const idrangee=modifDispatch.dataset.idrangee;
@@ -152,6 +173,16 @@
                     break;
                 }
             }
+            let free=true;
+            for(let j=0;j<dispatchs.length;j++){
+                if(idutilisateur==dispatchs[j].utilisateur.id){
+                    free=false;
+                    break;
+                }
+            }
+            if(free){
+                dispatchs.push({rangee:{id:offID}, utilisateur:{id:idutilisateur}});
+            }
             const dispatchRow=document.getElementById("dispatchRow"+idrangee);
             const toRemove=document.getElementById("modifDispatchRow"+idrangee+"-"+idutilisateur);
             dispatchRow.removeChild(toRemove);
@@ -161,7 +192,6 @@
         }
 
         const ajoutDispatch=document.getElementsByClassName("ajout-dispatch");
-        let dispatchs=[];
         for(let i=0;i<ajoutDispatch.length;i++){
             ajoutDispatch[i].onclick=()=>{
                 const idrangee=ajoutDispatch[i].dataset.idrangee;
@@ -170,6 +200,10 @@
                 for(let j=0;j<dispatchs.length;j++){
                     if(dispatchs[j].rangee.id==idrangee&&dispatchs[j].utilisateur.id==idutilisateur){
                         return;
+                    }
+                    if(dispatchs[j].rangee.id==offID&&dispatchs[j].utilisateur.id==idutilisateur){
+                        dispatchs.splice(j, 1);
+                        j--;
                     }
                 }
                 dispatchs.push({rangee:{id:idrangee}, utilisateur:{id:idutilisateur}});
