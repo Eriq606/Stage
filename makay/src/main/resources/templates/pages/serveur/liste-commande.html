@@ -22,14 +22,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
-                    <h2 th:text="${c.getPlaceLabel()}+' : '+${c.place.nom}"></h2>
+                    <h2 th:text="${c.getPlaceLabel()}"></h2>
                     <p th:text="${c.getHeure()}"></p>
                 </div>
                 <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}+' : '+${c.place.nom}"></h1>
+                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body table-responsive">

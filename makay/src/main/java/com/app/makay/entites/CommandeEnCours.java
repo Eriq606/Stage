@@ -1,6 +1,7 @@
 package com.app.makay.entites;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.app.makay.utilitaire.Constantes;
@@ -34,18 +35,23 @@ public class CommandeEnCours{
     private Integer etat;
     private CommandeFilleEnCours[] commandeFilles;
     public String getPlaceLabel(){
+        String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
             case Constantes.PLACE_BAR:
-                return Constantes.LABEL_BAR;
+                label=Constantes.LABEL_BAR+" : ";
+                break;
             case Constantes.PLACE_SALLE:
-                return Constantes.LABEL_SALLE;
+                label=Constantes.LABEL_SALLE+" : ";
+                break;
             case Constantes.PLACE_TERRASSE:
-                return Constantes.LABEL_TERRASSE;
+                label=Constantes.LABEL_TERRASSE+" : ";
         }
-        return "Place";
+        label+=getPlace().getNom();
+        return label;
     }
     
     public String getHeure(){
+        String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
         if(heure<10){
@@ -56,7 +62,8 @@ public class CommandeEnCours{
         if(minute<10){
             minuteStr="0"+minuteStr;
         }
-        return heureStr+"h"+minuteStr;
+        reponse+=heureStr+"h"+minuteStr;
+        return reponse;
     }
     
     public Integer getId() {

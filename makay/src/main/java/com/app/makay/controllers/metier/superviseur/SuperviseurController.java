@@ -259,6 +259,7 @@ public class SuperviseurController {
             return response;
         }
     }
+    @GetMapping("/monitoring-des-serveurs")
     public Object monitoringDesServeurs(HttpServletRequest req, Model model){
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);

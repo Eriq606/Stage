@@ -431,5 +431,4 @@ select vu.*, v_roles.nom as nom_role, v_roles.numero as numero_role
 from v_utilisateurs vu
 join v_roles on vu.idrole=v_roles.id
 left join v_serveurs_encours_1 v1 on vu.id=v1.idutilisateur
-where v1.idutilisateur is not null;
-
+where v1.idutilisateur is null and v_roles.numero in ('1','2','6');

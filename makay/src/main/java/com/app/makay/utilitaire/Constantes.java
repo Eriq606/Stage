@@ -68,7 +68,8 @@ public class Constantes {
     public static final ModelLink[] LINK_SUPERVISEUR={
         new ModelLink("/plan-de-table", "fa-solid fa-chair", "Plan de table"),
         new ModelLink("/attribution-de-roles", "fa-solid fa-user", "Roles"),
-        new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff")
+        new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
+        new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service")
     };
 
     public static final int PAGINATION_LIMIT=5;

@@ -1,0 +1,49 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills me-3 border-right border-primary" id="v-pills-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <button th:each="s:${serveurs}" class="nav-link" th:id="'v-pills-serveur-tab-'+${s.id}" data-bs-toggle="pill"
+                            th:data-bs-target="'#v-pills-serveur-'+${s.id}" type="button" role="tab"
+                            th:aria-controls="'v-pills-serveur-'+${s.id}" aria-selected="true" th:text="${s.nom}"></button>
+                    </div>
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div th:each="s:${serveurs}" class="tab-pane fade" th:id="'v-pills-serveur-'+${s.id}" role="tabpanel" th:aria-labelledby="'v-pills-serveur-tab-'+${s.id}">
+                            <table class="table">
+                                <tbody>
+                                    <tr th:each="c:${s.commandes}">
+                                        <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
+                                        <td th:text="${c.getHeure()}"></td>
+                                        <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body table-responsive">
+                                                        <div th:each="cf:${c.commandeFilles}" style="color: white;">
+                                                            <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                            <p><ul>
+                                                                <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                            </ul></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
