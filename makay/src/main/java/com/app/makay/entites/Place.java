@@ -68,13 +68,15 @@ public class Place {
         this.etat = etat;
     }
     public String getClasse(){
-        switch(getTypePlace().getNumero()){
-            case Constantes.PLACE_BAR:
-                return Constantes.CLASSE_BAR;
-            case Constantes.PLACE_SALLE:
-                return Constantes.CLASSE_SALLE;
-            case Constantes.PLACE_TERRASSE:
-                return Constantes.CLASSE_TERRASSE;
+        if(getTypePlace()!=null){
+            switch(getTypePlace().getNumero()){
+                case Constantes.PLACE_BAR:
+                    return Constantes.CLASSE_BAR;
+                case Constantes.PLACE_SALLE:
+                    return Constantes.CLASSE_SALLE;
+                case Constantes.PLACE_TERRASSE:
+                    return Constantes.CLASSE_TERRASSE;
+            }
         }
         return null;
     }

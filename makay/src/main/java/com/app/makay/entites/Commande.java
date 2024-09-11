@@ -1,6 +1,7 @@
 package com.app.makay.entites;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -48,6 +49,7 @@ public class Commande {
         return label;
     }
     public String getHeure(){
+        String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
         if(heure<10){
@@ -58,7 +60,8 @@ public class Commande {
         if(minute<10){
             minuteStr="0"+minuteStr;
         }
-        return heureStr+"h"+minuteStr;
+        reponse+=heureStr+"h"+minuteStr;
+        return reponse;
     }
     
     public Integer getId() {
@@ -113,6 +116,9 @@ public class Commande {
         CommandeFille where=new CommandeFille();
         where.setCommande(this);
         CommandeFille[] commandeFilles=dao.select(connect, CommandeFille.class, where);
+        for(int i=0;i<commandeFilles.length;i++){
+            commandeFilles[i].recupererAccompagnements(connect, dao);
+        }
         setCommandeFilles(commandeFilles);
         return commandeFilles;
     }
