@@ -442,8 +442,13 @@
                         brokerURL:'ws://'+ip+':8080/messaging'
                     });
                     stompclient.activate();
+                    function notifierSuperviseur(envoicommande){
+                        stompclient.publish({
+                            destination:"/makay/nouvelle-commande",
+                            body:JSON.stringify(envoicommande)
+                        });
+                    }
                     function redirigerVersResetCache(){
-                        stompclient.deactivate();
                         window.location.href="http://"+ip+":8080/reset-role-serveur";
                     }
                     function receiveNotificationRedirect(){
@@ -453,6 +458,9 @@
                     }
                     stompclient.onConnect=(frame)=>{
                         receiveNotificationRedirect();
+                    }
+                    window.onbeforeunload=()=>{
+                        stompclient.deactivate();
                     }
 
                     const envoyerCommande=document.getElementById("envoyer-commande");
@@ -496,6 +504,7 @@
                             },
                             body:JSON.stringify({restdata:JSON.stringify(envoicommande)})
                         }).then(()=>{
+                            notifierSuperviseur(envoicommande);
                             commandes=[];
                             commandeAjout.innerHTML="";
                             const alerteEnvoye=document.getElementById("alerte-envoye");

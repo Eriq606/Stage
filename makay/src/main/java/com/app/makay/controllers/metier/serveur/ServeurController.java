@@ -55,7 +55,7 @@ public class ServeurController {
     public Object passerCommande(HttpServletRequest req, Model model){
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Passer une commande", "pages/serveur/prise-commande", "layout/layout", model);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_SUPERVISEUR}, "Makay - Passer une commande", "pages/serveur/prise-commande", "layout/layout", model);
         model.addAttribute(Constantes.VAR_PRODUITS, produits);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
         model.addAttribute(Constantes.VAR_IP, ip);
@@ -95,7 +95,7 @@ public class ServeurController {
     public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SERVEUR, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_SUPERVISEUR}, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(utilisateur);
         if(table!=null){

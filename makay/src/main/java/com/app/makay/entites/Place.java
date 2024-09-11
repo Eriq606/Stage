@@ -36,15 +36,17 @@ public class Place {
     }
     public void setTypePlace(TypePlace typePlace) {
         this.typePlace = typePlace;
-        switch(getTypePlace().getNumero()){
-            case Constantes.PLACE_BAR:
-                setClasseHTML(Constantes.CLASSE_BAR);
-                break;
-            case Constantes.PLACE_SALLE:
-                setClasseHTML(Constantes.CLASSE_SALLE);
-                break;
-            case Constantes.PLACE_TERRASSE:
-                setClasseHTML(Constantes.CLASSE_TERRASSE);
+        if(typePlace!=null){
+            switch(getTypePlace().getNumero()){
+                case Constantes.PLACE_BAR:
+                    setClasseHTML(Constantes.CLASSE_BAR);
+                    break;
+                case Constantes.PLACE_SALLE:
+                    setClasseHTML(Constantes.CLASSE_SALLE);
+                    break;
+                case Constantes.PLACE_TERRASSE:
+                    setClasseHTML(Constantes.CLASSE_TERRASSE);
+            }
         }
     }
     public Integer getId() {
@@ -66,13 +68,15 @@ public class Place {
         this.etat = etat;
     }
     public String getClasse(){
-        switch(getTypePlace().getNumero()){
-            case Constantes.PLACE_BAR:
-                return Constantes.CLASSE_BAR;
-            case Constantes.PLACE_SALLE:
-                return Constantes.CLASSE_SALLE;
-            case Constantes.PLACE_TERRASSE:
-                return Constantes.CLASSE_TERRASSE;
+        if(getTypePlace()!=null){
+            switch(getTypePlace().getNumero()){
+                case Constantes.PLACE_BAR:
+                    return Constantes.CLASSE_BAR;
+                case Constantes.PLACE_SALLE:
+                    return Constantes.CLASSE_SALLE;
+                case Constantes.PLACE_TERRASSE:
+                    return Constantes.CLASSE_TERRASSE;
+            }
         }
         return null;
     }

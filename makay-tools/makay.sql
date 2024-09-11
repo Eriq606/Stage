@@ -405,3 +405,30 @@ alter sequence rangees_id_seq restart with 5;
 
 insert into rangees values(0, 'inutilisee', 0),
                          (-1, 'off', 0);
+
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+where commandes.etat<40;
+
+create or replace view v_serveurs_encours_1 as
+select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur
+from v_dispatch_staff
+where idrangee=-1;
+
+create or replace view v_serveurs_encours as
+select *
+from v_utilisateurs vu
+left join v_serveurs_encours_1 v1 on vu.id=v1.idutilisateur
+where v1.idutilisateur is not null;
+
+drop view v_serveurs_encours;
+
+create or replace view v_serveurs_encours as
+select vu.*, v_roles.nom as nom_role, v_roles.numero as numero_role
+from v_utilisateurs vu
+join v_roles on vu.idrole=v_roles.id
+left join v_serveurs_encours_1 v1 on vu.id=v1.idutilisateur
+where v1.idutilisateur is null and v_roles.numero in ('1','2','6');

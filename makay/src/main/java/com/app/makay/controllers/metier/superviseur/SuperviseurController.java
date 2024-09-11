@@ -21,6 +21,7 @@ import com.app.makay.entites.RangeePlace;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
+import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -190,6 +191,15 @@ public class SuperviseurController {
     public String notifierModifications(){
         return "reset cache";
     }
+    @MessageMapping("/nouvelle-commande")
+    @SendTo("/notify/recevoir-nouvelle-commande")
+    public EnvoiCommandeREST nouvelleCommande(EnvoiCommandeREST commandes) throws Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            commandes.getCommande().setOuverture(LocalDateTime.now());
+            commandes.getCommande().setPlace(dao.select(connect, Place.class, commandes.getCommande().getPlace())[0]);
+        }
+        return commandes;
+    }
 
     @GetMapping("/reset-role-superviseur")
     public RedirectView resetRole(HttpServletRequest req) throws SQLException, Exception{
@@ -256,6 +266,18 @@ public class SuperviseurController {
             response.setMessage(Constantes.MSG_SUCCES);
             return response;
         }
+    }
+    @GetMapping("/monitoring-des-serveurs")
+    public Object monitoringDesServeurs(HttpServletRequest req, Model model) throws Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Monitoring", "pages/superviseur/monitoring-des-serveurs", "layout/layout", model);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            model.addAttribute(Constantes.VAR_SERVEURS, Utilisateur.recupererServeursEnCours(connect, dao));
+        }
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        model.addAttribute(Constantes.VAR_IP, ip);
+        return iris;
     }
 
     @GetMapping("/reset-cache-superviseur")
