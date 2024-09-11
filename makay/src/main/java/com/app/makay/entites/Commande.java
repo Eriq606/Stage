@@ -33,15 +33,19 @@ public class Commande {
     private Integer etat;
     private CommandeFille[] commandeFilles;
     public String getPlaceLabel(){
+        String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
             case Constantes.PLACE_BAR:
-                return Constantes.LABEL_BAR;
+                label=Constantes.LABEL_BAR+" : ";
+                break;
             case Constantes.PLACE_SALLE:
-                return Constantes.LABEL_SALLE;
+                label=Constantes.LABEL_SALLE+" : ";
+                break;
             case Constantes.PLACE_TERRASSE:
-                return Constantes.LABEL_TERRASSE;
+                label=Constantes.LABEL_TERRASSE+" : ";
         }
-        return "Place";
+        label+=getPlace().getNom();
+        return label;
     }
     public String getHeure(){
         int heure=getOuverture().getHour();

@@ -12,7 +12,7 @@
                     <div class="tab-content" id="v-pills-tabContent">
                         <div th:each="s:${serveurs}" class="tab-pane fade" th:id="'v-pills-serveur-'+${s.id}" role="tabpanel" th:aria-labelledby="'v-pills-serveur-tab-'+${s.id}">
                             <table class="table">
-                                <tbody>
+                                <tbody th:id="'commandes-'+${s.id}">
                                     <tr th:each="c:${s.commandes}">
                                         <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
                                         <td th:text="${c.getHeure()}"></td>
@@ -46,4 +46,142 @@
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const ip=/*[[${ip}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
+        function createCommandeRow(commande) {
+            // Create <tr> element
+            const tr = document.createElement('tr');
+
+            // Create <td> element with a link for place label
+            const td1 = document.createElement('td');
+            const a = document.createElement('a');
+            a.textContent = commande.placeLabel; // Assuming c.getPlaceLabel() is commande.placeLabel
+            a.href = "#";
+            a.setAttribute('data-bs-toggle', 'modal');
+            a.setAttribute('data-bs-target', '#detailCommandeModal' + commande.id);
+            td1.appendChild(a);
+
+            // Create second <td> element for time
+            const td2 = document.createElement('td');
+            td2.textContent = commande.heure; // Assuming c.getHeure() is commande.heure
+
+            // Append the <td> elements to the <tr>
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+
+            // Create modal structure
+            const modalDiv = document.createElement('div');
+            modalDiv.className = 'modal fade';
+            modalDiv.id = 'detailCommandeModal' + commande.id;
+            modalDiv.tabIndex = -2;
+            modalDiv.setAttribute('aria-labelledby', 'detailCommandeModalLabel' + commande.id);
+            modalDiv.setAttribute('aria-hidden', 'true');
+
+            const modalDialog = document.createElement('div');
+            modalDialog.className = 'modal-dialog modal-dialog-centered';
+
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+
+            // Modal header
+            const modalHeader = document.createElement('div');
+            modalHeader.className = 'modal-header';
+
+            const modalTitle = document.createElement('h1');
+            modalTitle.className = 'modal-title fs-5';
+            modalTitle.id = 'detailCommandeModalLabel' + commande.id;
+            modalTitle.textContent = commande.placeLabel; // c.getPlaceLabel()
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'btn-close';
+            closeButton.setAttribute('data-bs-dismiss', 'modal');
+            closeButton.setAttribute('aria-label', 'Close');
+
+            modalHeader.appendChild(modalTitle);
+            modalHeader.appendChild(closeButton);
+
+            // Modal body
+            const modalBody = document.createElement('div');
+            modalBody.className = 'modal-body table-responsive';
+
+            // Iterate over child commands (commandeFilles)
+            commande.commandeFilles.forEach(cf => {
+                const cfDiv = document.createElement('div');
+                cfDiv.style.color = 'white';
+
+                // Quantite, produit nom, and notes
+                const p = document.createElement('p');
+                p.textContent = cf.quantite + ' ' + cf.produit.nom + ' ' + cf.notes;
+                cfDiv.appendChild(p);
+
+                // Accompagnements list
+                const ul = document.createElement('ul');
+                cf.accompagnements.forEach(cfa => {
+                    const li = document.createElement('li');
+                    li.textContent = cfa.nom; // cfa.nom
+                    ul.appendChild(li);
+                });
+
+                const accompagnementP = document.createElement('p');
+                accompagnementP.appendChild(ul);
+                cfDiv.appendChild(accompagnementP);
+                modalBody.appendChild(cfDiv);
+            });
+
+            // Modal footer
+            const modalFooter = document.createElement('div');
+            modalFooter.className = 'modal-footer';
+
+            const retourButton = document.createElement('button');
+            retourButton.className = 'btn btn-secondary';
+            retourButton.setAttribute('data-bs-dismiss', 'modal');
+            retourButton.textContent = 'Retour';
+
+            modalFooter.appendChild(retourButton);
+
+            // Assemble modal content
+            modalContent.appendChild(modalHeader);
+            modalContent.appendChild(modalBody);
+            modalContent.appendChild(modalFooter);
+
+            modalDialog.appendChild(modalContent);
+            modalDiv.appendChild(modalDialog);
+
+            // Append modalDiv to the document body (or a container)
+            document.body.appendChild(modalDiv);
+
+            return tr;
+        }
+        function receiveNotificationCommande(){
+            stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoyee)=>{
+                const envoiCommande=JSON.parse(commandeEnvoyee.body);
+                let commande=envoiCommande.commande;
+                commande.commandeFilles=envoiCommande.commandeFilles;
+                const commandeRow=createCommandeRow(commande);
+                const commandes=document.getElementById("commandes-"+envoiCommande.utilisateur.id);
+                commandes.insertBefore(commandeRow, commandes.firstChild);
+            });
+        }
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/reset-cache-superviseur";
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationCommande();
+            receiveNotificationRedirect();
+        };
+        /*]]*/
+    </script>
 </div>
