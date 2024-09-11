@@ -43,6 +43,7 @@ public class SuperviseurController {
     private UtilisateurSafe[] utilisateurs;
     private Role[] roles;
     private HistoriqueRoleUtilisateur[] attributionRoles;
+    private Utilisateur[] serveurs;
     private MyDAO dao;
     private String ip;
     public MyFilter getFilter() {
@@ -135,6 +136,7 @@ public class SuperviseurController {
             utilisateurs=dao.select(connect, UtilisateurSafe.class);
             roles=dao.select(connect, Role.class, new Role(0));
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            serveurs=Utilisateur.recupererServeursEnCours(connect, dao);
         }
     }
 
@@ -257,6 +259,14 @@ public class SuperviseurController {
             return response;
         }
     }
+    public Object monitoringDesServeurs(HttpServletRequest req, Model model){
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Monitoring", "pages/superviseur/monitoring-des-serveurs", "layout/layout", model);
+        model.addAttribute(Constantes.VAR_SERVEURS, serveurs);
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        return iris;
+    }
 
     @GetMapping("/reset-cache-superviseur")
     public RedirectView resetCacheRangees(HttpServletRequest req) throws SQLException, Exception{
@@ -274,6 +284,7 @@ public class SuperviseurController {
             utilisateurs=dao.select(connect, UtilisateurSafe.class);
             roles=dao.select(connect, Role.class, new Role(0));
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            serveurs=Utilisateur.recupererServeursEnCours(connect, dao);
         }
         return resetRole(req);
     }

@@ -36,6 +36,7 @@ public class Constantes {
     public static final String VAR_COMMANDES="commandes";
     public static final String VAR_INUTILISEEID="inutiliseeid";
     public static final String VAR_OFFID="offid";
+    public static final String VAR_SERVEURS="serveurs";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";

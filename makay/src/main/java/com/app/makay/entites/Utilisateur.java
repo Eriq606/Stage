@@ -39,7 +39,14 @@ public class Utilisateur extends IrisUser{
     @Column("autorisation")
     private Integer autorisation;
     private Place[] places;
+    private CommandeEnCours[] commandes;
     
+    public CommandeEnCours[] getCommandes() {
+        return commandes;
+    }
+    public void setCommandes(CommandeEnCours[] commandes) {
+        this.commandes = commandes;
+    }
     public Integer getId() {
         return id;
     }
@@ -218,6 +225,15 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao) throws Exception{
+        CommandeEnCours where=new CommandeEnCours();
+        where.setUtilisateur(this);
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, new String[]{"dateheure_ouverture desc"});
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
+    }
     public CommandeEnCours[] getCommandesEnCours(Connection connect, MyDAO dao, int offset) throws Exception{
         CommandeEnCours where=new CommandeEnCours();
         where.setUtilisateur(this);
@@ -254,5 +270,24 @@ public class Utilisateur extends IrisUser{
                 + motdepasse + ", role=" + role + ", etat=" + etat + ", autorisation=" + autorisation + ", places="
                 + Arrays.toString(places) + "]";
     }
-    
+    public static Utilisateur[] recupererServeursEnCours(Connection connect, MyDAO dao) throws Exception{
+        String query="select * from v_serveurs_encours";
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        Utilisateur[] utilisateurs=new Utilisateur[objets.length];
+        Role role;
+        for(int i=0;i<utilisateurs.length;i++){
+            utilisateurs[i]=new Utilisateur();
+            utilisateurs[i].setId((int)objets[i].get("id"));
+            utilisateurs[i].setNom((String)objets[i].get("nom"));
+            utilisateurs[i].setEmail((String)objets[i].get("email"));
+            utilisateurs[i].setContact((String)objets[i].get("contact"));
+            role=new Role();
+            role.setId((int)objets[i].get("idrole"));
+            role.setNom((String)objets[i].get("nom_role"));
+            role.setNumero((String)objets[i].get("numero_role"));
+            utilisateurs[i].setRole(role);
+            utilisateurs[i].setCommandes(utilisateurs[i].getCommandesEnCours(connect, dao));
+        }
+        return utilisateurs;
+    }
 }
