@@ -432,3 +432,7 @@ from v_utilisateurs vu
 join v_roles on vu.idrole=v_roles.id
 left join v_serveurs_encours_1 v1 on vu.id=v1.idutilisateur
 where v1.idutilisateur is null and v_roles.numero in ('1','2','6');
+
+insert into roles values(default, 'barman', 0, '2');
+alter domain phone drop CONSTRAINT phone_check;
+insert into utilisateurs values(default, 4, 'Marc', 'marc@mail.io', '261323536740', 'root', 0, 0);
