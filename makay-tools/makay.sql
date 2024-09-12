@@ -447,3 +447,8 @@ create table role_categorie_produits(
 create or replace view v_role_categorie_produits as
 select *
 from role_categorie_produits where etat=0;
+
+create or replace view v_commandefille_produits as
+select vcf.*, vp.nom, vp.prix, vp.idcategorie
+from v_commande_filles vcf
+join v_produits vp on vcf.idproduit=vp.id;
