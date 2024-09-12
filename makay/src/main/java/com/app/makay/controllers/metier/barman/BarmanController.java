@@ -3,6 +3,8 @@ package com.app.makay.controllers.metier.barman;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,9 +77,17 @@ public class BarmanController {
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_RESETCACHE, Constantes.URL_RESET_CACHE_BARMAN);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, Constantes.URL_RECEIVE_NOTIFY_BARMAN);
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }
         return iris;
+    }
+
+    @MessageMapping("/notify-redirect-barman")
+    @SendTo("/notify/receive-notify-redirect-barman")
+    public String notifierModifications(){
+        return "reset cache";
     }
 }

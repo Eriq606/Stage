@@ -67,6 +67,8 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_RESETCACHE, Constantes.URL_RESET_CACHE_SERVEUR);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, Constantes.URL_RECEIVE_NOTIFY_SERVEUR);
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }
