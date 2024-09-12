@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.Produit;
+import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.utilitaire.Constantes;
@@ -44,7 +45,12 @@ public class ServeurController {
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            produits=dao.select(connect, Produit.class, new Produit(0));
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_SERVEUR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
@@ -146,7 +152,12 @@ public class ServeurController {
     @GetMapping("/reset-cache-serveur")
     public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            produits=dao.select(connect, Produit.class, new Produit(0));
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_SERVEUR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
