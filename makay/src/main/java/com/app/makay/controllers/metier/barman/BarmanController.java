@@ -1,14 +1,23 @@
 package com.app.makay.controllers.metier.barman;
 
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.app.makay.entites.Produit;
+import com.app.makay.entites.Role;
+import com.app.makay.entites.Utilisateur;
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 
 import handyman.HandyManUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import veda.godao.utils.DAOConnexion;
 
 @Controller
 public class BarmanController {
@@ -40,11 +49,35 @@ public class BarmanController {
     public void setProduits(Produit[] produits) {
         this.produits = produits;
     }
-    public BarmanController() throws IOException {
+    public BarmanController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_BAR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
+            for(Produit p:produits){
+                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+            }
+        }
     }
-    
-    
+    @GetMapping("/barman-passer-commande")
+    public Object passerCommande(HttpServletRequest req, Model model){
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Passer une commande", "pages/serveur/prise-commande", "layout/layout", model);
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
+        model.addAttribute(Constantes.VAR_PRODUITS, produits);
+        model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        if(utilisateur!=null){
+            model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        }
+        return iris;
+    }
 }
