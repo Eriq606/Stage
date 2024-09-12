@@ -290,4 +290,10 @@ public class Utilisateur extends IrisUser{
         }
         return utilisateurs;
     }
+    public Produit[] recupererProduitsCorrespondant(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s)";
+        addOn=String.format(addOn, getRole().getId());
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        return produits;
+    }
 }

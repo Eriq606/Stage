@@ -443,3 +443,7 @@ create table role_categorie_produits(
     idcategorie int not null references categories(id),
     etat int default 0
 );
+
+create or replace view v_role_categorie_produits as
+select *
+from role_categorie_produits where etat=0;
