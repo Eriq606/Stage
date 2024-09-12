@@ -71,6 +71,11 @@ public class Constantes {
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
         new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service")
     };
+    public static final ModelLink[] LINK_BARMAN={
+        new ModelLink("/barman-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
+        new ModelLink("/commandes-en-cours-barman", "fa-solid fa-clock", "Commandes en cours"),
+        new ModelLink("/liste-commande-barman", "fa-solid fa-list", "Mes commandes")
+    };
 
     public static final int PAGINATION_LIMIT=5;
 }
