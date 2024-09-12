@@ -436,3 +436,10 @@ where v1.idutilisateur is null and v_roles.numero in ('1','2','6');
 insert into roles values(default, 'barman', 0, '2');
 alter domain phone drop CONSTRAINT phone_check;
 insert into utilisateurs values(default, 4, 'Marc', 'marc@mail.io', '261323536740', 'root', 0, 0);
+
+create table role_categorie_produits(
+    id serial primary key,
+    idrole int not null references roles(id),
+    idcategorie int not null references categories(id),
+    etat int default 0
+);
