@@ -296,4 +296,13 @@ public class Utilisateur extends IrisUser{
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
     }
+    public CommandeEnCours[] recupererCommandesCorrespondantes(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s) group by idcommande)";
+        addOn=String.format(addOn, getRole().getId());
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
+    }
 }
