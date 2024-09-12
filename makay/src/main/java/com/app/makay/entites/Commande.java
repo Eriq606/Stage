@@ -115,6 +115,7 @@ public class Commande {
     public CommandeFille[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
         CommandeFille where=new CommandeFille();
         where.setCommande(this);
+        where.setEtat(0);
         CommandeFille[] commandeFilles=dao.select(connect, CommandeFille.class, where);
         for(int i=0;i<commandeFilles.length;i++){
             commandeFilles[i].recupererAccompagnements(connect, dao);
