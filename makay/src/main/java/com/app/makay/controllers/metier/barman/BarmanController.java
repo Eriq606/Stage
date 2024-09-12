@@ -2,6 +2,8 @@ package com.app.makay.controllers.metier.barman;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -10,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
@@ -83,6 +86,40 @@ public class BarmanController {
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }
+        return iris;
+    }
+    public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Mes commandes", "pages/serveur/prise-commande", "layout/layout", model);
+        CommandeEnCours where=new CommandeEnCours();
+        where.setUtilisateur(utilisateur);
+        if(table!=null){
+            table=table.trim();
+            where.setNomPlace(table);
+        }
+        int indice_actu_controller=1;
+        if(indice_actu!=null){
+            indice_actu_controller=indice_actu;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            CommandeEnCours[] commandes=utilisateur.recupererCommandesCorrespondantes(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
+            model.addAttribute(Constantes.VAR_COMMANDES, commandes);
+            //     put("indice_premier", indice_premier);
+            //     put("indice_precedent", indice_precedent);
+            //     put("indice_suivant", indice_suivant);
+            //     put("indice_dernier", indice_dernier);
+            //     put("bouton_precedent", bouton_precedent);
+            //     put("bouton_suivant", bouton_suivant);
+            // }};
+            // response.put("indice_actu", indice_actu);
+            HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indice_actu);
+            for (Map.Entry<String, Object> entry : pagination.entrySet()) {
+                model.addAttribute(entry.getKey(), entry.getValue());
+            }
+        }
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
+        model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         return iris;
     }
 
