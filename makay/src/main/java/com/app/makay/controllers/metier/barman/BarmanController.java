@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Role;
@@ -89,5 +90,26 @@ public class BarmanController {
     @SendTo("/notify/receive-notify-redirect-barman")
     public String notifierModifications(){
         return "reset cache";
+    }
+
+    @GetMapping("/reset-role-barman")
+    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
+        return filter.resetUserRole(req, dao, Constantes.ROLE_BAR);
+    }
+
+    @GetMapping("/reset-cache-barman")
+    public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_BAR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
+            for(Produit p:produits){
+                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+            }
+        }
+        return resetCacheRoles(req);
     }
 }

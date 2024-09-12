@@ -452,3 +452,11 @@ create or replace view v_commandefille_produits as
 select vcf.*, vp.nom, vp.prix, vp.idcategorie
 from v_commande_filles vcf
 join v_produits vp on vcf.idproduit=vp.id;
+
+insert into role_categorie_produits values(default, 1, 1, 0),
+                                          (default, 1, 2, 0);
+
+insert into role_categorie_produits values(default, 2, 1, 0),
+                                          (default, 2, 2, 0);                                          
+
+insert into role_categorie_produits values(default, 4, 1, 0);
