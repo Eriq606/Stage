@@ -88,15 +88,16 @@ public class BarmanController {
         }
         return iris;
     }
+    @GetMapping("/liste-commande-barman")
     public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Mes commandes", "pages/serveur/prise-commande", "layout/layout", model);
-        CommandeEnCours where=new CommandeEnCours();
-        where.setUtilisateur(utilisateur);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Mes commandes", "pages/serveur/liste-commande", "layout/layout", model);
+        // CommandeEnCours where=new CommandeEnCours();
+        // where.setUtilisateur(utilisateur);
         if(table!=null){
             table=table.trim();
-            where.setNomPlace(table);
+            // where.setNomPlace(table);
         }
         int indice_actu_controller=1;
         if(indice_actu!=null){
@@ -113,12 +114,12 @@ public class BarmanController {
             //     put("bouton_suivant", bouton_suivant);
             // }};
             // response.put("indice_actu", indice_actu);
-            HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indice_actu);
+            HashMap<String, Object> pagination=HandyManUtils.paginate(commandes.length, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
         }
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         return iris;
     }
