@@ -123,6 +123,14 @@ public class BarmanController {
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         return iris;
     }
+    @GetMapping("/commandes-en-cours-barman")
+    public Object commandeEnCours(HttpServletRequest req, Model model){
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR}, "Makay - Commandes en cours de préparation", "pages/barman/commande-en-cours", "layout/layout", model);
+        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
+        return iris;
+    }
 
     @MessageMapping("/notify-redirect-barman")
     @SendTo("/notify/receive-notify-redirect-barman")
