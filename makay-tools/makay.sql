@@ -460,3 +460,5 @@ insert into role_categorie_produits values(default, 2, 1, 0),
                                           (default, 2, 2, 0);                                          
 
 insert into role_categorie_produits values(default, 4, 1, 0);
+
+create or replace view v_comm

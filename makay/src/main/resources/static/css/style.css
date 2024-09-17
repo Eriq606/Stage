@@ -1,9 +1,16 @@
 /********** Template CSS **********/
-:root {
+/* :root {
     --primary: #a98146;
     --secondary: #191C24;
     --light: #6C7293;
     --dark: #000000;
+} */
+
+:root {
+    --primary: #9C6644;
+    --secondary: #EDE0D4;
+    --light: #7F5539;
+    --dark: #FFFFFF;
 }
 
 .back-to-top {
@@ -287,7 +294,7 @@
     background: var(--dark);
     border-color: var(--primary);
 }
-.modal-content{
+/* .modal-content{
     background-color: #191c24;
 }
 .page-link{
@@ -303,5 +310,24 @@
 }
 .page-item.page-active .page-link{
     background-color: #a98146;
+    color: #000000;
+} */
+.modal-content{
+    background-color: #EDE0D4;
+    /* color: #7F5539; */
+}
+.page-link{
+    background-color: #EDE0D4;
+    border-color: #6C7293;
+}
+.page-link:hover{
+    color: black;
+}
+.page-item.disabled .page-link{
+    background-color: #EDE0D4;
+    border-color: #6C7293;
+}
+.page-item.page-active .page-link{
+    background-color: #9C6644;
     color: #000000;
 }

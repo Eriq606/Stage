@@ -24,7 +24,8 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body table-responsive">
-                                                        <div th:each="cf:${c.commandeFilles}" style="color: white;">
+                                                        <!-- <div th:each="cf:${c.commandeFilles}" style="color: white;"> -->
+                                                        <div th:each="cf:${c.commandeFilles}">
                                                             <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
                                                             <p><ul>
                                                                 <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
@@ -115,7 +116,7 @@
             // Iterate over child commands (commandeFilles)
             commande.commandeFilles.forEach(cf => {
                 const cfDiv = document.createElement('div');
-                cfDiv.style.color = 'white';
+                // cfDiv.style.color = 'white';
 
                 // Quantite, produit nom, and notes
                 const p = document.createElement('p');
