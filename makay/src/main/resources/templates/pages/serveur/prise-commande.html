@@ -330,6 +330,7 @@
                             saveButton.type = 'button';
                             saveButton.className = 'btn btn-primary';
                             saveButton.textContent = 'Confirmer';
+                            saveButton.setAttribute('data-bs-dismiss', 'modal');
                             saveButton.onclick=()=>{
                                 const qte=document.getElementById("inputQuantite"+product.id).value;
                                 const notes=document.getElementById("notesArea"+product.id).value;
@@ -347,15 +348,8 @@
                                     orderQte.setAttribute("scope", "row");
                                     orderQte.textContent=commandes[i].quantite;
                                     const orderProd=document.createElement("td");
-                                    // orderProd.style.fontSize="small";
                                     orderProd.textContent=commandes[i].produit.nom+" "+commandes[i].notes;
                                     const orderNote=document.createElement("td");
-                                    // orderNote.style.fontSize="small";
-                                    // orderNote.innerHTML="<ul>";
-                                    // for(let j=0;j<commandes[i].accompagnements.length;j++){
-                                    //     orderNote.innerHTML+="<li>"+commandes[i].accompagnements[j].nom+"</li>";
-                                    // }
-                                    // orderNote.innerHTML+="</ul>";
                                     const ulElement = document.createElement('ul');
                                     ulElement.style.listStyle="none";
                                     // Loop through the accompagnements array
@@ -375,7 +369,6 @@
                                     const orderAdd=document.createElement("button");
                                     orderAdd.className="btn btn-primary w-100";
                                     orderAdd.setAttribute("type", "button");
-                                    // orderAdd.style.fontSize="small";
                                     orderAdd.innerHTML="<i class='fa fa-plus'></i>";
                                     orderAdd.onclick=()=>{
                                         commandes[i].quantite++;
@@ -386,7 +379,6 @@
                                     const orderRemove=document.createElement("button");
                                     orderRemove.className="btn btn-danger w-100";
                                     orderRemove.setAttribute("type", "button");
-                                    // orderRemove.style.fontSize="small";
                                     orderRemove.innerHTML="<i class='fa fa-minus'></i>";
                                     orderRemove.onclick=()=>{
                                         if(commandes[i].quantite>0){
