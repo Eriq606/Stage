@@ -261,6 +261,9 @@
             stompclient.publish({
                 destination:"/makay/notify-redirect-serveur"
             });
+            stompclient.publish({
+                destination:"/makay/notify-redirect-barman"
+            });
         }
         function redirigerVersResetCache(){
             window.location.href="http://"+ip+":8080/reset-cache-superviseur";

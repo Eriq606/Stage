@@ -205,29 +205,6 @@ public class SuperviseurController {
     public RedirectView resetRole(HttpServletRequest req) throws SQLException, Exception{
         return filter.resetUserRole(req, dao, Constantes.ROLE_SUPERVISEUR);
     }
-
-    @GetMapping("/reset-cache-roles-superviseur")
-    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
-        HttpSession session=req.getSession();
-        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        RedirectView iris=filter.checkByRolePOST(utilisateur, Constantes.ROLE_SUPERVISEUR);
-        if(iris!=null){
-            return iris;
-        }
-        try(Connection connect=DAOConnexion.getConnexion(dao)){
-            HistoriqueRoleUtilisateur[] rolesActuels=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
-            setAttributionRoles(rolesActuels);
-            for(HistoriqueRoleUtilisateur h:rolesActuels){
-                if(h.getUtilisateur().getId()==utilisateur.getId()){
-                    utilisateur.setRole(h.getRole());
-                    utilisateur.setIrisRole(utilisateur.getRole().getNumero());
-                    session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
-                    break;
-                }
-            }
-        }
-        return filter.distributeByRole(utilisateur);
-    }
     @GetMapping("/dispatch-tables-staff")
     public Object dispatchRangsStaff(HttpServletRequest req, Model model){
         HttpSession session=req.getSession();

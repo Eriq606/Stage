@@ -230,7 +230,7 @@ public class Utilisateur extends IrisUser{
         where.setUtilisateur(this);
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, new String[]{"dateheure_ouverture desc"});
         for(int i=0;i<commandes.length;i++){
-            commandes[i].recupererCommandeFilles(connect, dao);
+            commandes[i].recupererCommandeFilles(connect, dao, getRole());
         }
         return commandes;
     }
@@ -239,7 +239,7 @@ public class Utilisateur extends IrisUser{
         where.setUtilisateur(this);
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture desc"});
         for(int i=0;i<commandes.length;i++){
-            commandes[i].recupererCommandeFilles(connect, dao);
+            commandes[i].recupererCommandeFilles(connect, dao, getRole());
         }
         return commandes;
     }
@@ -249,7 +249,7 @@ public class Utilisateur extends IrisUser{
         where.setNomPlace(table);
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture desc"});
         for(int i=0;i<commandes.length;i++){
-            commandes[i].recupererCommandeFilles(connect, dao);
+            commandes[i].recupererCommandeFilles(connect, dao, getRole());
         }
         return commandes;
     }
@@ -289,5 +289,24 @@ public class Utilisateur extends IrisUser{
             utilisateurs[i].setCommandes(utilisateurs[i].getCommandesEnCours(connect, dao));
         }
         return utilisateurs;
+    }
+    public Produit[] recupererProduitsCorrespondant(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s) and etat=0";
+        addOn=String.format(addOn, getRole().getId());
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        return produits;
+    }
+    public CommandeEnCours[] recupererCommandesCorrespondantes(Connection connect, MyDAO dao, int offset, String table) throws Exception{
+        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s) group by idcommande) and idutilisateur=%s limit %s offset %s";
+        addOn=String.format(addOn, getRole().getId(), getId(), Constantes.PAGINATION_LIMIT, offset);
+        if(table!=null){
+            addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s) group by idcommande) and nom_place='%s' and idutilisateur=%s limit %s offset %s";
+            addOn=String.format(addOn, getRole().getId(), table, getId(), Constantes.PAGINATION_LIMIT, offset);
+        }
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
+        for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererCommandeFilles(connect, dao, getRole());
+        }
+        return commandes;
     }
 }

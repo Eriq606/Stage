@@ -110,6 +110,9 @@
         const offID=/*[[${offid}]]*/0;
         let idplaceActu=[];
         for(let i=0;i<arrangementsActu.length;i++){
+            if(arrangementsActu[i].rangee.id==inutiliseeID){
+                continue;
+            }
             const rangee=document.getElementById("rangeeModal"+arrangementsActu[i].rangee.id);
             const place=document.createElement("div");
             place.className=arrangementsActu[i].place.classeHTML+" place";
@@ -205,7 +208,10 @@
                 divRangee.appendChild(divRangeeHr);
             }
             for(let i=0;i<arrangementsActu.length;i++){
-                const rangee=document.getElementById("rangee"+arrangementsActu[i].rangee.id);
+                let rangee=document.getElementById("rangee"+arrangementsActu[i].rangee.id);
+                if(arrangementsActu[i].rangee.id==inutiliseeID){
+                    rangee=document.getElementById("draggable-places");
+                }
                 const place=document.createElement("div");
                 place.className=arrangementsActu[i].place.classeHTML+" no-drop place";
                 place.draggable=true;

@@ -151,6 +151,8 @@ public class MyFilter implements IrisFilter{
                 return new RedirectView("/serveur-passer-commande");
             case Constantes.ROLE_SUPERVISEUR:
                 return new RedirectView("/plan-de-table");
+            case Constantes.ROLE_BAR:
+                return new RedirectView("/barman-passer-commande");
         }
         return new RedirectView("/logout");
     }

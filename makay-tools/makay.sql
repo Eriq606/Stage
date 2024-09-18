@@ -432,3 +432,33 @@ from v_utilisateurs vu
 join v_roles on vu.idrole=v_roles.id
 left join v_serveurs_encours_1 v1 on vu.id=v1.idutilisateur
 where v1.idutilisateur is null and v_roles.numero in ('1','2','6');
+
+insert into roles values(default, 'barman', 0, '2');
+alter domain phone drop CONSTRAINT phone_check;
+insert into utilisateurs values(default, 4, 'Marc', 'marc@mail.io', '261323536740', 'root', 0, 0);
+
+create table role_categorie_produits(
+    id serial primary key,
+    idrole int not null references roles(id),
+    idcategorie int not null references categories(id),
+    etat int default 0
+);
+
+create or replace view v_role_categorie_produits as
+select *
+from role_categorie_produits where etat=0;
+
+create or replace view v_commandefille_produits as
+select vcf.*, vp.nom, vp.prix, vp.idcategorie
+from v_commande_filles vcf
+join v_produits vp on vcf.idproduit=vp.id;
+
+insert into role_categorie_produits values(default, 1, 1, 0),
+                                          (default, 1, 2, 0);
+
+insert into role_categorie_produits values(default, 2, 1, 0),
+                                          (default, 2, 2, 0);                                          
+
+insert into role_categorie_produits values(default, 4, 1, 0);
+
+create or replace view v_comm

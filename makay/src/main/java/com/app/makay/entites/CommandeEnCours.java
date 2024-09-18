@@ -1,8 +1,10 @@
 package com.app.makay.entites;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -109,11 +111,37 @@ public class CommandeEnCours{
         this.etat = etat;
     }
     
-    public CommandeFilleEnCours[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
-        CommandeFilleEnCours where=new CommandeFilleEnCours();
-        where.setCommande(this);
-        CommandeFilleEnCours[] commandeFilles=dao.select(connect, CommandeFilleEnCours.class, where);
+    public CommandeFilleEnCours[] recupererCommandeFilles(Connection connect, MyDAO dao, Role role) throws Exception{
+        // String addOn="where idcommande=%s and "
+        // CommandeFilleEnCours where=new CommandeFilleEnCours();
+        // where.setCommande(this);
+        // CommandeFilleEnCours[] commandeFilles=dao.select(connect, CommandeFilleEnCours.class, where);
+        // for(int i=0;i<commandeFilles.length;i++){
+        //     commandeFilles[i].recupererAccompagnements(connect, dao);
+        // }
+        // setCommandeFilles(commandeFilles);
+        String query="select * from v_commandefille_produits where idcommande=%s and idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s)";
+        query=String.format(query, getId(), role.getId());
+        HashMap<String, Object>[] objets=dao.select(connect, query);
+        CommandeFilleEnCours[] commandeFilles=new CommandeFilleEnCours[objets.length];
+        Produit produit;
+        Categorie categorie;
         for(int i=0;i<commandeFilles.length;i++){
+            commandeFilles[i]=new CommandeFilleEnCours();
+            commandeFilles[i].setId((int)objets[i].get("id"));
+            commandeFilles[i].setCommande(this);
+            produit=new Produit();
+            produit.setId((int)objets[i].get("idproduit"));
+            produit.setNom((String)objets[i].get("nom"));
+            produit.setPrix(((BigDecimal)objets[i].get("prix")).doubleValue());
+            categorie=new Categorie();
+            categorie.setId((int)objets[i].get("idcategorie"));
+            produit.setCategorie(categorie);
+            commandeFilles[i].setProduit(produit);
+            commandeFilles[i].setPu(((BigDecimal)objets[i].get("prix_unitaire")).doubleValue());
+            commandeFilles[i].setQuantite(((BigDecimal)objets[i].get("quantite")).doubleValue());
+            commandeFilles[i].setMontant(((BigDecimal)objets[i].get("montant")).doubleValue());
+            commandeFilles[i].setNotes((String)objets[i].get("notes"));
             commandeFilles[i].recupererAccompagnements(connect, dao);
         }
         setCommandeFilles(commandeFilles);

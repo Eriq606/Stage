@@ -37,6 +37,8 @@ public class Constantes {
     public static final String VAR_INUTILISEEID="inutiliseeid";
     public static final String VAR_OFFID="offid";
     public static final String VAR_SERVEURS="serveurs";
+    public static final String VAR_RESETCACHE="resetcache";
+    public static final String VAR_RECEIVENOTIFY="receivenotify";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -71,6 +73,18 @@ public class Constantes {
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
         new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service")
     };
+    public static final ModelLink[] LINK_BARMAN={
+        new ModelLink("/barman-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
+        new ModelLink("/commandes-en-cours-barman", "fa-solid fa-clock", "Commandes en cours"),
+        new ModelLink("/liste-commande-barman", "fa-solid fa-list", "Mes commandes")
+    };
 
     public static final int PAGINATION_LIMIT=5;
+
+    public static final String URL_RESET_CACHE_SERVEUR="reset-cache-serveur";
+    public static final String URL_RECEIVE_NOTIFY_SERVEUR="receive-notify-redirect-serveur";
+    public static final String URL_RESET_CACHE_SUPERVISEUR="reset-cache-superviseur";
+    public static final String URL_RECEIVE_NOTIFY_SUPERVISEUR="receive-notify-redirect-superviseur";
+    public static final String URL_RESET_CACHE_BARMAN="reset-cache-barman";
+    public static final String URL_RECEIVE_NOTIFY_BARMAN="receive-notify-redirect-barman";
 }

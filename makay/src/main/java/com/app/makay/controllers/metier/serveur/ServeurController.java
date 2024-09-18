@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.Produit;
+import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.utilitaire.Constantes;
@@ -44,7 +45,12 @@ public class ServeurController {
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            produits=dao.select(connect, Produit.class, new Produit(0));
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_SERVEUR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
@@ -61,6 +67,8 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_RESETCACHE, Constantes.URL_RESET_CACHE_SERVEUR);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, Constantes.URL_RECEIVE_NOTIFY_SERVEUR);
         if(utilisateur!=null){
             model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         }
@@ -95,24 +103,19 @@ public class ServeurController {
     public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_SUPERVISEUR}, "Makay - Liste des commandes", "pages/serveur/liste-commande", "layout/layout", model);
-        CommandeEnCours where=new CommandeEnCours();
-        where.setUtilisateur(utilisateur);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_SUPERVISEUR}, "Makay - Mes commandes", "pages/serveur/liste-commande", "layout/layout", model);
+        // CommandeEnCours where=new CommandeEnCours();
+        // where.setUtilisateur(utilisateur);
         if(table!=null){
             table=table.trim();
-            where.setNomPlace(table);
+            // where.setNomPlace(table);
         }
         int indice_actu_controller=1;
         if(indice_actu!=null){
             indice_actu_controller=indice_actu;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes;
-            if(table!=null){
-                commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
-            }else{
-                commandes=utilisateur.getCommandesEnCours(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT);
-            }
+            CommandeEnCours[] commandes=utilisateur.recupererCommandesCorrespondantes(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             //     put("indice_premier", indice_premier);
             //     put("indice_precedent", indice_precedent);
@@ -122,7 +125,7 @@ public class ServeurController {
             //     put("bouton_suivant", bouton_suivant);
             // }};
             // response.put("indice_actu", indice_actu);
-            HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indice_actu);
+            HashMap<String, Object> pagination=HandyManUtils.paginate(commandes.length, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
@@ -146,7 +149,12 @@ public class ServeurController {
     @GetMapping("/reset-cache-serveur")
     public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            produits=dao.select(connect, Produit.class, new Produit(0));
+            Utilisateur utilisateur=new Utilisateur();
+            Role role=new Role();
+            role.setNumero(Constantes.ROLE_SERVEUR);
+            role=dao.select(connect, Role.class, role)[0];
+            utilisateur.setRole(role);
+            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
