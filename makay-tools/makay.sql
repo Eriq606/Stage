@@ -435,6 +435,7 @@ where v1.idutilisateur is null and v_roles.numero in ('1','2','6');
 
 insert into roles values(default, 'barman', 0, '2');
 alter domain phone drop CONSTRAINT phone_check;
+select nextval('utilisateurs_id_seq');
 insert into utilisateurs values(default, 4, 'Marc', 'marc@mail.io', '261323536740', 'root', 0, 0);
 
 create table role_categorie_produits(
@@ -461,4 +462,52 @@ insert into role_categorie_produits values(default, 2, 1, 0),
 
 insert into role_categorie_produits values(default, 4, 1, 0);
 
-create or replace view v_comm
+create table commande_filles_terminees(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idcommandefille int not null references commande_filles(id),
+    dateheure timestamp not null,
+    est_termine int default 1
+);
+alter table commande_filles_terminees add etat int default 0;
+create or replace view v_commande_filles_terminees as
+select *
+from commande_filles_terminees where etat=0;
+
+create or replace view v_commandefille_produits as
+select vcf.*, vp.nom, vp.prix, vp.idcategorie, coalesce(vcft.est_termine, -1) as est_termine
+from v_commande_filles vcf
+join v_produits vp on vcf.idproduit=vp.id
+left join v_commande_filles_terminees vcft on vcf.id=vcft.idcommandefille;
+
+create table role_categorie_produits_checkings(
+    id serial primary key,
+    idrole int not null references roles(id),
+    idcategorie int not null references categories(id),
+    etat int default 0
+);
+create or replace view v_role_categorie_produits_checkings as
+select *
+from role_categorie_produits_checkings where etat=0;
+
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+where commandes.etat<40;
+
+insert into role_categorie_produits values(default, 4, 2, 0);
+
+insert into role_categorie_produits_checkings values(default, 1, 1, 0),
+                                                    (default, 1, 2, 0),
+
+                                                    (default, 2, 1, 0),
+                                                    (default, 2, 2, 0),
+
+                                                    (default, 4, 1, 0),
+                                                    (default, 4, 2, 0);
+
+delete from role_categorie_produits_checkings where idrole=4 and idcategorie=2;
+
+select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=4) group by idcommande)

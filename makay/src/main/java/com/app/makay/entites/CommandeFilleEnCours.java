@@ -31,6 +31,7 @@ public class CommandeFilleEnCours {
     @Column("etat")
     private Integer etat;
     private Accompagnement[] accompagnements;
+    private int estTermine;
     
     public Integer getId() {
         return id;
@@ -93,6 +94,12 @@ public class CommandeFilleEnCours {
         Accompagnement[] accompagnements=dao.select(connect, Accompagnement.class, addOn);
         setAccompagnements(accompagnements);
         return accompagnements;
+    }
+    public int getEstTermine() {
+        return estTermine;
+    }
+    public void setEstTermine(int estTermine) {
+        this.estTermine = estTermine;
     }
     
 }

@@ -4,17 +4,11 @@ import java.util.HashMap;
 
 public class ReponseREST {
     private HashMap<String, Object> donnees;
-    private String code;
+    private int code;
     private String message;
     
     public ReponseREST() {
         donnees=new HashMap<>();
-    }
-    public String getCode() {
-        return code;
-    }
-    public void setCode(String code) {
-        this.code = code;
     }
     public String getMessage() {
         return message;
@@ -27,6 +21,15 @@ public class ReponseREST {
     }
     public void addItem(String key, String value){
         getDonnees().put(key, value);
+    }
+    public void setDonnees(HashMap<String, Object> donnees) {
+        this.donnees = donnees;
+    }
+    public int getCode() {
+        return code;
+    }
+    public void setCode(int code) {
+        this.code = code;
     }
     
 }

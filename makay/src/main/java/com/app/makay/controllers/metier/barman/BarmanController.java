@@ -2,6 +2,8 @@ package com.app.makay.controllers.metier.barman;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,15 +12,22 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.CheckCommandeFilleREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
+import com.app.makay.utilitaire.ReponseREST;
+import com.app.makay.utilitaire.RestData;
+import com.app.makay.utilitaire.SessionUtilisateur;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,65 +80,80 @@ public class BarmanController {
             }
         }
     }
-    @GetMapping("/barman-passer-commande")
-    public Object passerCommande(HttpServletRequest req, Model model){
+    @GetMapping("/commandes-en-cours-barman")
+    public Object commandeEnCours(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Passer une commande", "pages/serveur/prise-commande", "layout/layout", model);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
-        model.addAttribute(Constantes.VAR_PRODUITS, produits);
-        model.addAttribute(Constantes.VAR_IP, ip);
-        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
-        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
-        model.addAttribute(Constantes.VAR_RESETCACHE, Constantes.URL_RESET_CACHE_BARMAN);
-        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, Constantes.URL_RECEIVE_NOTIFY_BARMAN);
-        if(utilisateur!=null){
-            model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR}, "Makay - Commandes en cours de préparation", "pages/barman/commande-en-cours", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
         }
-        return iris;
-    }
-    @GetMapping("/liste-commande-barman")
-    public Object listeCommande(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
-        HttpSession session=req.getSession();
-        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_SUPERVISEUR}, "Makay - Mes commandes", "pages/serveur/liste-commande", "layout/layout", model);
-        // CommandeEnCours where=new CommandeEnCours();
-        // where.setUtilisateur(utilisateur);
+        String queryCount="select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande)";
+        queryCount=String.format(queryCount, utilisateur.getRole().getId());
         if(table!=null){
             table=table.trim();
-            // where.setNomPlace(table);
+            queryCount+=" and nom_place='%s'";
+            queryCount=String.format(queryCount, table);
         }
         int indice_actu_controller=1;
         if(indice_actu!=null){
             indice_actu_controller=indice_actu;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes=utilisateur.recupererCommandesCorrespondantes(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
+            CommandeEnCours[] commandes=utilisateur.recupererCommandesChecking(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
-            //     put("indice_premier", indice_premier);
-            //     put("indice_precedent", indice_precedent);
-            //     put("indice_suivant", indice_suivant);
-            //     put("indice_dernier", indice_dernier);
-            //     put("bouton_precedent", bouton_precedent);
-            //     put("bouton_suivant", bouton_suivant);
-            // }};
+            // put("indice_premier", indice_premier);
+            // put("indice_precedent", indice_precedent);
+            // put("indice_suivant", indice_suivant);
+            // put("indice_dernier", indice_dernier);
+            // put("bouton_precedent", bouton_precedent);
+            // put("bouton_suivant", bouton_suivant);
             // response.put("indice_actu", indice_actu);
-            HashMap<String, Object> pagination=HandyManUtils.paginate(commandes.length, Constantes.PAGINATION_LIMIT, indice_actu_controller);
+            HashMap<String, Object> pagination=dao.paginate(connect, queryCount, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
         }
+        model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
+        model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
-    @GetMapping("/commandes-en-cours-barman")
-    public Object commandeEnCours(HttpServletRequest req, Model model){
-        HttpSession session=req.getSession();
-        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR}, "Makay - Commandes en cours de préparation", "pages/barman/commande-en-cours", "layout/layout", model);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
-        return iris;
+    @PostMapping("/terminer-commande-fille")
+    @ResponseBody
+    public ReponseREST checkCommandeFille(@RequestBody RestData datas) throws Exception{
+        ReponseREST response=new ReponseREST();
+        CheckCommandeFilleREST modifs=HandyManUtils.fromJson(CheckCommandeFilleREST.class, datas.getRestdata());
+        SessionUtilisateur where=new SessionUtilisateur();
+        where.setSessionId(modifs.getSessionid());
+        where.setUtilisateur(modifs.getUtilisateur());
+        where.setEstValide(Constantes.SESSION_ESTVALIDE);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
+            if(sessionUser.length!=1){
+                response.setCode(Constantes.CODE_ERROR);
+                response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+                return response;
+            }
+            if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
+                response.setCode(Constantes.CODE_ERROR);
+                response.setMessage(Constantes.MSG_SESSION_EXPIREE);
+                return response;
+            }
+            String[] authorized={Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER};
+            if(Arrays.asList(authorized).contains(sessionUser[0].getUtilisateur().getRole().getNumero())==false){
+                response.setCode(Constantes.CODE_ERROR);
+                response.setMessage(Constantes.MSG_NON_AUTHORISE);
+                return response;
+            }
+            modifs.getUtilisateur().checkCommandeFille(connect, dao, modifs.getCommandeFille());
+            connect.commit();
+            response.setCode(Constantes.CODE_SUCCESS);
+            response.setMessage(Constantes.MSG_SUCCES);
+            return response;
+        }
     }
 
     @MessageMapping("/notify-redirect-barman")

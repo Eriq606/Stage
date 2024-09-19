@@ -497,9 +497,24 @@
                                 "Content-type":"application/json"
                             },
                             body:JSON.stringify({restdata:JSON.stringify(envoicommande)})
-                        }).then(()=>{
+                        }).then((response)=>{
+                            return response.json();
+                        }).then((data)=>{
+                            envoicommande.commande.id=data.donnees.idcommande;
+                            if(data.code===0){
+                                const alerteEnvoye=document.getElementById("alerte-envoye");
+                                const alert=document.createElement("div");
+                                alert.className="alert alert-danger w-100";
+                                alert.setAttribute("role", "alert");
+                                alert.textContent=data.message;
+                                alerteEnvoye.appendChild(alert);
+                                // setTimeout(()=>{
+                                //     alerteEnvoye.removeChild(alert);
+                                // }, 1000);
+                                return;
+                            }
                             notifierSuperviseur(envoicommande);
-                            commandes=[];
+                            commandes.splice(0, commandes.length);
                             commandeAjout.innerHTML="";
                             const alerteEnvoye=document.getElementById("alerte-envoye");
                             const alert=document.createElement("div");

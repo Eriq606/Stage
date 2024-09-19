@@ -19,7 +19,7 @@ public class SessionUtilisateur {
     private String sessionId;
     @Column("expiration")
     private LocalDateTime expiration;
-    @ForeignKey(recursive = false)
+    @ForeignKey(recursive = true)
     @Column("idutilisateur")
     private Utilisateur utilisateur;
     @Column("estvalide")

@@ -3,10 +3,14 @@ package com.app.makay.utilitaire;
 public class Constantes {
     public static final String BRAND="Makay";
 
+    public static final int CODE_ERROR=0;
+    public static final int CODE_SUCCESS=10;
+
     public static final String MSG_UTILISATEUR_NON_IDENTIFIE="Email ou mot de passe erroné.";
     public static final String MSG_UTILISATEUR_NON_AUTHENTIFIE="Veuillez vous identifier";
     public static final String MSG_SESSION_EXPIREE="Session expirée";
     public static final String MSG_SUCCES="Succès";
+    public static final String MSG_NON_AUTHORISE="Accès non authorisé";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";
@@ -33,12 +37,16 @@ public class Constantes {
     public static final String VAR_LINKS="links";
     public static final String VAR_IP="ip";
     public static final String VAR_SESSIONID="sessionid";
+    public static final String VAR_COMMANDESFILLES="commandefilles";
     public static final String VAR_COMMANDES="commandes";
+    public static final String VAR_COMMANDE="commande";
     public static final String VAR_INUTILISEEID="inutiliseeid";
     public static final String VAR_OFFID="offid";
     public static final String VAR_SERVEURS="serveurs";
     public static final String VAR_RESETCACHE="resetcache";
     public static final String VAR_RECEIVENOTIFY="receivenotify";
+    public static final String VAR_INDICE_PAGINATION="indicepagination";
+    public static final String VAR_TABLE="table";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -74,9 +82,9 @@ public class Constantes {
         new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service")
     };
     public static final ModelLink[] LINK_BARMAN={
-        new ModelLink("/barman-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
+        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/commandes-en-cours-barman", "fa-solid fa-clock", "Commandes en cours"),
-        new ModelLink("/liste-commande-barman", "fa-solid fa-list", "Mes commandes")
+        new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes")
     };
 
     public static final int PAGINATION_LIMIT=5;

@@ -24,13 +24,7 @@ public class ErrorController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkIfLoggedIn(utilisateur, "Makay - Accès non autorisé", "errors/403", "layout/layout", model);
-        switch(utilisateur.getRole().getNumero()){
-            case Constantes.ROLE_SERVEUR:
-                model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SERVEUR);
-                break;
-            case Constantes.ROLE_SUPERVISEUR:
-                model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
-        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
         return iris;
     }
 }

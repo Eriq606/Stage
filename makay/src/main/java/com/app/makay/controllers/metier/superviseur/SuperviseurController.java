@@ -3,6 +3,7 @@ package com.app.makay.controllers.metier.superviseur;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -238,6 +239,11 @@ public class SuperviseurController {
                 response.setMessage(Constantes.MSG_SESSION_EXPIREE);
                 return response;
             }
+            String[] authorized={Constantes.ROLE_SUPERVISEUR};
+            if(Arrays.asList(authorized).contains(sessionUser[0].getUtilisateur().getRole().getNumero())==false){
+                response.setMessage(Constantes.MSG_NON_AUTHORISE);
+                return response;
+            }
             modifs.getUtilisateur().mettreAJourDispatchStaff(connect, dao, modifs.getDispatchs());
             connect.commit();
             response.setMessage(Constantes.MSG_SUCCES);
@@ -276,5 +282,14 @@ public class SuperviseurController {
         }
         return resetRole(req);
     }
-
+    @MessageMapping("/modifier-commande")
+    @SendTo("/notify/recevoir-modifier-commande")
+    public EnvoiCommandeREST modifierCommande(EnvoiCommandeREST commandes) throws Exception{
+        // try(Connection connect=DAOConnexion.getConnexion(dao)){
+        //     commandes.getCommande().setOuverture(LocalDateTime.now());
+        //     commandes.getCommande().setPlace(dao.select(connect, Place.class, commandes.getCommande().getPlace())[0]);
+        // }
+        
+        return commandes;
+    }
 }

@@ -2,23 +2,105 @@
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
-                <h1>Commandes en cours de préparation</h1>
-                <div class="accordion-item bg-transparent">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="true"
-                            aria-controls="collapseOne">
-                            Accordion Item #1
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show"
-                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            Gubergren justo eos magna eirmod lorem magna, amet dolores ipsum sadipscing ipsum consetetur invidunt et clita diam, vero dolor dolor est eirmod. Rebum accusam amet ipsum et. Et et lorem sanctus amet eos eos elitr ea, sanctus magna et et sed eos sit takimata sadipscing, dolor rebum sed stet vero.
-                        </div>
+                <div class="row mb-3">
+                <form action="/commandes-en-cours-barman" method="get">
+                    <label for="recherche-table" class="col-sm-2 col-form-label">Table: </label>
+                    <div class="input-group mb-3 col-sm-5" id="recherche-table">
+                        <input type="text" class="form-control" id="recherche-table-input" name="table" aria-label="Recherche">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
                     </div>
+                    <table class="table">
+                        <tbody id="recherche-table-suggestion"></tbody>
+                    </table>
+                </form>
                 </div>
             </div>
         </div>
     </div>
+    <br>
+    <div class="accordion" id="accordionCommande">
+        <div th:each="c:${commandes}" class="accordion-item bg-transparent">
+            <h2 class="accordion-header" th:id="'headingOne'+${c.id}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    th:data-bs-target="'#collapseCommande'+${c.id}" aria-expanded="true"
+                    th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}">
+                </button>
+            </h2>
+            <div th:id="'collapseCommande'+${c.id}" class="accordion-collapse collapse"
+                th:aria-labelledby="'headingOne'+${c.id}" data-bs-parent="#accordionCommande">
+                <div class="accordion-body table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr th:each="cf:${c.commandeFilles}">
+                                <td th:if="${cf.estTermine==-1}">
+                                    <input class="form-check-input" type="checkbox" th:data-idcommandefille="${cf.id}">
+                                </td>
+                                <td th:unless="${cf.estTermine==-1}" style="color: green;">
+                                    <i class="fa-solid fa-check"></i>
+                                </td>
+                                <td th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></td>
+                                <td><ul>
+                                    <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                </ul></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_premier}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_premier}" aria-label="Precedent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_precedent}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
+            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
+            <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_suivant}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_dernier}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_dernier}" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const places=/*[[${places}]]*/[];
+        const rechercheTableInput=document.getElementById("recherche-table-input");
+        const rechercheTableSuggestion=document.getElementById("recherche-table-suggestion");
+        rechercheTableInput.oninput=()=>{
+            rechercheTableSuggestion.innerHTML="";
+            for(let i=0;i<places.length;i++){
+                if(places[i].nom.includes(rechercheTableInput.value.toLowerCase())&&rechercheTableInput.value!==''){
+                    const suggestion=document.createElement("tr");
+                    const suggestionTdNom=document.createElement("td");
+                    suggestionTdNom.textContent=places[i].nom;
+                    const suggestionTdBtnCol=document.createElement("td");
+                    const suggestionTdBtn=document.createElement("button");
+                    suggestionTdBtn.type="button";
+                    suggestionTdBtn.innerHTML='<i class="fa-solid fa-plus"></i>';
+                    suggestionTdBtn.className="btn btn-primary w-100";
+                    suggestionTdBtn.onclick=()=>{
+                        rechercheTableInput.value=places[i].nom;
+                    };
+                    suggestion.appendChild(suggestionTdNom);
+                    suggestionTdBtnCol.appendChild(suggestionTdBtn);
+                    suggestion.appendChild(suggestionTdBtnCol);
+                    rechercheTableSuggestion.appendChild(suggestion);
+                }
+            }
+        };
+        const ip=/*[[${ip}]]*/"";
+        function checkCommandeFille(event){
+            const idcommandeFille=event.target.dataset.idcommandefille;
+            const api="http://"+ip+":8080/terminer-commande-fille";
+        }
+        /*]]*/
+    </script>
 </div>
