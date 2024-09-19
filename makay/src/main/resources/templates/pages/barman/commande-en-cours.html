@@ -1,4 +1,5 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div id="alerte-envoye"></div>
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
@@ -33,7 +34,7 @@
                         <tbody>
                             <tr th:each="cf:${c.commandeFilles}">
                                 <td th:if="${cf.estTermine==-1}">
-                                    <input class="form-check-input" type="checkbox" th:data-idcommandefille="${cf.id}">
+                                    <input class="form-check-input" type="checkbox" th:data-idcommandefille="${cf.id}" th:id="'checkCommandeFille'+${cf.id}" onclick="checkCommandeFille(event)">
                                 </td>
                                 <td th:unless="${cf.estTermine==-1}" style="color: green;">
                                     <i class="fa-solid fa-check"></i>
@@ -97,9 +98,42 @@
             }
         };
         const ip=/*[[${ip}]]*/"";
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
         function checkCommandeFille(event){
             const idcommandeFille=event.target.dataset.idcommandefille;
             const api="http://"+ip+":8080/terminer-commande-fille";
+            const commandeCheckee={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                commandeFille:{
+                    id:idcommandeFille
+                }
+            }
+            fetch(api, {
+                method:"POST",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(commandeCheckee)})
+            }).then((response)=>{
+                return response.json();
+            }).then((data)=>{
+                if(data.code===0){
+                    const alerteEnvoye=document.getElementById("alerte-envoye");
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                const element=document.getElementById("checkCommandeFille"+idcommandeFille);
+                element.disabled=true;
+                element.onclick=()=>{};
+                element.parentElement.parentElement.style.backgroundColor="#9cff9c";
+                element.parentElement.parentElement.style.textDecoration="line-through";
+            });
         }
         /*]]*/
     </script>

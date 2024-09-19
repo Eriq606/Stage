@@ -118,12 +118,14 @@ public class BarmanController {
         model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
     @PostMapping("/terminer-commande-fille")
     @ResponseBody
-    public ReponseREST checkCommandeFille(@RequestBody RestData datas) throws Exception{
+    public ReponseREST checkCommandeFille(@RequestBody RestData datas){
         ReponseREST response=new ReponseREST();
         CheckCommandeFilleREST modifs=HandyManUtils.fromJson(CheckCommandeFilleREST.class, datas.getRestdata());
         SessionUtilisateur where=new SessionUtilisateur();
@@ -152,6 +154,10 @@ public class BarmanController {
             connect.commit();
             response.setCode(Constantes.CODE_SUCCESS);
             response.setMessage(Constantes.MSG_SUCCES);
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
             return response;
         }
     }
