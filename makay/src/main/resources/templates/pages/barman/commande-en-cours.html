@@ -24,7 +24,8 @@
             <h2 class="accordion-header" th:id="'headingOne'+${c.id}">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     th:data-bs-target="'#collapseCommande'+${c.id}" aria-expanded="true"
-                    th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}">
+                    th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}"
+                    th:id="'buttonCheckCommande'+${c.id}">
                 </button>
             </h2>
             <div th:id="'collapseCommande'+${c.id}" class="accordion-collapse collapse"
@@ -34,9 +35,9 @@
                         <tbody>
                             <tr th:each="cf:${c.commandeFilles}">
                                 <td th:if="${cf.estTermine==-1}">
-                                    <input class="form-check-input" type="checkbox" th:data-idcommandefille="${cf.id}" th:id="'checkCommandeFille'+${cf.id}" onclick="checkCommandeFille(event)">
+                                    <input th:class="'checkCommandeFilleCommande'+${c.id}+' form-check-input'" th:data-termine="${cf.estTermine}" type="checkbox" th:data-idcommandefille="${cf.id}" th:data-idcommande="${c.id}" th:id="'checkCommandeFille'+${cf.id}" onclick="checkCommandeFille(event)">
                                 </td>
-                                <td th:unless="${cf.estTermine==-1}" style="color: green;">
+                                <td th:unless="${cf.estTermine==-1}" th:class="'checkCommandeFilleCommande'+${c.id}" th:data-termine="${cf.estTermine}" style="color: green;">
                                     <i class="fa-solid fa-check"></i>
                                 </td>
                                 <td th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></td>
@@ -102,6 +103,7 @@
         const sessionid=/*[[${sessionid}]]*/"";
         function checkCommandeFille(event){
             const idcommandeFille=event.target.dataset.idcommandefille;
+            const idcommande=event.target.dataset.idcommande;
             const api="http://"+ip+":8080/terminer-commande-fille";
             const commandeCheckee={
                 utilisateur:utilisateur,
@@ -119,6 +121,7 @@
             }).then((response)=>{
                 return response.json();
             }).then((data)=>{
+                const element=document.getElementById("checkCommandeFille"+idcommandeFille);
                 if(data.code===0){
                     const alerteEnvoye=document.getElementById("alerte-envoye");
                     const alert=document.createElement("div");
@@ -126,13 +129,27 @@
                     alert.setAttribute("role", "alert");
                     alert.textContent=data.message;
                     alerteEnvoye.appendChild(alert);
+                    element.checked=false;
                     return;
                 }
-                const element=document.getElementById("checkCommandeFille"+idcommandeFille);
                 element.disabled=true;
                 element.onclick=()=>{};
                 element.parentElement.parentElement.style.backgroundColor="#9cff9c";
                 element.parentElement.parentElement.style.textDecoration="line-through";
+                element.setAttribute("data-termine", "1");
+                const checks=document.getElementsByClassName("checkCommandeFilleCommande"+idcommande);
+                let estTermine=true;
+                for(let i=0;i<checks.length;i++){
+                    const estTerminePart=checks[i].dataset.termine;
+                    if(estTerminePart=="-1"){
+                        estTermine=false;
+                        break;
+                    }
+                }
+                if(estTermine){
+                    const button=document.getElementById("buttonCheckCommande"+idcommande);
+                    button.style.backgroundColor="#9cff9c";
+                }
             });
         }
         /*]]*/
