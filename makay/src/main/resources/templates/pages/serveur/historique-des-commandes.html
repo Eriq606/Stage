@@ -1,0 +1,152 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="accordion" id="accordionRecherche">
+                    <div class="accordion-item bg-transparent">
+                        <h2 class="accordion-header" id="headingRecherche">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseRecherche" aria-expanded="true"
+                                aria-controls="collapseRecherche">
+                                <p>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Recherche
+                                </p>
+                            </button>
+                        </h2>
+                        <div id="collapseRecherche" class="accordion-collapse collapse"
+                            aria-labelledby="headingRecherche" data-bs-parent="#accordionRecherche">
+                            <div class="accordion-body">
+                                <div class="row mb-3">
+                                    <label for="inputTable" class="col-sm-2 col-form-label">Table</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputTable">
+                                    </div>
+                                </div>
+                                <fieldset class="row mb-3">
+                                    <legend class="col-form-label col-sm-2 pt-0">Ouverture</legend>
+                                    <div class="col-sm-10">
+                                        <div class="row mb-3">
+                                            <label for="ouverture-debut" class="col-sm-2 col-form-label">Du: </label>
+                                            <div class="col-sm-10">
+                                                <input type="datetime-local" class="form-control" id="ouverture-debut">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="ouverture-fin" class="col-sm-2 col-form-label">Au: </label>
+                                            <div class="col-sm-10">
+                                                <input type="datetime-local" class="form-control" id="ouverture-fin">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="row mb-3">
+                                    <legend class="col-form-label col-sm-2 pt-0">Cloture</legend>
+                                    <div class="col-sm-10">
+                                        <div class="row mb-3">
+                                            <label for="cloture-debut" class="col-sm-2 col-form-label">Du: </label>
+                                            <div class="col-sm-10">
+                                                <input type="datetime-local" class="form-control" id="cloture-debut">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="cloture-fin" class="col-sm-2 col-form-label">Au: </label>
+                                            <div class="col-sm-10">
+                                                <input type="datetime-local" class="form-control" id="cloture-fin">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="row mb-3">
+                                    <legend class="col-form-label col-sm-2 pt-0">Mode de paiement</legend>
+                                    <div class="col-sm-10">
+                                        <div class="form-check" th:each="m:${modepaiements}">
+                                            <input class="form-check-input" type="checkbox" th:id="'mode-paiement'+${m.id}" th:value="${m.id}" name="modepaiement">
+                                            <label class="form-check-label" th:for="'mode-paiement'+${m.id}" th:text="${m.nom}"></label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="row mb-3">
+                                    <label for="inputProduit" class="col-sm-2 col-form-label">Produit</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputProduit">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputAccompagnement" class="col-sm-2 col-form-label">Accompagnement</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputAccompagnement">
+                                    </div>
+                                </div>
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Notes"
+                                        id="floatingTextarea" style="height: 150px;"></textarea>
+                                    <label for="floatingTextarea">Notes</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Table</th>
+                            <th>Serveur</th>
+                            <th>Date et heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c:${commandes}">
+                            <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
+                            <td th:text="${c.utilisateur.nom}"></td>
+                            <td th:text="${c.getHeure()}"></td>
+                            <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body table-responsive" th:id="'detailCommande'+${c.id}">
+                                            <p th:text="'Serveur: '+${c.utilisateur.nom}"></p>
+                                            <div th:each="cf:${c.commandeFilles}">
+                                                <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                <p><ul>
+                                                    <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                </ul></p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_premier}" aria-label="Precedent">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                        <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
+                        <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
+                        <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_dernier}" aria-label="Suivant">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

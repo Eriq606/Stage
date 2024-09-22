@@ -47,6 +47,7 @@ public class Constantes {
     public static final String VAR_RECEIVENOTIFY="receivenotify";
     public static final String VAR_INDICE_PAGINATION="indicepagination";
     public static final String VAR_TABLE="table";
+    public static final String VAR_MODEPAIEMENTS="modepaiements";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -73,18 +74,21 @@ public class Constantes {
 
     public static final ModelLink[] LINK_SERVEUR={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
-        new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours")
+        new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_SUPERVISEUR={
         new ModelLink("/plan-de-table", "fa-solid fa-chair", "Plan de table"),
         new ModelLink("/attribution-de-roles", "fa-solid fa-user", "Roles"),
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
-        new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service")
+        new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_BARMAN={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/commandes-en-cours-barman", "fa-solid fa-clock", "Commandes en cours"),
-        new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes")
+        new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
 
     public static final int PAGINATION_LIMIT=5;

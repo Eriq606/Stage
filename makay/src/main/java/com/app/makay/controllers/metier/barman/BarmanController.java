@@ -2,8 +2,6 @@ package com.app.makay.controllers.metier.barman;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +25,6 @@ import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 import com.app.makay.utilitaire.ReponseREST;
 import com.app.makay.utilitaire.RestData;
-import com.app.makay.utilitaire.SessionUtilisateur;
-
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -88,7 +84,7 @@ public class BarmanController {
         if(utilisateur==null){
             return iris;
         }
-        String queryCount="select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande)";
+        String queryCount="select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20";
         queryCount=String.format(queryCount, utilisateur.getRole().getId());
         if(table!=null){
             table=table.trim();
@@ -102,13 +98,6 @@ public class BarmanController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.recupererCommandesChecking(connect, dao, (indice_actu_controller-1)*Constantes.PAGINATION_LIMIT, table);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
-            // put("indice_premier", indice_premier);
-            // put("indice_precedent", indice_precedent);
-            // put("indice_suivant", indice_suivant);
-            // put("indice_dernier", indice_dernier);
-            // put("bouton_precedent", bouton_precedent);
-            // put("bouton_suivant", bouton_suivant);
-            // response.put("indice_actu", indice_actu);
             HashMap<String, Object> pagination=dao.paginate(connect, queryCount, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
@@ -128,32 +117,13 @@ public class BarmanController {
     public ReponseREST checkCommandeFille(@RequestBody RestData datas){
         ReponseREST response=new ReponseREST();
         CheckCommandeFilleREST modifs=HandyManUtils.fromJson(CheckCommandeFilleREST.class, datas.getRestdata());
-        SessionUtilisateur where=new SessionUtilisateur();
-        where.setSessionId(modifs.getSessionid());
-        where.setUtilisateur(modifs.getUtilisateur());
-        where.setEstValide(Constantes.SESSION_ESTVALIDE);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
-            if(sessionUser.length!=1){
-                response.setCode(Constantes.CODE_ERROR);
-                response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-                return response;
-            }
-            if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
-                response.setCode(Constantes.CODE_ERROR);
-                response.setMessage(Constantes.MSG_SESSION_EXPIREE);
-                return response;
-            }
-            String[] authorized={Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER};
-            if(Arrays.asList(authorized).contains(sessionUser[0].getUtilisateur().getRole().getNumero())==false){
-                response.setCode(Constantes.CODE_ERROR);
-                response.setMessage(Constantes.MSG_NON_AUTHORISE);
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER});
+            if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
             modifs.getUtilisateur().checkCommandeFille(connect, dao, modifs.getCommandeFille());
             connect.commit();
-            response.setCode(Constantes.CODE_SUCCESS);
-            response.setMessage(Constantes.MSG_SUCCES);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);

@@ -2,18 +2,22 @@ package com.app.makay.utilitaire;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.ObjectREST;
 import com.app.makay.iris.IrisFilter;
 import com.app.makay.iris.IrisUser;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import veda.godao.DAO;
 import veda.godao.utils.DAOConnexion;
 
 public class MyFilter implements IrisFilter{
@@ -171,6 +175,36 @@ public class MyFilter implements IrisFilter{
     @Override
     public RedirectView distributeByAuthorization(IrisUser irisUser) {
         throw new UnsupportedOperationException("Unimplemented method 'distributeByAuthorization'");
+    }
+
+    @Override
+    public ReponseREST checkByRoleREST(ObjectREST modifs, Connection connect, DAO dao, String[] roles) throws Exception {
+        ReponseREST response=new ReponseREST();
+        SessionUtilisateur where=new SessionUtilisateur();
+        where.setSessionId(modifs.getSessionid());
+        where.setUtilisateur(modifs.getUtilisateur());
+        where.setEstValide(Constantes.SESSION_ESTVALIDE);
+        Role roleActuel=modifs.getUtilisateur().getRoleActuel(connect, dao);
+        SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
+        if(sessionUser.length!=1){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
+            return response;
+        }
+        if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(Constantes.MSG_SESSION_EXPIREE);
+            return response;
+        }
+        String[] authorized=roles;
+        if(Arrays.asList(authorized).contains(roleActuel.getNumero())==false){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(Constantes.MSG_NON_AUTHORISE);
+            return response;
+        }
+        response.setCode(Constantes.CODE_SUCCESS);
+        response.setMessage(Constantes.MSG_SUCCES);
+        return response;
     }
     
 }

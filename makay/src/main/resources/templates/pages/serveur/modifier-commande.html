@@ -80,32 +80,6 @@
                     const places=/*[[${places}]]*/[];
                     const utilisateur=/*[[${utilisateur}]]*/{};
                     const sessionid=/*[[${sessionid}]]*/"";
-                    // const tableOuter=document.getElementById("tableOuter");
-                    // const tableInner=document.getElementById("tableInner");
-                    // tableOuter.addEventListener("change", function(){
-                    //     tableInner.innerHTML="";
-                    //     for(let i=0;i<places.length;i++){
-                    //         const tableInnerOption=document.createElement("option");
-                    //         tableInnerOption.textContent=places[i].nom;
-                    //         tableInnerOption.value=places[i].id;
-                    //         if(places[i].id==tableOuter.value){
-                    //             tableInnerOption.selected=true;
-                    //         }
-                    //         tableInner.appendChild(tableInnerOption);
-                    //     }
-                    // });
-                    // tableInner.addEventListener("change", function(){
-                    //     tableOuter.innerHTML="";
-                    //     for(let i=0;i<places.length;i++){
-                    //         const tableOuterOption=document.createElement("option");
-                    //         tableOuterOption.textContent=places[i].nom;
-                    //         tableOuterOption.value=places[i].id;
-                    //         if(places[i].id==tableInner.value){
-                    //             tableOuterOption.selected=true;
-                    //         }
-                    //         tableOuter.appendChild(tableOuterOption);
-                    //     }
-                    // });
 
                     let produits=/*[[${produits}]]*/[];
                     let produitInput=document.getElementById("recherche-produit");
@@ -117,11 +91,6 @@
                     }
 
                     let commandes=[];
-                    // let resetCommande=document.getElementById("reset-commande");
-                    // resetCommande.onclick=()=>{
-                    //     commandes=[];
-                    //     commandeAjout.innerHTML="";
-                    // }
 
                     produitInput.addEventListener("input", function(){
                         const input=this.value.toLowerCase();
@@ -486,6 +455,9 @@
                         commandeToSend.montant=montant;
                         let commandeFilles=[];
                         for(let i=0;i<commandes.length;i++){
+                            if(commandes[i].quantite==0){
+                                continue;
+                            }
                             const newObj={
                                 commande:commandeToSend,
                                 produit:commandes[i].produit,
@@ -503,6 +475,15 @@
                             commande:commandeToSend,
                             commandeFilles:commandeFilles
                         };
+                        const alerteEnvoye=document.getElementById("alerte-envoye");
+                        if(commandeFilles.length==0){
+                            const alert=document.createElement("div");
+                            alert.className="alert alert-danger alert-dismissible fade show w-100";
+                            alert.setAttribute("role", "alert");
+                            alert.textContent="Commande vide";
+                            alerteEnvoye.appendChild(alert);
+                            return;
+                        }
                         console.log(envoicommande);
                         const api="http://"+ip+":8080/modifier-commande";
                         fetch(api, {
@@ -516,7 +497,6 @@
                         }).then((data)=>{
                             console.log(data);
                             if(data.code===0){
-                                const alerteEnvoye=document.getElementById("alerte-envoye");
                                 const alert=document.createElement("div");
                                 alert.className="alert alert-danger w-100";
                                 alert.setAttribute("role", "alert");

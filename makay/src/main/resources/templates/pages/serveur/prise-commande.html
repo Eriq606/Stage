@@ -472,6 +472,9 @@
                         };
                         const commandeFilles=[];
                         for(let i=0;i<commandes.length;i++){
+                            if(commandes[i].quantite==0){
+                                continue;
+                            }
                             commandeFilles.push(
                                 {
                                     produit:commandes[i].produit,
@@ -489,6 +492,15 @@
                             commande:commande,
                             commandeFilles:commandeFilles
                         };
+                        const alerteEnvoye=document.getElementById("alerte-envoye");
+                        if(commandeFilles.length==0){
+                            const alert=document.createElement("div");
+                            alert.className="alert alert-danger alert-dismissible fade show w-100";
+                            alert.setAttribute("role", "alert");
+                            alert.textContent="Commande vide";
+                            alerteEnvoye.appendChild(alert);
+                            return;
+                        }
                         console.log(envoicommande);
                         const api="http://"+ip+":8080/serveur-passer-commande";
                         fetch(api, {
@@ -516,7 +528,6 @@
                             notifierSuperviseur(envoicommande);
                             commandes.splice(0, commandes.length);
                             commandeAjout.innerHTML="";
-                            const alerteEnvoye=document.getElementById("alerte-envoye");
                             const alert=document.createElement("div");
                             alert.className="alert alert-success w-100";
                             alert.setAttribute("role", "alert");

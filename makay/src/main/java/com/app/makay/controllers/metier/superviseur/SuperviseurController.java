@@ -3,8 +3,6 @@ package com.app.makay.controllers.metier.superviseur;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -29,8 +27,6 @@ import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 import com.app.makay.utilitaire.ReponseREST;
 import com.app.makay.utilitaire.RestData;
-import com.app.makay.utilitaire.SessionUtilisateur;
-
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -145,7 +141,10 @@ public class SuperviseurController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Plan de table", "pages/superviseur/plan-table", "layout/layout", model);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        if(utilisateur==null){
+            return iris;
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
         model.addAttribute(Constantes.VAR_PLACES, places);
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_RANGEEPLACES, rangeePlaces);
@@ -177,10 +176,13 @@ public class SuperviseurController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Attribution de role", "pages/superviseur/attribution-role", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
         model.addAttribute(Constantes.VAR_ROLES, roles);
         model.addAttribute(Constantes.VAR_ROLEUTILISATEURS, attributionRoles);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
@@ -211,7 +213,10 @@ public class SuperviseurController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Dispatch des rangs de table au staff", "pages/superviseur/dispatch-tables-staff", "layout/layout", model);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        if(utilisateur==null){
+            return iris;
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
@@ -225,28 +230,17 @@ public class SuperviseurController {
     public ReponseREST mettreAJourDispatchStaff(@RequestBody RestData datas) throws Exception{
         ReponseREST response=new ReponseREST();
         ModificationDispatchREST modifs=HandyManUtils.fromJson(ModificationDispatchREST.class, datas.getRestdata());
-        SessionUtilisateur where=new SessionUtilisateur();
-        where.setSessionId(modifs.getSessionid());
-        where.setUtilisateur(modifs.getUtilisateur());
-        where.setEstValide(Constantes.SESSION_ESTVALIDE);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            SessionUtilisateur[] sessionUser=dao.select(connect, SessionUtilisateur.class, where);
-            if(sessionUser.length!=1){
-                response.setMessage(Constantes.MSG_UTILISATEUR_NON_AUTHENTIFIE);
-                return response;
-            }
-            if(sessionUser[0].getExpiration().isBefore(LocalDateTime.now())){
-                response.setMessage(Constantes.MSG_SESSION_EXPIREE);
-                return response;
-            }
-            String[] authorized={Constantes.ROLE_SUPERVISEUR};
-            if(Arrays.asList(authorized).contains(sessionUser[0].getUtilisateur().getRole().getNumero())==false){
-                response.setMessage(Constantes.MSG_NON_AUTHORISE);
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
             modifs.getUtilisateur().mettreAJourDispatchStaff(connect, dao, modifs.getDispatchs());
             connect.commit();
-            response.setMessage(Constantes.MSG_SUCCES);
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
             return response;
         }
     }
@@ -255,10 +249,13 @@ public class SuperviseurController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Monitoring", "pages/superviseur/monitoring-des-serveurs", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             model.addAttribute(Constantes.VAR_SERVEURS, Utilisateur.recupererServeursEnCours(connect, dao));
         }
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_SUPERVISEUR);
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }
@@ -285,11 +282,6 @@ public class SuperviseurController {
     @MessageMapping("/modifier-commande")
     @SendTo("/notify/recevoir-modifier-commande")
     public EnvoiCommandeREST modifierCommande(EnvoiCommandeREST commandes) throws Exception{
-        // try(Connection connect=DAOConnexion.getConnexion(dao)){
-        //     commandes.getCommande().setOuverture(LocalDateTime.now());
-        //     commandes.getCommande().setPlace(dao.select(connect, Place.class, commandes.getCommande().getPlace())[0]);
-        // }
-        
         return commandes;
     }
 }

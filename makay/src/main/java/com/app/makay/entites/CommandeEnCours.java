@@ -111,9 +111,9 @@ public class CommandeEnCours{
         this.etat = etat;
     }
     
-    public CommandeFilleEnCours[] recupererCommandeFillesWithoutSet(Connection connect, MyDAO dao, Role role) throws Exception{
-        String query="select * from v_commandefille_produits where idcommande=%s and idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s)";
-        query=String.format(query, getId(), role.getId());
+    public CommandeFilleEnCours[] recupererCommandeFillesWithoutSet(Connection connect, MyDAO dao) throws Exception{
+        String query="select * from v_commandefille_produits where idcommande=%s";
+        query=String.format(query, getId());
         HashMap<String, Object>[] objets=dao.select(connect, query);
         CommandeFilleEnCours[] commandeFilles=new CommandeFilleEnCours[objets.length];
         Produit produit;
@@ -140,8 +140,8 @@ public class CommandeEnCours{
         // setCommandeFilles(commandeFilles);
         return commandeFilles;
     }
-    public CommandeFilleEnCours[] recupererCommandeFilles(Connection connect, MyDAO dao, Role role) throws Exception{
-        setCommandeFilles(recupererCommandeFillesWithoutSet(connect, dao, role));
+    public CommandeFilleEnCours[] recupererCommandeFilles(Connection connect, MyDAO dao) throws Exception{
+        setCommandeFilles(recupererCommandeFillesWithoutSet(connect, dao));
         return commandeFilles;
     }
     public CommandeFilleEnCours[] recupererCommandeFillesChecking(Connection connect, MyDAO dao, Role role) throws Exception{

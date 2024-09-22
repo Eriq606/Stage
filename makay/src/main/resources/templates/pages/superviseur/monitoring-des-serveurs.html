@@ -137,26 +137,6 @@
             modalBody.id="detailCommandeServeur"+utilisateur.id+"Commande"+commande.id;
             // Iterate over child commands (commandeFilles)
             commande.commandeFilles.forEach(cf => {
-                // const cfDiv = document.createElement('div');
-                // // cfDiv.style.color = 'white';
-
-                // // Quantite, produit nom, and notes
-                // const p = document.createElement('p');
-                // p.textContent = cf.quantite + ' ' + cf.produit.nom + ' ' + cf.notes;
-                // cfDiv.appendChild(p);
-
-                // // Accompagnements list
-                // const ul = document.createElement('ul');
-                // cf.accompagnements.forEach(cfa => {
-                //     const li = document.createElement('li');
-                //     li.textContent = cfa.nom; // cfa.nom
-                //     ul.appendChild(li);
-                // });
-
-                // const accompagnementP = document.createElement('p');
-                // accompagnementP.appendChild(ul);
-                // cfDiv.appendChild(accompagnementP);
-                // modalBody.appendChild(cfDiv);
                 createCommandeFilleRow(cf, modalBody);
             });
 
@@ -206,9 +186,6 @@
                 for(let i=0;i<envoiCommande.commandeFilles.length;i++){
                     modifierCommande(envoiCommande.commandeFilles[i], commande, utilisateur);
                 }
-                // const commandeRow=createCommandeRow(commande, utilisateur);
-                // const commandes=document.getElementById("commandes-"+envoiCommande.utilisateur.id);
-                // commandes.insertBefore(commandeRow, commandes.firstChild);
             });
         }
         function redirigerVersResetCache(){

@@ -510,4 +510,27 @@ insert into role_categorie_produits_checkings values(default, 1, 1, 0),
 
 delete from role_categorie_produits_checkings where idrole=4 and idcategorie=2;
 
-select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=4) group by idcommande)
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+join v_utilisateurs vu on commandes.idutilisateur=vu.id
+where commandes.etat<40;
+
+create or replace view v_utilisateurs as
+select utilisateurs.id, utilisateurs.idrole, utilisateurs.nom, utilisateurs.email, utilisateurs.contact, v_roles.nom as nom_role, v_roles.numero as numero_role
+from utilisateurs
+join v_roles on utilisateurs.idrole=v_roles.id
+where utilisateurs.etat=0;
+
+create table mode_paiements(
+    id serial primary key,
+    nom varchar not null unique,
+    etat int default 0
+);
+
+insert into mode_paiements values(default, 'V.A.T', 0),
+                                (default, 'Carte de crédit', 0),
+                                (default, 'Mobile Money', 0),
+                                (default, 'Espèces', 0);
