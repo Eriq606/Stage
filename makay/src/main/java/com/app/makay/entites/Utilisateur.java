@@ -102,6 +102,9 @@ public class Utilisateur extends IrisUser{
             case Constantes.ROLE_BAR:
                 links=Constantes.LINK_BARMAN;
                 break;
+            case Constantes.ROLE_SUPERVISEUR:
+                links=Constantes.LINK_SUPERVISEUR;
+                break;
         }
         return links;
     }
@@ -115,6 +118,10 @@ public class Utilisateur extends IrisUser{
             case Constantes.ROLE_BAR:
                 responses[0]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
+                break;
+            case Constantes.ROLE_SUPERVISEUR:
+                responses[0]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
+                responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
                 break;
         }
         return responses;
