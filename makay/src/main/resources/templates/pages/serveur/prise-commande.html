@@ -53,9 +53,7 @@
                         <div class="modal-footer">
                             <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
                             <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
-                            <div id="loading-envoi-commande" class="d-flex justify-content-center" style="display: none;">
-                                <img th:src="@{img/loading.gif}" alt="loading">
-                            </div>
+                            <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
                         </div>
                     </div>
                     </div>
@@ -518,7 +516,6 @@
                             return response.json();
                         }).then((data)=>{
                             loadingEnvoiCommande.style.display="none";
-                            envoicommande.commande.id=data.donnees.idcommande;
                             if(data.code===0){
                                 const alerteEnvoye=document.getElementById("alerte-envoye");
                                 const alert=document.createElement("div");
@@ -531,7 +528,9 @@
                                 // }, 1000);
                                 return;
                             }
-                            notifierSuperviseur(envoicommande);
+                            console.log(data);
+                            // envoicommande.commande.id=data.donnees.idcommande;
+                            // notifierSuperviseur(envoicommande);
                             commandes.splice(0, commandes.length);
                             commandeAjout.innerHTML="";
                             const alert=document.createElement("div");

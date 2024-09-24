@@ -71,6 +71,7 @@
                         <div class="modal-footer">
                             <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
                             <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
+                            <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
                         </div>
                     </div>
                     </div>
@@ -486,6 +487,8 @@
                         }
                         console.log(envoicommande);
                         const api="http://"+ip+":8080/modifier-commande";
+                        const loadingEnvoiCommande=document.getElementById("loading-envoi-commande");
+                        loadingEnvoiCommande.style.display="block";
                         fetch(api, {
                             method:"POST",
                             headers:{
@@ -495,6 +498,7 @@
                         }).then((response)=>{
                             return response.json();
                         }).then((data)=>{
+                            loadingEnvoiCommande.style.display="none";
                             console.log(data);
                             if(data.code===0){
                                 const alert=document.createElement("div");

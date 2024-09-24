@@ -128,6 +128,7 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
                                 <button type="button" class="btn btn-success" id="confirmer-dispatch">Confirmer</button>
                                 </div>
+                                <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
                             </div>
                             </div>
                         </div>
@@ -285,6 +286,8 @@
         confirmerDispatch.onclick=()=>{
             toSubmit=JSON.stringify({utilisateur:utilisateur, dispatchs:dispatchs, sessionid:sessionid});
             const api="http://"+ip+":8080/dispatch-tables-staff";
+            const loadingEnvoiCommande=document.getElementById("loading-envoi-commande");
+            loadingEnvoiCommande.style.display="block";
             fetch(api, {
                 method: "POST",
                 headers:{
@@ -292,6 +295,7 @@
                 },
                 body: JSON.stringify({restdata:toSubmit})
             }).then(()=>{
+                loadingEnvoiCommande.style.display="none";
                 notifierToutUtilisateur();
             });
         }

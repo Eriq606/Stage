@@ -51,6 +51,7 @@
             </div>
         </div>
     </div>
+    <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
     <br>
     <nav>
         <ul class="pagination justify-content-center">
@@ -105,6 +106,8 @@
             const idcommandeFille=event.target.dataset.idcommandefille;
             const idcommande=event.target.dataset.idcommande;
             const api="http://"+ip+":8080/terminer-commande-fille";
+            const loadingEnvoiCommande=document.getElementById("loading-envoi-commande");
+            loadingEnvoiCommande.style.display="block";
             const commandeCheckee={
                 utilisateur:utilisateur,
                 sessionid:sessionid,
@@ -121,6 +124,7 @@
             }).then((response)=>{
                 return response.json();
             }).then((data)=>{
+                loadingEnvoiCommande.style.display="none";
                 const element=document.getElementById("checkCommandeFille"+idcommandeFille);
                 if(data.code===0){
                     const alerteEnvoye=document.getElementById("alerte-envoye");
