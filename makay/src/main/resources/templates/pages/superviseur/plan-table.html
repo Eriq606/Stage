@@ -222,19 +222,19 @@
                 place.textContent=arrangementsActu[i].place.nom;
                 rangee.appendChild(place);
             }
-            for(let i=0;i<places.length;i++){
-                if(idplaceActu.includes(places[i].id)){
-                    continue;
-                }
-                const place=document.createElement("div");
-                place.className=places[i].classeHTML+" no-drop place";
-                place.draggable=true;
-                place.setAttribute("ondragstart", "drag(event)");
-                place.setAttribute("data-idplace", places[i].id);
-                place.id="place"+places[i].id;
-                place.textContent=places[i].nom;
-                draggablePlaces.appendChild(place);
-            }
+            // for(let i=0;i<places.length;i++){
+            //     if(idplaceActu.includes(places[i].id)){
+            //         continue;
+            //     }
+            //     const place=document.createElement("div");
+            //     place.className=places[i].classeHTML+" no-drop place";
+            //     place.draggable=true;
+            //     place.setAttribute("ondragstart", "drag(event)");
+            //     place.setAttribute("data-idplace", places[i].id);
+            //     place.id="place"+places[i].id;
+            //     place.textContent=places[i].nom;
+            //     draggablePlaces.appendChild(place);
+            // }
             const dispoActuModalContent=document.getElementById("dispoActuModalContent");
             const alertBox=document.createElement("div");
             alertBox.className="alert alert-success w-100";
