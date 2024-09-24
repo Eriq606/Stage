@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,5 +8,9 @@
 <body>
     <h1>WooHoo !</h1>
     <a href="/login">Retour</a>
+    <script th:inline="javascript">
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const iris=/*[[${iris}]]*/{};
+    </script>
 </body>
 </html>

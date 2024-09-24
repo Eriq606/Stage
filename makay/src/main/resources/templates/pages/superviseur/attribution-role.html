@@ -129,6 +129,8 @@
         let attributions=[];
 
         const ip=/*[[${ip}]]*/"";
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
         const stompclient=new StompJs.Client({
             brokerURL:'ws://'+ip+':8080/messaging'
         });
@@ -145,10 +147,10 @@
             });
         }
         function redirigerVersResetCache(){
-            window.location.href="http://"+ip+":8080/reset-cache-superviseur";
+            window.location.href="http://"+ip+":8080/"+resetCache;
         }
         function receiveNotificationRedirect(){
-            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
                 redirigerVersResetCache();
             });
         }

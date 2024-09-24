@@ -534,3 +534,7 @@ insert into mode_paiements values(default, 'V.A.T', 0),
                                 (default, 'Carte de crédit', 0),
                                 (default, 'Mobile Money', 0),
                                 (default, 'Espèces', 0);
+
+insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp, 0),
+                                               (default, 2, 2, current_timestamp, 0),
+                                               (default, 4, 4, current_timestamp, 0);

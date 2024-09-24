@@ -66,11 +66,11 @@ public class ServeurController {
             return iris;
         }
         model.addAttribute(Constantes.VAR_PRODUITS, produits);
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
-        String[] urls=utilisateur.getResetCacheAndNotify();
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
         model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
         model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
@@ -125,7 +125,7 @@ public class ServeurController {
         }
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
         return iris;
     }
@@ -172,7 +172,7 @@ public class ServeurController {
             CommandeFilleEnCours[] commandeFilles=commande.recupererCommandeFillesWithoutSet(connect, dao);
             model.addAttribute(Constantes.VAR_COMMANDE, commande);
             model.addAttribute(Constantes.VAR_COMMANDESFILLES, commandeFilles);
-            model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+            model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
             model.addAttribute(Constantes.VAR_PRODUITS, produits);
             model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
             model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
@@ -227,7 +227,7 @@ public class ServeurController {
             model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
         }
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         return iris;
     }
 }

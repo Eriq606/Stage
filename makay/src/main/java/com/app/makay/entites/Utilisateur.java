@@ -93,7 +93,7 @@ public class Utilisateur extends IrisUser{
     public void setRole(Role role) {
         this.role = role;
     }
-    public ModelLink[] getLinks(){
+    public ModelLink[] recupererLinks(){
         ModelLink[] links=null;
         switch(getRole().getNumero()){
             case Constantes.ROLE_SERVEUR:
@@ -108,19 +108,19 @@ public class Utilisateur extends IrisUser{
         }
         return links;
     }
-    public String[] getResetCacheAndNotify(){
+    public String[] recupererResetCacheAndNotify(){
         String[] responses=new String[2];
         switch(getRole().getNumero()){
             case Constantes.ROLE_SERVEUR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_SERVEUR;
+                responses[0]=Constantes.URL_RESET_CACHE_SERVEUR;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SERVEUR;
                 break;
             case Constantes.ROLE_BAR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
+                responses[0]=Constantes.URL_RESET_CACHE_BARMAN;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
                 break;
             case Constantes.ROLE_SUPERVISEUR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
+                responses[0]=Constantes.URL_RESET_CACHE_SUPERVISEUR;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
                 break;
         }
@@ -135,6 +135,7 @@ public class Utilisateur extends IrisUser{
         Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
         if(target.length==1){
             utilisateur=target[0];
+            utilisateur.getRoleActuel(connect, dao);
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
             utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
