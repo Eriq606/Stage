@@ -6,6 +6,10 @@ public class IrisRESTResponse {
     private HashMap<String, Object> donnees;
     private int code;
     private String message;
+    
+    public IrisRESTResponse() {
+        donnees=new HashMap<>();
+    }
     public HashMap<String, Object> getDonnees() {
         return donnees;
     }
