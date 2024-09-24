@@ -538,3 +538,13 @@ insert into mode_paiements values(default, 'V.A.T', 0),
 insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp, 0),
                                                (default, 2, 2, current_timestamp, 0),
                                                (default, 4, 4, current_timestamp, 0);
+
+insert into categories values(default, 'patisseries', 0);
+
+insert into produits values(default, 'brownie', 10000, 0, 3);
+
+insert into historique_prix_produits values(default, 2, 3, 10000, current_timestamp, 0);
+
+insert into role_categorie_produits values(default, 1, 3, 0),
+                                          (default, 2, 3, 0),
+                                          (default, 4, 3, 0);

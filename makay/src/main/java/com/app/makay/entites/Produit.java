@@ -78,6 +78,9 @@ public class Produit {
         }
         selectAccompagnements=selectAccompagnements.substring(0, selectAccompagnements.length()-1);
         selectAccompagnements+=") and etat=0";
+        if(accompagnementProduits.length==0){
+            return new Accompagnement[0];
+        }
         HashMap<String, Object>[] query=dao.select(connect, selectAccompagnements);
         Accompagnement[] accompagnements=new Accompagnement[query.length];
         for(int i=0;i<accompagnements.length;i++){
