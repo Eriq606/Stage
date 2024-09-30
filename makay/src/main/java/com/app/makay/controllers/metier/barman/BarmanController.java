@@ -63,8 +63,8 @@ public class BarmanController {
     public BarmanController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
-        // ip=HandyManUtils.getIP();
-        ip=System.getenv("IP");
+        ip=HandyManUtils.getIP();
+        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Utilisateur utilisateur=new Utilisateur();
             Role role=new Role();

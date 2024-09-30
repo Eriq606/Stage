@@ -548,3 +548,23 @@ insert into historique_prix_produits values(default, 2, 3, 10000, current_timest
 insert into role_categorie_produits values(default, 1, 3, 0),
                                           (default, 2, 3, 0),
                                           (default, 4, 3, 0);
+
+create or replace view v_accompagnements as
+select *
+from accompagnements where etat=0;
+
+create or replace view v_accompagnement_commandes as
+select *
+from accompagnement_commandes where etat=0;
+
+create or replace view v_commandefille_accompagnements as
+select vcf.*, v_accompagnements.nom as nom_accompagnement
+from v_commande_filles vcf
+join v_accompagnement_commandes vac on vcf.id=vac.idcommandefille
+join v_accompagnements on vac.idaccompagnement=v_accompagnements.id;
+
+create 
+
+create or replace view v_commandes as
+select
+from v_commandes

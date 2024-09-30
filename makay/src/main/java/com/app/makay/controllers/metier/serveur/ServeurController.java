@@ -42,8 +42,8 @@ public class ServeurController {
     public ServeurController() throws SQLException, Exception{
         filter=new MyFilter();
         dao=new MyDAO();
-        // ip=HandyManUtils.getIP();
-        ip=System.getenv("IP");
+        ip=HandyManUtils.getIP();
+        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Utilisateur utilisateur=new Utilisateur();
             Role role=new Role();
@@ -219,6 +219,36 @@ public class ServeurController {
         query=String.format(query, Constantes.PAGINATION_LIMIT);
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller);
+            ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class);
+            HashMap<String, Object> pagination=dao.paginate(connect, query, Constantes.PAGINATION_LIMIT, indice_actu_controller);
+            for(Map.Entry<String, Object> m:pagination.entrySet()){
+                model.addAttribute(m.getKey(), m.getValue());
+            }
+            model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
+            model.addAttribute(Constantes.VAR_COMMANDES, commandes);
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        return iris;
+    }
+    @GetMapping("/historique-de-commande-recherche")
+    public Object historiqueCommandes(HttpServletRequest req, Model model, Integer indice_actu, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut, String clotureFin,
+                                      String[] modepaiement, String produit, String accompagnement, String notes) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur,
+                                        new String[]{Constantes.ROLE_SERVEUR,Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER,Constantes.ROLE_SUPERVISEUR,Constantes.ROLE_CAISSE},
+                                        "Makay - Historique des commandes", "pages/serveur/historique-des-commandes", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
+        int indice_actu_controller=1;
+        if(indice_actu!=null){
+            indice_actu_controller=indice_actu;
+        }
+        String query="select count(*) from v_commandes where etat>10 and etat<40 limit %s";
+        query=String.format(query, Constantes.PAGINATION_LIMIT);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller, table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, modepaiement, produit, accompagnement, notes);
             ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class);
             HashMap<String, Object> pagination=dao.paginate(connect, query, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for(Map.Entry<String, Object> m:pagination.entrySet()){

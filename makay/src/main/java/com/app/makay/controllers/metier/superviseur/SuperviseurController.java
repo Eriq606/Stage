@@ -118,8 +118,8 @@ public class SuperviseurController {
     public SuperviseurController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
-        // ip=HandyManUtils.getIP();
-        ip=System.getenv("IP");
+        ip=HandyManUtils.getIP();
+        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             places=dao.select(connect, Place.class, new Place(0));
             for(Place p:places){
