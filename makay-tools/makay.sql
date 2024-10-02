@@ -572,3 +572,29 @@ create table demande_addition(
 );
 
 alter table demande_addition rename to demande_additions;
+
+insert into roles values(default, 'caisse', 0, 4);
+alter table utilisateurs drop constraint utilisateurs_contact_key;
+alter sequence utilisateurs_id_seq restart with 6;
+insert into utilisateurs values(default, 5, 'Jack', 'jack@mail.io', '032 63 156 28', 'root', 0, 0);
+insert into historique_role_utilisateurs values(default, 6, 5, current_timestamp, 0);
+
+alter table commandes add reste_a_payer price;
+drop view v_commande_avec_details_en_cours;
+drop view v_commandes;
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+join v_utilisateurs vu on commandes.idutilisateur=vu.id
+where commandes.etat<40;
+
+create table paiements(
+    id serial primary key,
+    idcommande int not null references commandes(id),
+    idmodepaiement int not null references mode_paiements(id),
+    dateheure timestamp default current_timestamp,
+    montant price not null
+);
+alter table paiements add etat int default 0;

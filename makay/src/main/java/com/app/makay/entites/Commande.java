@@ -33,6 +33,14 @@ public class Commande {
     @Column("etat")
     private Integer etat;
     private CommandeFille[] commandeFilles;
+    @Column("reste_a_payer")
+    private Double resteAPayer;
+    public Double getResteAPayer() {
+        return resteAPayer;
+    }
+    public void setResteAPayer(Double resteAPayer) {
+        this.resteAPayer = resteAPayer;
+    }
     public String getPlaceLabel(){
         String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){

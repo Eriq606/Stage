@@ -1,0 +1,132 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="row mb-3">
+                <form action="/demande-addition" method="get">
+                    <label for="recherche-table" class="col-sm-2 col-form-label">Table: </label>
+                    <div class="input-group mb-3 col-sm-5" id="recherche-table">
+                        <input type="text" class="form-control" id="recherche-table-input" name="table" aria-label="Recherche">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                    <table class="table">
+                        <tbody id="recherche-table-suggestion"></tbody>
+                    </table>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th scope="col">Table</th>
+                            <th scope="col">Heure</th>
+                            <th scope="col">Montant</th>
+                            <th scope="col"></th>
+                        </tr>
+                        <tr th:each="c:${commandes}">
+                            <td scope="row"><a href="#" th:text="${c.getPlaceLabel()}" data-bs-toggle="modal" th:data-bs-target="'#commandeModal'+${c.id}"></a></td>
+                            <div class="modal fade" th:id="'commandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'commandeModalLabel'+${c.id}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" th:id="'commandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}"></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <div th:each="cf:${c.commandeFilles}">
+                                                <p th:text="${cf.getMontantString()}+' : '+${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                <p><ul>
+                                                    <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                </ul></p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <td th:text="${c.getHeure()}"></td>
+                            <td th:text="${c.getMontantString()}"></td>
+                            <td>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="#'paieModal'+${c.id}">Payer</button>
+                                <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" th:id="'paieModalLabel'+${c.id}">Effectuer un paiement</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" th:href="${table!=null}?'/demande-addition?indice_actu='+${indice_premier}+'&table='+${table}:'/demande-addition?indice_actu='+${indice_premier}" aria-label="Precedent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="${table!=null}?'/demande-addition?indice_actu='+${indice_precedent}+'&table='+${table}:'/demande-addition?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
+            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
+            <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="${table!=null}?'/demande-addition?indice_actu='+${indice_suivant}+'&table='+${table}:'/demande-addition?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" th:href="${table!=null}?'/demande-addition?indice_actu='+${indice_dernier}+'&table='+${table}:'/demande-addition?indice_actu='+${indice_dernier}" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const places=/*[[${places}]]*/[];
+        const rechercheTableInput=document.getElementById("recherche-table-input");
+        const rechercheTableSuggestion=document.getElementById("recherche-table-suggestion");
+        rechercheTableInput.oninput=()=>{
+            rechercheTableSuggestion.innerHTML="";
+            for(let i=0;i<places.length;i++){
+                if(places[i].nom.includes(rechercheTableInput.value.toLowerCase())&&rechercheTableInput.value!==''){
+                    const suggestion=document.createElement("tr");
+                    const suggestionTdNom=document.createElement("td");
+                    suggestionTdNom.textContent=places[i].nom;
+                    const suggestionTdBtnCol=document.createElement("td");
+                    const suggestionTdBtn=document.createElement("button");
+                    suggestionTdBtn.type="button";
+                    suggestionTdBtn.innerHTML='<i class="fa-solid fa-plus"></i>';
+                    suggestionTdBtn.className="btn btn-primary w-100";
+                    suggestionTdBtn.onclick=()=>{
+                        rechercheTableInput.value=places[i].nom;
+                    };
+                    suggestion.appendChild(suggestionTdNom);
+                    suggestionTdBtnCol.appendChild(suggestionTdBtn);
+                    suggestion.appendChild(suggestionTdBtnCol);
+                    rechercheTableSuggestion.appendChild(suggestion);
+                }
+            }
+        };
+        /*]]*/
+    </script>
+</div>

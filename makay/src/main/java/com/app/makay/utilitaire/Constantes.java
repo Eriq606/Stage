@@ -90,6 +90,10 @@ public class Constantes {
         new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
+    public static final ModelLink[] LINK_CAISSIER={
+        new ModelLink("/demande-addition", "fa-solid fa-clock", "En attente d'addition"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
+    };
 
     public static final int PAGINATION_LIMIT=5;
 

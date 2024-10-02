@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -101,5 +102,9 @@ public class CommandeFilleEnCours {
     public void setEstTermine(int estTermine) {
         this.estTermine = estTermine;
     }
-    
+    public String getMontantString(){
+        String montantString=HandyManUtils.number_format(getMontant(), ' ', ',', 2);
+        montantString+=" Ar";
+        return montantString;
+    }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.CommandeFilleEnCours;
 import com.app.makay.entites.ModePaiement;
+import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
@@ -39,6 +40,7 @@ public class ServeurController {
     private Produit[] produits;
     private String ip;
     private MyDAO dao;
+    private Place[] places;
 
     public ServeurController() throws SQLException, Exception{
         filter=new MyFilter();
@@ -55,6 +57,9 @@ public class ServeurController {
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
+            Place where=new Place();
+            where.setEtat(0);
+            places=dao.select(connect, Place.class, where);
         }
     }
 
@@ -127,7 +132,7 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
-        model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        model.addAttribute(Constantes.VAR_PLACES, places);
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());

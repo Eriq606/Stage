@@ -11,7 +11,11 @@ Nouveaux modules:
             ✔ Désactiver le bouton modifier quand commande déjà en cours de paiement @5m @started(24-10-02 10:08) @done(24-10-02 10:11) @lasted(3m42s)
     Caissier:
         Afficher la liste des commandes en attente d'addition:
-            ☐ controller CaissierController @30m
-            ☐ fonction listeDemandeAddition() @30m
-            ☐ page liste-demande-addition @30m
-        ☐ Payer une commande @30m
+            ✔ controller CaissierController @30m @started(24-10-02 14:07) @done(24-10-02 14:09) @lasted(2m2s)
+            ✔ fonction listeDemandeAddition() et page demande-addition @60m @started(24-10-02 14:09) @done(24-10-02 15:34) @lasted(1h25m24s)
+        Payer une commande:
+            ✔ ajout colonne reste_a_payer dans commandes @5m @started(24-10-02 15:43) @done(24-10-02 15:46) @lasted(3m6s)
+            ✔ fixer reste a payer dans creation et modification de commandes @10m @started(24-10-02 15:46) @done(24-10-02 15:48) @lasted(2m40s)
+            ✔ créer la table paiements @5m @started(24-10-02 15:50) @done(24-10-02 15:52) @lasted(2m56s)
+            ✔ créer l'entité Paiement @5m @started(24-10-02 15:52) @done(24-10-02 15:56) @lasted(4m11s)
+            ☐ créer la méthode POST payer() @30m

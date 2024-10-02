@@ -241,6 +241,7 @@ public class Utilisateur extends IrisUser{
                 throw new Exception("Commande vide");
             }
             commande.setOuverture(LocalDateTime.now());
+            commande.setResteAPayer(commande.getMontant());
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
             commande.setId(idCommande);
             int idcommandeFille;
@@ -352,6 +353,7 @@ public class Utilisateur extends IrisUser{
             where.setId(commande.getId());
             Commande change=new Commande();
             change.setMontant(commande.getMontant());
+            change.setResteAPayer(commande.getMontant());
             dao.update(connect, change, where);
             int idcommandeFille;
             LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
@@ -560,5 +562,17 @@ public class Utilisateur extends IrisUser{
             e.printStackTrace();
             throw e;
         }
+    }
+    public CommandeEnCours[] recupererDemandesAddition(Connection connect, MyDAO dao, int offset, String table) throws Exception{
+        CommandeEnCours where=new CommandeEnCours();
+        where.setEtat(Constantes.COMMANDE_ADDITION);
+        if(table.isEmpty()==false){
+            where.setNomPlace(table);
+        }
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture"});
+        for(CommandeEnCours c:commandes){
+            c.recupererCommandeFilles(connect, dao);
+        }
+        return commandes;
     }
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -186,5 +187,10 @@ public class CommandeEnCours{
 
     public void setNomPlace(String nomPlace) {
         this.nomPlace = nomPlace;
+    }
+    public String getMontantString(){
+        String montantString=HandyManUtils.number_format(getMontant(), ' ', ',', 2);
+        montantString+=" Ar";
+        return montantString;
     }
 }
