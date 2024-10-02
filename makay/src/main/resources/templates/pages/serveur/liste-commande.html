@@ -54,7 +54,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-                            <a th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}"><button type="button" class="btn btn-warning">Modifier</button></a>
+                            <a th:if="${c.etat==0}" th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}"><button type="button" class="btn btn-warning">Modifier</button></a>
+                            <button th:unless="${c.etat==0}" type="button" class="btn btn-warning" disabled>Modifier</button>
                             <button th:if="${c.etat==0}" type="button" class="btn btn-success demande-addition" th:data-etat="${c.etat}" th:data-idcommande="${c.id}">Addition</button>
                             <button th:unless="${c.etat==0}" type="button" class="btn btn-success" disabled><i class="fa-solid fa-check"></i></button>
                             <img th:id="'loading-commande'+${c.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;">

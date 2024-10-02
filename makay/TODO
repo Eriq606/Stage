@@ -8,7 +8,7 @@ Nouveaux modules:
             ✔ Bouton addition dans liste commande serveur @10m @started(24-10-02 09:12) @done(24-10-02 09:21) @lasted(9m41s)
             ✔ Méthode demandeAddition() @50m @started(24-10-02 09:21) @done(24-10-02 10:00) @lasted(39m50s)
             ✔ Couleur de police dans commande déjà en cours de paiement @5m @started(24-10-02 10:01) @done(24-10-02 10:03) @lasted(2m30s)
-            ☐ Désactiver le bouton modifier quand commande déjà en cours de paiement @5m
+            ✔ Désactiver le bouton modifier quand commande déjà en cours de paiement @5m @started(24-10-02 10:08) @done(24-10-02 10:11) @lasted(3m42s)
     Caissier:
         Afficher la liste des commandes en attente d'addition:
             ☐ controller CaissierController @30m
