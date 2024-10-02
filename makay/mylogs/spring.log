@@ -1,0 +1,170 @@
+2024-10-02T09:05:51.271+03:00  INFO 13744 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 13744 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:05:51.277+03:00  INFO 13744 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:05:52.082+03:00  INFO 13744 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:05:52.092+03:00  INFO 13744 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:05:52.100+03:00  INFO 13744 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:05:52.148+03:00  INFO 13744 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:05:52.148+03:00  INFO 13744 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 833 ms
+2024-10-02T09:05:52.962+03:00  INFO 13744 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:05:52.963+03:00  INFO 13744 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:05:52.965+03:00  INFO 13744 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4640195a]]
+2024-10-02T09:05:52.965+03:00  INFO 13744 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:05:52.972+03:00  INFO 13744 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.061 seconds (process running for 2.313)
+2024-10-02T09:05:57.460+03:00  INFO 13744 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:05:57.460+03:00  INFO 13744 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:05:57.462+03:00  INFO 13744 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:07:01.927+03:00  INFO 13216 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 13216 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:07:01.930+03:00  INFO 13216 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:07:02.643+03:00  INFO 13216 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:07:02.653+03:00  INFO 13216 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:07:02.653+03:00  INFO 13216 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:07:02.700+03:00  INFO 13216 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:07:02.701+03:00  INFO 13216 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 732 ms
+2024-10-02T09:07:03.486+03:00  INFO 13216 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:07:03.487+03:00  INFO 13216 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:07:03.488+03:00  INFO 13216 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@50b0afd7]]
+2024-10-02T09:07:03.488+03:00  INFO 13216 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:07:03.495+03:00  INFO 13216 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.894 seconds (process running for 2.141)
+2024-10-02T09:07:08.721+03:00  INFO 13216 --- [makay] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:07:08.721+03:00  INFO 13216 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:07:08.722+03:00  INFO 13216 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:08:03.474+03:00  INFO 13216 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[pool size = 12, active threads = 0, queued tasks = 0, completed tasks = 12], outboundChannel[pool size = 3, active threads = 0, queued tasks = 0, completed tasks = 3], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-10-02T09:08:37.085+03:00  INFO 7360 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 7360 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:08:37.087+03:00  INFO 7360 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:08:37.769+03:00  INFO 7360 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:08:37.778+03:00  INFO 7360 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:08:37.779+03:00  INFO 7360 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:08:37.821+03:00  INFO 7360 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:08:37.821+03:00  INFO 7360 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 699 ms
+2024-10-02T09:08:38.489+03:00  INFO 7360 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:08:38.490+03:00  INFO 7360 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:08:38.492+03:00  INFO 7360 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@468173fa]]
+2024-10-02T09:08:38.492+03:00  INFO 7360 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:08:38.498+03:00  INFO 7360 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.72 seconds (process running for 1.946)
+2024-10-02T09:08:44.955+03:00  INFO 7360 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:08:44.956+03:00  INFO 7360 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:08:44.957+03:00  INFO 7360 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:15:53.514+03:00  INFO 9252 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 9252 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:15:53.516+03:00  INFO 9252 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:15:54.282+03:00  INFO 9252 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:15:54.294+03:00  INFO 9252 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:15:54.295+03:00  INFO 9252 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:15:54.348+03:00  INFO 9252 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:15:54.348+03:00  INFO 9252 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 796 ms
+2024-10-02T09:15:55.029+03:00  INFO 9252 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:15:55.031+03:00  INFO 9252 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:15:55.032+03:00  INFO 9252 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@75cf0de5]]
+2024-10-02T09:15:55.032+03:00  INFO 9252 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:15:55.038+03:00  INFO 9252 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.84 seconds (process running for 2.105)
+2024-10-02T09:16:01.409+03:00  INFO 9252 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:16:01.410+03:00  INFO 9252 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:16:01.411+03:00  INFO 9252 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-02T09:17:44.873+03:00  INFO 15684 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 15684 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:17:44.875+03:00  INFO 15684 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:17:45.557+03:00  INFO 15684 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:17:45.566+03:00  INFO 15684 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:17:45.566+03:00  INFO 15684 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:17:45.613+03:00  INFO 15684 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:17:45.613+03:00  INFO 15684 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 700 ms
+2024-10-02T09:17:46.264+03:00  INFO 15684 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:17:46.266+03:00  INFO 15684 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:17:46.267+03:00  INFO 15684 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3a401749]]
+2024-10-02T09:17:46.267+03:00  INFO 15684 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:17:46.273+03:00  INFO 15684 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.707 seconds (process running for 1.978)
+2024-10-02T09:17:55.097+03:00  INFO 15684 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:17:55.098+03:00  INFO 15684 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:17:55.099+03:00  INFO 15684 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:19:48.041+03:00  INFO 3484 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 3484 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:19:48.043+03:00  INFO 3484 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:19:48.725+03:00  INFO 3484 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:19:48.734+03:00  INFO 3484 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:19:48.735+03:00  INFO 3484 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:19:48.778+03:00  INFO 3484 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:19:48.778+03:00  INFO 3484 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 698 ms
+2024-10-02T09:19:49.469+03:00  INFO 3484 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:19:49.470+03:00  INFO 3484 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:19:49.472+03:00  INFO 3484 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@62765aec]]
+2024-10-02T09:19:49.472+03:00  INFO 3484 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:19:49.479+03:00  INFO 3484 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.755 seconds (process running for 2.016)
+2024-10-02T09:19:54.518+03:00  INFO 3484 --- [makay] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:19:54.519+03:00  INFO 3484 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:19:54.520+03:00  INFO 3484 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:21:14.822+03:00  INFO 8320 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 8320 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:21:14.824+03:00  INFO 8320 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:21:15.501+03:00  INFO 8320 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:21:15.511+03:00  INFO 8320 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:21:15.511+03:00  INFO 8320 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:21:15.552+03:00  INFO 8320 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:21:15.552+03:00  INFO 8320 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 693 ms
+2024-10-02T09:21:16.306+03:00  INFO 8320 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:21:16.307+03:00  INFO 8320 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:21:16.309+03:00  INFO 8320 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@75cf0de5]]
+2024-10-02T09:21:16.309+03:00  INFO 8320 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:21:16.315+03:00  INFO 8320 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.802 seconds (process running for 2.056)
+2024-10-02T09:21:21.614+03:00  INFO 8320 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:21:21.614+03:00  INFO 8320 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:21:21.615+03:00  INFO 8320 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:56:43.667+03:00  INFO 12740 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 12740 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:56:43.669+03:00  INFO 12740 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:56:44.419+03:00  INFO 12740 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:56:44.431+03:00  INFO 12740 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:56:44.431+03:00  INFO 12740 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:56:44.481+03:00  INFO 12740 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:56:44.481+03:00  INFO 12740 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 775 ms
+2024-10-02T09:56:45.277+03:00  INFO 12740 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:56:45.278+03:00  INFO 12740 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:56:45.280+03:00  INFO 12740 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f169009]]
+2024-10-02T09:56:45.280+03:00  INFO 12740 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:56:45.286+03:00  INFO 12740 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.929 seconds (process running for 2.182)
+2024-10-02T09:56:50.292+03:00  INFO 12740 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:56:50.292+03:00  INFO 12740 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:56:50.293+03:00  INFO 12740 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T09:57:50.285+03:00  INFO 15224 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 15224 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:57:50.287+03:00  INFO 15224 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:57:51.008+03:00  INFO 15224 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:57:51.018+03:00  INFO 15224 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:57:51.019+03:00  INFO 15224 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:57:51.065+03:00  INFO 15224 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:57:51.066+03:00  INFO 15224 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 739 ms
+2024-10-02T09:57:51.726+03:00  INFO 15224 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:57:51.727+03:00  INFO 15224 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:57:51.728+03:00  INFO 15224 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6f5bd362]]
+2024-10-02T09:57:51.729+03:00  INFO 15224 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:57:51.735+03:00  INFO 15224 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.767 seconds (process running for 2.014)
+2024-10-02T09:57:56.692+03:00  INFO 15224 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:57:56.692+03:00  INFO 15224 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:57:56.694+03:00  INFO 15224 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2024-10-02T09:58:02.472+03:00  WARN 15224 --- [makay] [http-nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'text/plain;charset=UTF-8' is not supported]
+2024-10-02T09:58:35.370+03:00  WARN 15224 --- [makay] [http-nio-8080-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'text/plain;charset=UTF-8' is not supported]
+2024-10-02T09:58:45.098+03:00  WARN 15224 --- [makay] [http-nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'text/plain;charset=UTF-8' is not supported]
+2024-10-02T09:58:51.721+03:00  INFO 15224 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[pool size = 12, active threads = 0, queued tasks = 0, completed tasks = 12], outboundChannel[pool size = 3, active threads = 0, queued tasks = 0, completed tasks = 3], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-10-02T09:59:35.425+03:00  INFO 10704 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 10704 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T09:59:35.427+03:00  INFO 10704 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T09:59:36.117+03:00  INFO 10704 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T09:59:36.126+03:00  INFO 10704 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T09:59:36.127+03:00  INFO 10704 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T09:59:36.178+03:00  INFO 10704 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T09:59:36.179+03:00  INFO 10704 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 715 ms
+2024-10-02T09:59:36.983+03:00  INFO 10704 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T09:59:36.984+03:00  INFO 10704 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T09:59:36.986+03:00  INFO 10704 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7fad214a]]
+2024-10-02T09:59:36.986+03:00  INFO 10704 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T09:59:36.992+03:00  INFO 10704 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.884 seconds (process running for 2.149)
+2024-10-02T09:59:41.538+03:00  INFO 10704 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T09:59:41.539+03:00  INFO 10704 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T09:59:41.540+03:00  INFO 10704 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-02T10:02:35.075+03:00  INFO 16368 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication using Java 17.0.2 with PID 16368 (D:\Eriq_RohWeltall\Assigns\Stage\makay\build\classes\java\main started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\makay)
+2024-10-02T10:02:35.077+03:00  INFO 16368 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-10-02T10:02:35.791+03:00  INFO 16368 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-02T10:02:35.801+03:00  INFO 16368 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-02T10:02:35.801+03:00  INFO 16368 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-10-02T10:02:35.848+03:00  INFO 16368 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-02T10:02:35.848+03:00  INFO 16368 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 739 ms
+2024-10-02T10:02:36.498+03:00  INFO 16368 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-02T10:02:36.499+03:00  INFO 16368 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-10-02T10:02:36.500+03:00  INFO 16368 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@164642a4]]
+2024-10-02T10:02:36.500+03:00  INFO 16368 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-10-02T10:02:36.506+03:00  INFO 16368 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 1.749 seconds (process running for 2.01)
+2024-10-02T10:02:42.165+03:00  INFO 16368 --- [makay] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-02T10:02:42.165+03:00  INFO 16368 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-02T10:02:42.166+03:00  INFO 16368 --- [makay] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms

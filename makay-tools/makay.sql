@@ -563,8 +563,12 @@ from v_commande_filles vcf
 join v_accompagnement_commandes vac on vcf.id=vac.idcommandefille
 join v_accompagnements on vac.idaccompagnement=v_accompagnements.id;
 
-create 
+create table demande_addition(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idcommande int not null references commandes(id),
+    dateheure timestamp default current_timestamp,
+    etat int default 0
+);
 
-create or replace view v_commandes as
-select
-from v_commandes
+alter table demande_addition rename to demande_additions;

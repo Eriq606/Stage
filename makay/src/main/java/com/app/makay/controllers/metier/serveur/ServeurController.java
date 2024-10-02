@@ -21,6 +21,7 @@ import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.DemandeAdditionREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -127,6 +128,9 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         return iris;
     }
 
@@ -259,5 +263,36 @@ public class ServeurController {
         }
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         return iris;
+    }
+
+    /*
+     * Pour demander l'addition d'une commande, on change l'état de la commande en 10 (ADDITION)
+     * On envoie donc l'id de la commande par méthode POST
+     * 
+     * demandeAddition(idcommande, utilisateur, idsession){
+     *      verifierSessionExiste(idsession, utilisateur.id)
+     *      verifierSessionNonExpiree(idsession, utilisateur.id)
+     *      verifierSiAutorise(utilisateur)
+     *      update(etat: 10, where: idcommande=[idcommande])
+     * }
+     */
+    @PostMapping("/demande-addition")
+    @ResponseBody
+    public ReponseREST demandeAddition(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        DemandeAdditionREST modifs=HandyManUtils.fromJson(DemandeAdditionREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_BAR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().demandeAddition(connect, dao, modifs.getCommande());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
     }
 }

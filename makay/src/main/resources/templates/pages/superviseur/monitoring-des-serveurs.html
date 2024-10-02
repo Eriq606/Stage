@@ -24,7 +24,6 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body table-responsive" th:id="'detailCommandeServeur'+${s.id}+'Commande'+${c.id}">
-                                                        <!-- <div th:each="cf:${c.commandeFilles}" style="color: white;"> -->
                                                         <div th:each="cf:${c.commandeFilles}">
                                                             <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
                                                             <p><ul>
@@ -59,18 +58,13 @@
         }
         function createCommandeFilleRow(cf, modalBody){
             const cfDiv = document.createElement('div');
-            // cfDiv.style.color = 'white';
-
-            // Quantite, produit nom, and notes
             const p = document.createElement('p');
             p.textContent = cf.quantite + ' ' + cf.produit.nom + ' ' + cf.notes;
             cfDiv.appendChild(p);
-
-            // Accompagnements list
             const ul = document.createElement('ul');
             cf.accompagnements.forEach(cfa => {
                 const li = document.createElement('li');
-                li.textContent = cfa.nom; // cfa.nom
+                li.textContent = cfa.nom;
                 ul.appendChild(li);
             });
 
@@ -80,27 +74,18 @@
             modalBody.appendChild(cfDiv);
         }
         function createCommandeRow(commande, utilisateur) {
-            // Create <tr> element
             const tr = document.createElement('tr');
-
-            // Create <td> element with a link for place label
             const td1 = document.createElement('td');
             const a = document.createElement('a');
-            a.textContent = commande.placeLabel; // Assuming c.getPlaceLabel() is commande.placeLabel
+            a.textContent = commande.placeLabel;
             a.href = "#";
             a.setAttribute('data-bs-toggle', 'modal');
             a.setAttribute('data-bs-target', '#detailCommandeModal' + commande.id);
             td1.appendChild(a);
-
-            // Create second <td> element for time
             const td2 = document.createElement('td');
-            td2.textContent = commande.heure; // Assuming c.getHeure() is commande.heure
-
-            // Append the <td> elements to the <tr>
+            td2.textContent = commande.heure;
             tr.appendChild(td1);
             tr.appendChild(td2);
-
-            // Create modal structure
             const modalDiv = document.createElement('div');
             modalDiv.className = 'modal fade';
             modalDiv.id = 'detailCommandeModal' + commande.id;
@@ -114,14 +99,13 @@
             const modalContent = document.createElement('div');
             modalContent.className = 'modal-content';
 
-            // Modal header
             const modalHeader = document.createElement('div');
             modalHeader.className = 'modal-header';
 
             const modalTitle = document.createElement('h1');
             modalTitle.className = 'modal-title fs-5';
             modalTitle.id = 'detailCommandeModalLabel' + commande.id;
-            modalTitle.textContent = commande.placeLabel; // c.getPlaceLabel()
+            modalTitle.textContent = commande.placeLabel;
 
             const closeButton = document.createElement('button');
             closeButton.className = 'btn-close';
@@ -131,16 +115,13 @@
             modalHeader.appendChild(modalTitle);
             modalHeader.appendChild(closeButton);
 
-            // Modal body
             const modalBody = document.createElement('div');
             modalBody.className = 'modal-body table-responsive';
             modalBody.id="detailCommandeServeur"+utilisateur.id+"Commande"+commande.id;
-            // Iterate over child commands (commandeFilles)
             commande.commandeFilles.forEach(cf => {
                 createCommandeFilleRow(cf, modalBody);
             });
 
-            // Modal footer
             const modalFooter = document.createElement('div');
             modalFooter.className = 'modal-footer';
 
@@ -151,7 +132,6 @@
 
             modalFooter.appendChild(retourButton);
 
-            // Assemble modal content
             modalContent.appendChild(modalHeader);
             modalContent.appendChild(modalBody);
             modalContent.appendChild(modalFooter);
@@ -159,7 +139,6 @@
             modalDialog.appendChild(modalContent);
             modalDiv.appendChild(modalDialog);
 
-            // Append modalDiv to the document body (or a container)
             document.body.appendChild(modalDiv);
 
             return tr;
