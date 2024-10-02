@@ -7,7 +7,6 @@
                 <div class="row mb-3">
                     <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
                     <div class="col-6">
-                        <!-- <input type="text" class="form-control" id="tableOuter"> -->
                         <select class="form-select mb-3" aria-label="Table" id="tableInner">
                             <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
                         </select>
@@ -35,7 +34,6 @@
                             <div class="row mb-3">
                                 <label for="tableInner" class="col-3 offset-3 col-form-label">Table</label>
                                 <div class="col-6">
-                                    <!-- <input type="text" class="form-control" id="tableInner"> -->
                                     <select class="form-select mb-3" aria-label="Table" id="tableOuter">
                                         <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
                                     </select>
@@ -51,8 +49,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <!-- <button type="button" id="reset-commande" class="btn btn-danger">Réinitialiser</button> -->
                             <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
+                            <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
                         </div>
                     </div>
                     </div>
@@ -99,11 +97,6 @@
                     }
 
                     let commandes=[];
-                    // let resetCommande=document.getElementById("reset-commande");
-                    // resetCommande.onclick=()=>{
-                    //     commandes=[];
-                    //     commandeAjout.innerHTML="";
-                    // }
 
                     produitInput.addEventListener("input", function(){
                         const input=this.value.toLowerCase();
@@ -503,6 +496,8 @@
                         }
                         console.log(envoicommande);
                         const api="http://"+ip+":8080/serveur-passer-commande";
+                        const loadingEnvoiCommande=document.getElementById("loading-envoi-commande");
+                        loadingEnvoiCommande.style.display="block";
                         fetch(api, {
                             method:"POST",
                             headers:{
@@ -512,19 +507,18 @@
                         }).then((response)=>{
                             return response.json();
                         }).then((data)=>{
-                            envoicommande.commande.id=data.donnees.idcommande;
-                            if(data.code===0){
+                            loadingEnvoiCommande.style.display="none";
+                            if(data.code==0){
                                 const alerteEnvoye=document.getElementById("alerte-envoye");
                                 const alert=document.createElement("div");
                                 alert.className="alert alert-danger w-100";
                                 alert.setAttribute("role", "alert");
                                 alert.textContent=data.message;
                                 alerteEnvoye.appendChild(alert);
-                                // setTimeout(()=>{
-                                //     alerteEnvoye.removeChild(alert);
-                                // }, 1000);
                                 return;
                             }
+                            console.log(data);
+                            envoicommande.commande.id=data.donnees.idcommande;
                             notifierSuperviseur(envoicommande);
                             commandes.splice(0, commandes.length);
                             commandeAjout.innerHTML="";

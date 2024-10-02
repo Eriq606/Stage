@@ -534,3 +534,41 @@ insert into mode_paiements values(default, 'V.A.T', 0),
                                 (default, 'Carte de crédit', 0),
                                 (default, 'Mobile Money', 0),
                                 (default, 'Espèces', 0);
+
+insert into historique_role_utilisateurs values(default, 1, 1, current_timestamp, 0),
+                                               (default, 2, 2, current_timestamp, 0),
+                                               (default, 4, 4, current_timestamp, 0);
+
+insert into categories values(default, 'patisseries', 0);
+
+insert into produits values(default, 'brownie', 10000, 0, 3);
+
+insert into historique_prix_produits values(default, 2, 3, 10000, current_timestamp, 0);
+
+insert into role_categorie_produits values(default, 1, 3, 0),
+                                          (default, 2, 3, 0),
+                                          (default, 4, 3, 0);
+
+create or replace view v_accompagnements as
+select *
+from accompagnements where etat=0;
+
+create or replace view v_accompagnement_commandes as
+select *
+from accompagnement_commandes where etat=0;
+
+create or replace view v_commandefille_accompagnements as
+select vcf.*, v_accompagnements.nom as nom_accompagnement
+from v_commande_filles vcf
+join v_accompagnement_commandes vac on vcf.id=vac.idcommandefille
+join v_accompagnements on vac.idaccompagnement=v_accompagnements.id;
+
+create table demande_addition(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idcommande int not null references commandes(id),
+    dateheure timestamp default current_timestamp,
+    etat int default 0
+);
+
+alter table demande_addition rename to demande_additions;

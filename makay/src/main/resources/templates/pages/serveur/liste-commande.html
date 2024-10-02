@@ -21,9 +21,13 @@
     <div th:each="c:${commandes}">
         <div class="row">
             <div class="col-12">
-                <div class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
+                <div th:if="${c.etat==0}" class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
                     <h2 th:text="${c.getPlaceLabel()}"></h2>
                     <p th:text="${c.getHeure()}"></p>
+                </div>
+                <div th:unless="${c.etat==0}" class="btn btn-primary pt-4 w-100" style="background-color: #9cff9c;" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
+                    <h2 th:text="${c.getPlaceLabel()}"></h2>
+                    <p class="text-primary" th:text="${c.getHeure()}"></p>
                 </div>
                 <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -33,6 +37,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body table-responsive">
+                            <div th:id="'alerte-envoye-commande'+${c.id}"></div>
                             <table class="table">
                                 <tbody>
                                     <tr th:each="cf:${c.commandeFilles}">
@@ -48,8 +53,11 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-                        <a th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}"><button type="button" class="btn btn-warning">Modifier</button></a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <a th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}"><button type="button" class="btn btn-warning">Modifier</button></a>
+                            <button th:if="${c.etat==0}" type="button" class="btn btn-success demande-addition" th:data-etat="${c.etat}" th:data-idcommande="${c.id}">Addition</button>
+                            <button th:unless="${c.etat==0}" type="button" class="btn btn-success" disabled><i class="fa-solid fa-check"></i></button>
+                            <img th:id="'loading-commande'+${c.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;">
                         </div>
                     </div>
                     </div>
@@ -104,6 +112,46 @@
                 }
             }
         };
+
+        const demandesAddition=document.getElementsByClassName("demande-addition");
+        const ip=/*[[${ip}]]*/"";
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const api="http://"+ip+":8080/demande-addition";
+        for(let i=0;i<demandesAddition.length;i++){
+            const idcommande=demandesAddition[i].dataset.idcommande;
+            const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
+            demandesAddition[i].onclick=()=>{
+                const commande={ id:idcommande };
+                const demandeAdditionREST={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    commande:commande
+                }
+                const loading=document.getElementById("loading-commande"+idcommande);
+                loading.style.display="block";
+                fetch(api, {
+                    method:"POST",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(demandeAdditionREST)})
+                }).then((response)=>{return response.json()})
+                .then((data)=>{
+                    loading.style.display="none";
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    demandesAddition[i].innerHTML="<i class='fa-solid fa-check'></i>";
+                    demandesAddition[i].disabled=true;
+                });
+            }
+        }
         /*]]*/
     </script>
 </div>

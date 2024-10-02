@@ -1,0 +1,17 @@
+Rectifications:
+    Barman/commande en cours:
+        ✔ Retirer la commande des commandes en cours lorsque tout est terminé @30m @started(24-10-02 08:58) @done(24-10-02 09:09) @lasted(11m20s)
+
+Nouveaux modules:
+    Serveur:
+        Demander l'addition pour une commande:
+            ✔ Bouton addition dans liste commande serveur @10m @started(24-10-02 09:12) @done(24-10-02 09:21) @lasted(9m41s)
+            ✔ Méthode demandeAddition() @50m @started(24-10-02 09:21) @done(24-10-02 10:00) @lasted(39m50s)
+            ✔ Couleur de police dans commande déjà en cours de paiement @5m @started(24-10-02 10:01) @done(24-10-02 10:03) @lasted(2m30s)
+            ☐ Désactiver le bouton modifier quand commande déjà en cours de paiement @5m
+    Caissier:
+        Afficher la liste des commandes en attente d'addition:
+            ☐ controller CaissierController @30m
+            ☐ fonction listeDemandeAddition() @30m
+            ☐ page liste-demande-addition @30m
+        ☐ Payer une commande @30m

@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public class Utilisateur extends IrisUser{
     public void setRole(Role role) {
         this.role = role;
     }
-    public ModelLink[] getLinks(){
+    public ModelLink[] recupererLinks(){
         ModelLink[] links=null;
         switch(getRole().getNumero()){
             case Constantes.ROLE_SERVEUR:
@@ -108,19 +109,19 @@ public class Utilisateur extends IrisUser{
         }
         return links;
     }
-    public String[] getResetCacheAndNotify(){
+    public String[] recupererResetCacheAndNotify(){
         String[] responses=new String[2];
         switch(getRole().getNumero()){
             case Constantes.ROLE_SERVEUR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_SERVEUR;
+                responses[0]=Constantes.URL_RESET_CACHE_SERVEUR;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SERVEUR;
                 break;
             case Constantes.ROLE_BAR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
+                responses[0]=Constantes.URL_RESET_CACHE_BARMAN;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
                 break;
             case Constantes.ROLE_SUPERVISEUR:
-                responses[0]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
+                responses[0]=Constantes.URL_RESET_CACHE_SUPERVISEUR;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
                 break;
         }
@@ -135,6 +136,7 @@ public class Utilisateur extends IrisUser{
         Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
         if(target.length==1){
             utilisateur=target[0];
+            utilisateur.getRoleActuel(connect, dao);
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
             utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
@@ -332,10 +334,10 @@ public class Utilisateur extends IrisUser{
         return commandes;
     }
     public CommandeEnCours[] recupererCommandesChecking(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
         addOn=String.format(addOn, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         if(table!=null){
-            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
             addOn=String.format(addOn, table, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
@@ -346,9 +348,6 @@ public class Utilisateur extends IrisUser{
     }
     public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
-            // commande.setOuverture(LocalDateTime.now());
-            // int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
-            // commande.setId(idCommande);
             Commande where=new Commande();
             where.setId(commande.getId());
             Commande change=new Commande();
@@ -427,6 +426,139 @@ public class Utilisateur extends IrisUser{
                 }
                 return commandes;
             }
+        }
+    }
+    public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
+                                                         String clotureFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+        String query="select * from v_commandes where etat>10 and etat<40 and ";
+        LinkedList<String> listQuery=new LinkedList<>();
+        LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
+        if(table!=null){
+            listQuery.add("table=?");
+        }
+        if(ouvertureDebut!=null){
+            listQuery.add("dateheure_ouverture>=?");
+            ouvertureDebutTime=LocalDateTime.parse(ouvertureDebut);
+        }
+        if(ouvertureFin!=null){
+            listQuery.add("dateheure_ouverture<?");
+            ouvertureFinTime=LocalDateTime.parse(ouvertureFin);
+        }
+        if(clotureDebut!=null){
+            listQuery.add("dateheure_cloture>=?");
+            clotureDebutTime=LocalDateTime.parse(clotureDebut);
+        }
+        if(clotureFin!=null){
+            listQuery.add("dateheure_cloture<?");
+            clotureFinTime=LocalDateTime.parse(clotureFin);
+        }
+        String[] modes={};
+        if(modepaiement!=null){
+            modes=modepaiement;
+        }
+        String modesPaiement="";
+        for(int i=0;i<modes.length;i++){
+            modesPaiement+="(idmodepaiement=? or";
+        }
+        modesPaiement=modesPaiement.length()>0?modesPaiement.substring(0, modesPaiement.length()-3)+")":modesPaiement;
+        if(produit!=null){
+            listQuery.add("id in (select idcommande from v_commandefille_produits where nom like '%?%' group by idcommande)");
+        }
+        if(accompagnement!=null){
+            listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like '%?%' group by idcommande)");
+        }
+        if(notes!=null){
+            listQuery.add("notes like '%?%'");
+        }
+        for(String s:listQuery){
+            query+=s+" and ";
+        }
+        query=query.substring(0, query.length()-5);
+        query+=" order by dateheure_ouverture desc limit ? offset ?";
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            int indice=1;
+            if(table!=null){
+                statement.setString(indice, table);
+                indice++;
+            }
+            if(ouvertureDebut!=null){
+                statement.setTimestamp(indice, Timestamp.valueOf(ouvertureDebutTime));
+                indice++;
+            }
+            if(ouvertureFin!=null){
+                statement.setTimestamp(indice, Timestamp.valueOf(ouvertureFinTime));
+                indice++;
+            }
+            if(clotureDebut!=null){
+                statement.setTimestamp(indice, Timestamp.valueOf(clotureDebutTime));
+                indice++;
+            }
+            if(clotureFin!=null){
+                statement.setTimestamp(indice, Timestamp.valueOf(clotureFinTime));
+                indice++;
+            }
+            for(String s:modes){
+                statement.setInt(indice, Integer.parseInt(s));
+                indice++;
+            }
+            if(produit!=null){
+                statement.setString(indice, produit);
+                indice++;
+            }
+            if(accompagnement!=null){
+                statement.setString(indice, accompagnement);
+                indice++;
+            }
+            if(notes!=null){
+                statement.setString(indice, notes);
+                indice++;
+            }
+            statement.setInt(indice, Constantes.PAGINATION_LIMIT);
+            indice++;
+            statement.setInt(indice, (offset-1)*Constantes.PAGINATION_LIMIT);
+            try(ResultSet result=statement.executeQuery()){
+                LinkedList<CommandeEnCours> liste=new LinkedList<>();
+                Place place;
+                TypePlace typePlace;
+                Utilisateur utilisateur;
+                CommandeEnCours commande;
+                while(result.next()){
+                    commande=new CommandeEnCours();
+                    commande.setId(result.getInt("id"));
+                    commande.setCloture(result.getTimestamp("dateheure_cloture").toLocalDateTime());
+                    commande.setEtat(result.getInt("etat"));
+                    commande.setMontant(result.getDouble("montant"));
+                    commande.setNomPlace(result.getString("nom_place"));
+                    place=new Place();
+                    place.setId(result.getInt("idplace"));
+                    place.setNom(result.getString("nom_place"));
+                    typePlace=new TypePlace();
+                    typePlace.setId(result.getInt("idtypeplace"));
+                    typePlace.setNumero(result.getString("numero_type_place"));
+                    place.setTypePlace(typePlace);
+                    commande.setPlace(place);
+                    utilisateur=new Utilisateur();
+                    utilisateur.setId(result.getInt("idutilisateur"));
+                    commande.setUtilisateur(dao.select(connect, Utilisateur.class, utilisateur)[0]);
+                    commande.setOuverture(result.getTimestamp("dateheure_ouverture").toLocalDateTime());
+                    commande.recupererCommandeFilles(connect, dao);
+                    liste.add(commande);
+                }
+                CommandeEnCours[] commandes=liste.toArray(new CommandeEnCours[]{});
+                return commandes;
+            }
+        }
+    }
+
+    public void demandeAddition(Connection connect, MyDAO dao, Commande commande) throws Exception{
+        try{
+            Commande change=new Commande();
+            change.setEtat(Constantes.COMMANDE_ADDITION);
+            dao.update(connect, change, commande);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
         }
     }
 }

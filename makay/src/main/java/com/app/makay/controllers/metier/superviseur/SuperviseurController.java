@@ -119,6 +119,7 @@ public class SuperviseurController {
         filter=new MyFilter();
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
+        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             places=dao.select(connect, Place.class, new Place(0));
             for(Place p:places){
@@ -144,7 +145,7 @@ public class SuperviseurController {
         if(utilisateur==null){
             return iris;
         }
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_PLACES, places);
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_RANGEEPLACES, rangeePlaces);
@@ -182,10 +183,14 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
         model.addAttribute(Constantes.VAR_ROLES, roles);
         model.addAttribute(Constantes.VAR_ROLEUTILISATEURS, attributionRoles);
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        // return iris;
         return iris;
     }
 
@@ -216,7 +221,7 @@ public class SuperviseurController {
         if(utilisateur==null){
             return iris;
         }
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_RANGEES, rangees);
         model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
@@ -255,7 +260,7 @@ public class SuperviseurController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             model.addAttribute(Constantes.VAR_SERVEURS, Utilisateur.recupererServeursEnCours(connect, dao));
         }
-        model.addAttribute(Constantes.VAR_LINKS, utilisateur.getLinks());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         return iris;
     }

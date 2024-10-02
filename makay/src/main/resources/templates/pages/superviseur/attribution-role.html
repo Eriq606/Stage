@@ -30,14 +30,6 @@
                 <br><br><br>
                 <form id="form-attribution">
                     <table class="table" id="attribution-table">
-                        <!-- <tr th:each="e:${utilisateurs}">
-                            <td th:text="${e.nom}"></td>
-                            <td>
-                                <select class="form-select mb-3" aria-label="roles">
-                                    <option th:each="r:${roles}" th:text="${r.nom}" th:value="${r.id}"></option>
-                                </select>
-                            </td>
-                        </tr> -->
                     </table>
                     <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#miseAJourModal">Mettre à jour</button>
                     <div class="modal fade" id="miseAJourModal" tabindex="-1" aria-labelledby="miseAJourModalLabel" aria-hidden="true">
@@ -54,6 +46,7 @@
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Retour</button>
                                 <button type="submit" class="btn btn-success">Confirmer</button>
                             </div>
+                            <img id="loading-envoi-commande" th:src="@{img/loading.gif}" width="75" alt="loading" style="display: none;">
                         </div>
                     </div>
                 </form>
@@ -129,6 +122,8 @@
         let attributions=[];
 
         const ip=/*[[${ip}]]*/"";
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
         const stompclient=new StompJs.Client({
             brokerURL:'ws://'+ip+':8080/messaging'
         });
@@ -145,10 +140,10 @@
             });
         }
         function redirigerVersResetCache(){
-            window.location.href="http://"+ip+":8080/reset-cache-superviseur";
+            window.location.href="http://"+ip+":8080/"+resetCache;
         }
         function receiveNotificationRedirect(){
-            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
                 redirigerVersResetCache();
             });
         }
@@ -168,6 +163,8 @@
             }
             toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions,sessionid:sessionid});
             const api="http://"+ip+":8080/attribution-role-rest";
+            const loadingEnvoiCommande=document.getElementById("loading-envoi-commande");
+            loadingEnvoiCommande.style.display="block";
             fetch(api, {
                 method:"POST",
                 headers:{
@@ -175,6 +172,7 @@
                 },
                 body:JSON.stringify({restdata:toSubmit})
             }).then(()=>{
+                loadingEnvoiCommande.style.display="none";
                 attributions=[];
                 toSubmit="";
                 notifierToutUtilisateur();
