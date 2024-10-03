@@ -106,6 +106,9 @@ public class Utilisateur extends IrisUser{
             case Constantes.ROLE_SUPERVISEUR:
                 links=Constantes.LINK_SUPERVISEUR;
                 break;
+            case Constantes.ROLE_CAISSE:
+                links=Constantes.LINK_CAISSIER;
+                break;
         }
         return links;
     }
@@ -435,22 +438,22 @@ public class Utilisateur extends IrisUser{
         String query="select * from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
-        if(table!=null){
+        if(table!=null&&table.isEmpty()==false){
             listQuery.add("table=?");
         }
-        if(ouvertureDebut!=null){
+        if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
             listQuery.add("dateheure_ouverture>=?");
             ouvertureDebutTime=LocalDateTime.parse(ouvertureDebut);
         }
-        if(ouvertureFin!=null){
+        if(ouvertureFin!=null&&ouvertureFin.isEmpty()==false){
             listQuery.add("dateheure_ouverture<?");
             ouvertureFinTime=LocalDateTime.parse(ouvertureFin);
         }
-        if(clotureDebut!=null){
+        if(clotureDebut!=null&&clotureDebut.isEmpty()==false){
             listQuery.add("dateheure_cloture>=?");
             clotureDebutTime=LocalDateTime.parse(clotureDebut);
         }
-        if(clotureFin!=null){
+        if(clotureFin!=null&&clotureFin.isEmpty()==false){
             listQuery.add("dateheure_cloture<?");
             clotureFinTime=LocalDateTime.parse(clotureFin);
         }
@@ -463,39 +466,40 @@ public class Utilisateur extends IrisUser{
             modesPaiement+="(idmodepaiement=? or";
         }
         modesPaiement=modesPaiement.length()>0?modesPaiement.substring(0, modesPaiement.length()-3)+")":modesPaiement;
-        if(produit!=null){
-            listQuery.add("id in (select idcommande from v_commandefille_produits where nom like '%?%' group by idcommande)");
+        if(produit!=null&&produit.isEmpty()==false){
+            listQuery.add("id in (select idcommande from v_commandefille_produits where nom like ? group by idcommande)");
         }
-        if(accompagnement!=null){
-            listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like '%?%' group by idcommande)");
+        if(accompagnement!=null&&accompagnement.isEmpty()==false){
+            listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like ? group by idcommande)");
         }
-        if(notes!=null){
-            listQuery.add("notes like '%?%'");
+        if(notes!=null&&notes.isEmpty()==false){
+            listQuery.add("notes like ?");
         }
         for(String s:listQuery){
             query+=s+" and ";
         }
         query=query.substring(0, query.length()-5);
         query+=" order by dateheure_ouverture desc limit ? offset ?";
+        System.out.println(query);
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
-            if(table!=null){
+            if(table!=null&&table.isEmpty()==false){
                 statement.setString(indice, table);
                 indice++;
             }
-            if(ouvertureDebut!=null){
+            if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(ouvertureDebutTime));
                 indice++;
             }
-            if(ouvertureFin!=null){
+            if(ouvertureFin!=null&&ouvertureFin.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(ouvertureFinTime));
                 indice++;
             }
-            if(clotureDebut!=null){
+            if(clotureDebut!=null&&clotureDebut.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(clotureDebutTime));
                 indice++;
             }
-            if(clotureFin!=null){
+            if(clotureFin!=null&&clotureFin.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(clotureFinTime));
                 indice++;
             }
@@ -503,16 +507,16 @@ public class Utilisateur extends IrisUser{
                 statement.setInt(indice, Integer.parseInt(s));
                 indice++;
             }
-            if(produit!=null){
-                statement.setString(indice, produit);
+            if(produit!=null&&produit.isEmpty()==false){
+                statement.setString(indice, "%"+produit+"%");
                 indice++;
             }
-            if(accompagnement!=null){
-                statement.setString(indice, accompagnement);
+            if(accompagnement!=null&&accompagnement.isEmpty()==false){
+                statement.setString(indice, "%"+accompagnement+"%");
                 indice++;
             }
-            if(notes!=null){
-                statement.setString(indice, notes);
+            if(notes!=null&&notes.isEmpty()==false){
+                statement.setString(indice, "%"+notes+"%");
                 indice++;
             }
             statement.setInt(indice, Constantes.PAGINATION_LIMIT);
@@ -551,6 +555,96 @@ public class Utilisateur extends IrisUser{
             }
         }
     }
+    public int recupererCountHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
+                                                         String clotureFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+        String query="select count(*) from v_commandes where etat>10 and etat<40 and ";
+        LinkedList<String> listQuery=new LinkedList<>();
+        LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
+        if(table!=null&&table.isEmpty()==false){
+            listQuery.add("table=?");
+        }
+        if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
+            listQuery.add("dateheure_ouverture>=?");
+            ouvertureDebutTime=LocalDateTime.parse(ouvertureDebut);
+        }
+        if(ouvertureFin!=null&&ouvertureFin.isEmpty()==false){
+            listQuery.add("dateheure_ouverture<?");
+            ouvertureFinTime=LocalDateTime.parse(ouvertureFin);
+        }
+        if(clotureDebut!=null&&clotureDebut.isEmpty()==false){
+            listQuery.add("dateheure_cloture>=?");
+            clotureDebutTime=LocalDateTime.parse(clotureDebut);
+        }
+        if(clotureFin!=null&&clotureFin.isEmpty()==false){
+            listQuery.add("dateheure_cloture<?");
+            clotureFinTime=LocalDateTime.parse(clotureFin);
+        }
+        String[] modes={};
+        if(modepaiement!=null){
+            modes=modepaiement;
+        }
+        String modesPaiement="";
+        for(int i=0;i<modes.length;i++){
+            modesPaiement+="(idmodepaiement=? or";
+        }
+        modesPaiement=modesPaiement.length()>0?modesPaiement.substring(0, modesPaiement.length()-3)+")":modesPaiement;
+        if(produit!=null&&produit.isEmpty()==false){
+            listQuery.add("id in (select idcommande from v_commandefille_produits where nom like ? group by idcommande)");
+        }
+        if(accompagnement!=null&&accompagnement.isEmpty()==false){
+            listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like ? group by idcommande)");
+        }
+        if(notes!=null&&notes.isEmpty()==false){
+            listQuery.add("notes like ?");
+        }
+        for(String s:listQuery){
+            query+=s+" and ";
+        }
+        query=query.substring(0, query.length()-5);
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            int indice=1;
+            if(table!=null&&table.isEmpty()==false){
+                statement.setString(indice, table);
+                indice++;
+            }
+            if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
+                statement.setTimestamp(indice, Timestamp.valueOf(ouvertureDebutTime));
+                indice++;
+            }
+            if(ouvertureFin!=null&&ouvertureFin.isEmpty()==false){
+                statement.setTimestamp(indice, Timestamp.valueOf(ouvertureFinTime));
+                indice++;
+            }
+            if(clotureDebut!=null&&clotureDebut.isEmpty()==false){
+                statement.setTimestamp(indice, Timestamp.valueOf(clotureDebutTime));
+                indice++;
+            }
+            if(clotureFin!=null&&clotureFin.isEmpty()==false){
+                statement.setTimestamp(indice, Timestamp.valueOf(clotureFinTime));
+                indice++;
+            }
+            for(String s:modes){
+                statement.setInt(indice, Integer.parseInt(s));
+                indice++;
+            }
+            if(produit!=null&&produit.isEmpty()==false){
+                statement.setString(indice, "%"+produit+"%");
+                indice++;
+            }
+            if(accompagnement!=null&&accompagnement.isEmpty()==false){
+                statement.setString(indice, "%"+accompagnement+"%");
+                indice++;
+            }
+            if(notes!=null&&notes.isEmpty()==false){
+                statement.setString(indice, "%"+notes+"%");
+                indice++;
+            }
+            try(ResultSet result=statement.executeQuery()){
+                int count=result.next()?result.getInt(1):0;
+                return count;
+            }
+        }
+    }
 
     public void demandeAddition(Connection connect, MyDAO dao, Commande commande) throws Exception{
         try{
@@ -564,15 +658,40 @@ public class Utilisateur extends IrisUser{
         }
     }
     public CommandeEnCours[] recupererDemandesAddition(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        CommandeEnCours where=new CommandeEnCours();
-        where.setEtat(Constantes.COMMANDE_ADDITION);
+        String addOn="where etat=10 and reste_a_payer>0 order by dateheure_ouverture limit %s offset %s";
+        // CommandeEnCours where=new CommandeEnCours();
+        // where.setEtat(Constantes.COMMANDE_ADDITION);
+        addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, offset);
         if(table.isEmpty()==false){
-            where.setNomPlace(table);
+            addOn="where nom_table='%s' and etat=10 and reste_a_payer>0 order by dateheure_ouverture limit %s offset %s";
+            addOn=String.format(addOn, table.replace("\'", "\'\'"), Constantes.PAGINATION_LIMIT, offset);
+            // where.setNomPlace(table);
         }
-        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, offset, new String[]{"dateheure_ouverture"});
+        CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
         for(CommandeEnCours c:commandes){
             c.recupererCommandeFilles(connect, dao);
         }
         return commandes;
+    }
+    public void payer(Connection connect, MyDAO dao, Paiement paiement) throws Exception{
+        try{
+            if(paiement.getMontant()>paiement.getCommande().getResteAPayer()){
+                throw new Exception(Constantes.MSG_PAIEMENT_MONTANT_INVALIDE);
+            }
+            paiement.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, paiement);
+            Commande where=new Commande();
+            where.setId(paiement.getCommande().getId());
+            Commande change=new Commande();
+            change.setResteAPayer(paiement.getCommande().getResteAPayer()-paiement.getMontant());
+            if(change.getResteAPayer()==0){
+                change.setCloture(LocalDateTime.now());
+                change.setEtat(Constantes.COMMANDE_PAYEE);
+            }
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
     }
 }

@@ -17,6 +17,7 @@
                         <div id="collapseRecherche" class="accordion-collapse collapse"
                             aria-labelledby="headingRecherche" data-bs-parent="#accordionRecherche">
                             <div class="accordion-body">
+                            <form action="/historique-de-commande" method="get">
                                 <div class="row mb-3">
                                     <label for="inputTable" class="col-sm-2 col-form-label">Table</label>
                                     <div class="col-sm-10">
@@ -83,10 +84,12 @@
                                         id="floatingTextarea" style="height: 150px;"></textarea>
                                     <label for="floatingTextarea">Notes</label>
                                 </div>
+                                <br>
                                 <div class="d-flex justify-content-end">
                                     <button type="reset" class="btn btn-secondary">Reinitialiser</button>
                                     <button type="submit" class="btn btn-info">Rechercher</button>
                                 </div>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -134,17 +137,17 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
-                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_premier}" aria-label="Precedent">
+                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_premier}+'&'+${queryString}" aria-label="Precedent">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item disabled"><a class="page-link">...</a></li>
-                        <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
+                        <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_precedent}+'&'+${queryString}" th:text="${indice_precedent}"></a></li>
                         <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
-                        <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
+                        <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_suivant}+'&'+${queryString}" th:text="${indice_suivant}"></a></li>
                         <li class="page-item disabled"><a class="page-link">...</a></li>
                         <li class="page-item">
-                            <a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_dernier}" aria-label="Suivant">
+                            <a class="page-link" href="'/historique-de-commande?indice_actu='+${indice_dernier}+'&'+${queryString}" aria-label="Suivant">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

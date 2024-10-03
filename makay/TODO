@@ -18,4 +18,10 @@ Nouveaux modules:
             ✔ fixer reste a payer dans creation et modification de commandes @10m @started(24-10-02 15:46) @done(24-10-02 15:48) @lasted(2m40s)
             ✔ créer la table paiements @5m @started(24-10-02 15:50) @done(24-10-02 15:52) @lasted(2m56s)
             ✔ créer l'entité Paiement @5m @started(24-10-02 15:52) @done(24-10-02 15:56) @lasted(4m11s)
-            ☐ créer la méthode POST payer() @30m
+            ✔ créer le formulaire de paiement @30m @started(24-10-03 08:33) @done(24-10-03 09:21) @lasted(48m42s)
+            ✔ créer la méthode POST payer() @30m @started(24-10-03 09:21) @done(24-10-03 10:12) @lasted(51m15s)
+    Tout le monde:
+        Historique de commandes:
+            ✔ méthode de récupération des commandes historiques @30m @started(24-10-03 10:20) @done(24-10-03 10:23) @lasted(3m50s)
+            ✔ controller historique de commande @30m @done(24-10-03 10:23)
+            ✔ page historique de commandes @30m @started(24-10-03 10:24) @done(24-10-03 11:47) @lasted(1h23m59s)

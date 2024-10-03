@@ -37,6 +37,16 @@ public class CommandeEnCours{
     @Column("etat")
     private Integer etat;
     private CommandeFilleEnCours[] commandeFilles;
+    @Column("reste_a_payer")
+    private Double resteAPayer;
+    public Double getResteAPayer() {
+        return resteAPayer;
+    }
+
+    public void setResteAPayer(Double resteAPayer) {
+        this.resteAPayer = resteAPayer;
+    }
+
     public String getPlaceLabel(){
         String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
@@ -192,5 +202,8 @@ public class CommandeEnCours{
         String montantString=HandyManUtils.number_format(getMontant(), ' ', ',', 2);
         montantString+=" Ar";
         return montantString;
+    }
+    public String getResteAPayerString(){
+        return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
     }
 }

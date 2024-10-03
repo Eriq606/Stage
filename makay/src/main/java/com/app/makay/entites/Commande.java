@@ -8,6 +8,7 @@ import java.util.Arrays;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -136,5 +137,8 @@ public class Commande {
         return "Commande [id=" + id + ", utilisateur=" + utilisateur + ", place=" + place + ", ouverture=" + ouverture
                 + ", cloture=" + cloture + ", montant=" + montant + ", etat=" + etat + ", commandeFilles="
                 + Arrays.toString(commandeFilles) + "]";
+    }
+    public String getResteAPayerString(){
+        return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
     }
 }

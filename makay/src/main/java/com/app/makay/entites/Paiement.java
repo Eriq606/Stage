@@ -24,6 +24,15 @@ public class Paiement {
     private Double montant;
     @Column("etat")
     private Integer etat;
+    @ForeignKey(recursive = false)
+    @Column("idutilisateur")
+    private Utilisateur utilisateur;
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
     public Integer getId() {
         return id;
     }

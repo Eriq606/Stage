@@ -11,6 +11,7 @@ public class Constantes {
     public static final String MSG_SESSION_EXPIREE="Session expirée";
     public static final String MSG_SUCCES="Succès";
     public static final String MSG_NON_AUTHORISE="Accès non authorisé";
+    public static final String MSG_PAIEMENT_MONTANT_INVALIDE="Le montant du paiement est supérieur au montant de la commande.";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";
@@ -48,6 +49,7 @@ public class Constantes {
     public static final String VAR_INDICE_PAGINATION="indicepagination";
     public static final String VAR_TABLE="table";
     public static final String VAR_MODEPAIEMENTS="modepaiements";
+    public static final String VAR_QUERYSTRING="querystring";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";

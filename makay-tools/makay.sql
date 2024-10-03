@@ -598,3 +598,14 @@ create table paiements(
     montant price not null
 );
 alter table paiements add etat int default 0;
+alter table paiements add idutilisateur int not null references utilisateurs(id);
+
+update commandes set reste_a_payer=montant;
+
+create or replace view v_commandes as 
+select commandes.*, v_places.nom as nom_place, v_places.idtypeplace, v_type_places.numero as numero_type_place
+from commandes
+join v_places on commandes.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+join v_utilisateurs vu on commandes.idutilisateur=vu.id
+where commandes.etat<40;

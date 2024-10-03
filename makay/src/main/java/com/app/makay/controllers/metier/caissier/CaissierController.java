@@ -8,14 +8,22 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.makay.entites.CommandeEnCours;
+import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.PayerCommandeREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
+import com.app.makay.utilitaire.ReponseREST;
+import com.app.makay.utilitaire.RestData;
 
+import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import veda.godao.utils.DAOConnexion;
@@ -24,13 +32,19 @@ import veda.godao.utils.DAOConnexion;
 public class CaissierController {
     private MyFilter filter;
     private MyDAO dao;
+    private String ip;
     private Place[] places;
+    private ModePaiement[] modePaiements;
     public CaissierController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
+        ip=HandyManUtils.getIP();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Place where=new Place(0);
             places=dao.select(connect, Place.class, where);
+            ModePaiement wherePaiement=new ModePaiement();
+            wherePaiement.setEtat(0);
+            modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
         }
     }
 
@@ -57,17 +71,24 @@ public class CaissierController {
             table=table.trim();
             tableFiltre=table;
         }
-        CommandeEnCours where=new CommandeEnCours();
-        where.setEtat(Constantes.COMMANDE_ADDITION);
+        String countQuery="select count(*) from v_commandes where etat=10 and reste_a_payer>0";
+        // CommandeEnCours where=new CommandeEnCours();
+        // where.setEtat(Constantes.COMMANDE_ADDITION);
         if(table!=null){
-            where.setNomPlace(table);
+            countQuery+=" and nom_table='%s'";
+            countQuery=String.format(countQuery, table);
+            // where.setNomPlace(table);
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.recupererDemandesAddition(connect, dao, (indiceActu-1)*Constantes.PAGINATION_LIMIT, tableFiltre);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
             model.addAttribute(Constantes.VAR_PLACES, places);
-            HashMap<String, Object> pagination=dao.paginate(connect, CommandeEnCours.class, where, Constantes.PAGINATION_LIMIT, indiceActu);
+            model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
+            model.addAttribute(Constantes.VAR_IP, ip);
+            model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+            model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+            HashMap<String, Object> pagination=dao.paginate(connect, countQuery, Constantes.PAGINATION_LIMIT, indiceActu);
             for(Map.Entry<String, Object> e:pagination.entrySet()){
                 model.addAttribute(e.getKey(), e.getValue());
             }
@@ -81,4 +102,23 @@ public class CaissierController {
      * A chaque création de commande, le reste a payer sera le montant.
      * A chaque modification de commande, le reste a payer sera mis a jour par rapport au nouveau montant.
      */
+    @PostMapping("/payer")
+    @ResponseBody
+    public ReponseREST modifierCommande(@RequestBody RestData datas) throws SQLException, Exception{
+        ReponseREST response=new ReponseREST();
+        PayerCommandeREST modifs=HandyManUtils.fromJson(PayerCommandeREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().payer(connect, dao, modifs.getPaiement());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
 }
