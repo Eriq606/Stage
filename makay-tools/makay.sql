@@ -616,3 +616,27 @@ insert into historique_role_utilisateurs values(default, 7, 6, current_timestamp
 
 insert into role_categorie_produits_checkings values(default, 6, 2, 0),
                                                     (default, 6, 3, 0);
+
+create or replace view v_dispatch_staff_part as
+select vu.*, v_rangees.nom as nom_rangee, v_utilisateurs.nom as nom_utilisateur, v_utilisateurs.email as email_utilisateur, v_utilisateurs.contact as contact_utilisateur, vdm.max_dateheure, v_utilisateurs.idrole, v_roles.nom as nom_role, v_roles.numero as numero_role
+from v_rangee_utilisateurs vu
+join v_rangees on vu.idrangee=v_rangees.id
+join v_utilisateurs on vu.idutilisateur=v_utilisateurs.id
+join v_roles on v_utilisateurs.idrole=v_roles.id
+left join v_dateheure_max_rangee_users vdm on vu.dateheure=vdm.max_dateheure;
+
+create or replace view v_dispatch_staff as
+select *
+from v_dispatch_staff_part where max_dateheure is not null;
+
+drop view v_places_utilisateurs;
+
+create or replace view v_places_utilisateurs as
+select vds.*, vap.idplace, vap.nom_place, vap.nom_type_place, vap.numero_type_place
+from v_dispatch_staff vds
+join v_arrangement_place vap on vds.idrangee=vap.idrangee;                                                    
+
+create or replace view v_serveurs_encours_1 as
+select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur
+from v_dispatch_staff
+where idrangee=-1;

@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
                                 <td><ul th:id="'listeStaffRangee'+${r.id}">
-                                    <li th:each="e:${r.utilisateurs}" th:id="'listeStaffRangee'+${r.id}+'User'+${e.id}" th:text="${e.nom}"></li>
+                                    <li th:each="e:${r.utilisateurs}" th:id="'listeStaffRangee'+${r.id}+'User'+${e.id}" th:text="${e.nom}+' ('+${e.role.nom}+')'"></li>
                                 </ul></td>
                                 <td>
                                     <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" th:data-bs-target="'#ajoutDispatchModal'+${r.id}">Ajouter</button>
@@ -65,9 +65,9 @@
                                                 <table class="table">
                                                     <tbody>
                                                         <tr th:each="u:${utilisateurs}">
-                                                            <td th:text="${u.nom}"></td>
+                                                            <td th:text="${u.nom}+' ('+${u.role.nom}+')'"></td>
                                                             <td>
-                                                                <button type="button" class="btn btn-success w-100 ajout-dispatch" th:data-idrangee="${r.id}" th:data-idutilisateur="${u.id}" th:data-nomutilisateur="${u.nom}"><i class="fa-solid fa-plus"></i></button>
+                                                                <button type="button" class="btn btn-success w-100 ajout-dispatch" th:data-idrangee="${r.id}" th:data-idutilisateur="${u.id}" th:data-nomutilisateur="${u.nom}" th:data-roleutilisateur="${u.role.nom}"><i class="fa-solid fa-plus"></i></button>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -93,7 +93,7 @@
                                                 <table class="table">
                                                     <tbody th:id="'dispatchRow'+${r.id}">
                                                         <tr th:each="u:${r.utilisateurs}" th:id="'modifDispatchRow'+${r.id}+'-'+${u.id}">
-                                                            <td th:text="${u.nom}"></td>
+                                                            <td th:text="${u.nom}+' ('+${u.role.nom}+')'"></td>
                                                             <td>
                                                                 <button type="button" class="btn btn-danger w-100 modif-dispatch" th:id="'modifDispatchButtonRangee'+${r.id}+'User'+${u.id}" th:data-idrangee="${r.id}" th:data-idutilisateur="${u.id}"><i class="fa-solid fa-minus"></i></button>
                                                             </td>
@@ -199,6 +199,7 @@
                 const idrangee=ajoutDispatch[i].dataset.idrangee;
                 const idutilisateur=ajoutDispatch[i].dataset.idutilisateur;
                 const nomutilisateur=ajoutDispatch[i].dataset.nomutilisateur;
+                const roleutilisateur=ajoutDispatch[i].dataset.roleutilisateur;
                 for(let j=0;j<dispatchs.length;j++){
                     if(dispatchs[j].rangee.id==idrangee&&dispatchs[j].utilisateur.id==idutilisateur){
                         return;
@@ -237,7 +238,7 @@
                 const listeStaffRangee=document.getElementById("listeStaffRangee"+idrangee);
                 const listeStaffRangeeLi=document.createElement("li");
                 listeStaffRangeeLi.id="listeStaffRangee"+idrangee+"User"+idutilisateur;
-                listeStaffRangeeLi.textContent=nomutilisateur;
+                listeStaffRangeeLi.textContent=nomutilisateur+" ("+roleutilisateur+")";
                 listeStaffRangee.appendChild(listeStaffRangeeLi);
             }
         }

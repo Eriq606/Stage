@@ -58,15 +58,21 @@ public class Rangee {
         this.places = places;
     }
     public Utilisateur[] getDispatchUtilisateursActuel(Connection connect, MyDAO dao) throws Exception{
-        String query="select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur from v_dispatch_staff where idrangee="+getId();
+        String query="select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur, idrole, nom_role, numero_role from v_dispatch_staff where idrangee="+getId();
         HashMap<String, Object>[] objets=dao.select(connect, query);
         Utilisateur[] utilisateurs=new Utilisateur[objets.length];
+        Role role;
         for(int i=0;i<utilisateurs.length;i++){
             utilisateurs[i]=new Utilisateur();
             utilisateurs[i].setId((int)objets[i].get("idutilisateur"));
             utilisateurs[i].setNom((String)objets[i].get("nom_utilisateur"));
             utilisateurs[i].setEmail((String)objets[i].get("email_utilisateur"));
             utilisateurs[i].setContact((String)objets[i].get("contact_utilisateur"));
+            role=new Role();
+            role.setId((int)objets[i].get("idrole"));
+            role.setNom((String)objets[i].get("nom_role"));
+            role.setNumero((String)objets[i].get("numero_role"));
+            utilisateurs[i].setRole(role);
         }
         setUtilisateurs(utilisateurs);
         return utilisateurs;

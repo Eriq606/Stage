@@ -111,7 +111,7 @@
                             <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
                             <td th:text="${c.utilisateur.nom}"></td>
                             <td th:text="${c.getHeure()}"></td>
-                            <td th:text="${c.getHeureCloture()}"></td>
+                            <td th:text="${c.recupererHeureCloture()}"></td>
                             <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
                             <td th:text="${c.getEtatString()}"></td>
                             <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">

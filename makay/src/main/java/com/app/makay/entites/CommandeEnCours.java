@@ -88,7 +88,7 @@ public class CommandeEnCours{
         reponse+=heureStr+"h"+minuteStr;
         return reponse;
     }
-    public String getHeureCloture(){
+    public String recupererHeureCloture(){
         String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
         int heure=getCloture().getHour();
         String heureStr=String.valueOf(heure);

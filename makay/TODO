@@ -49,6 +49,15 @@ Révision du code:
         ✔ ajouter toutes les colonnes de commande fille dans demande addition @20m @started(24-10-04 14:09) @done(24-10-04 14:15) @lasted(6m55s)
         ✔ ajouter la colonne reste à payer dans demande addition @10m @started(24-10-04 14:18) @done(24-10-04 14:23) @lasted(5m3s)
         ✔ rendre le radio button de mode de paiement required dans demande addition @10m @started(24-10-04 14:23) @done(24-10-04 14:23) @lasted(35s)
+        ✔ logo dans la version PC @30m @started(24-10-04 15:10) @done(24-10-04 15:21) @lasted(11m24s)
+        ✔ changer getCloture en recuperer @30m @started(24-10-04 15:23) @done(24-10-04 15:25) @lasted(2m53s)
 
 Nouveaux modules:
     ✔ bouton réinitialiser cache @30m @started(24-10-04 14:28) @done(24-10-04 14:40) @lasted(12m56s)
+    ✔ recherche des nouveaux sprints @started(24-10-04 15:30) @done(24-10-04 15:44) @lasted(14m50s)
+    Points à vérifier:
+        ✔ dispatch staff: afficher le role du staff à côté @10m @started(24-10-04 15:45) @done(24-10-04 16:02) @lasted(17m9s)
+        ☐ demande addition: mettre les montants en gras @5m
+        ☐ historique: afficher la liste de paiements et leurs mode de paiement @20m
+        ☐ historique: pagination avec les éléments du filtre @30m
+        ☐ historique: retirer sysout println du sql @10m 
