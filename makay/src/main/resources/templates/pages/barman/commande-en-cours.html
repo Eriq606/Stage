@@ -4,7 +4,7 @@
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
                 <div class="row mb-3">
-                <form action="/commandes-en-cours-barman" method="get">
+                <form action="/commandes-en-cours" method="get">
                     <label for="recherche-table" class="col-sm-2 col-form-label">Table: </label>
                     <div class="input-group mb-3 col-sm-5" id="recherche-table">
                         <input type="text" class="form-control" id="recherche-table-input" name="table" aria-label="Recherche">
@@ -56,17 +56,17 @@
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item">
-                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_premier}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_premier}" aria-label="Precedent">
+                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours?indice_actu='+${indice_premier}+'&table='+${table}:'/commandes-en-cours?indice_actu='+${indice_premier}" aria-label="Precedent">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             <li class="page-item disabled"><a class="page-link">...</a></li>
-            <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_precedent}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
+            <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours?indice_actu='+${indice_precedent}+'&table='+${table}:'/commandes-en-cours?indice_actu='+${indice_precedent}" th:text="${indice_precedent}"></a></li>
             <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
-            <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_suivant}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
+            <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="${table!=null}?'/commandes-en-cours?indice_actu='+${indice_suivant}+'&table='+${table}:'/commandes-en-cours?indice_actu='+${indice_suivant}" th:text="${indice_suivant}"></a></li>
             <li class="page-item disabled"><a class="page-link">...</a></li>
             <li class="page-item">
-                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours-barman?indice_actu='+${indice_dernier}+'&table='+${table}:'/commandes-en-cours-barman?indice_actu='+${indice_dernier}" aria-label="Suivant">
+                <a class="page-link" th:href="${table!=null}?'/commandes-en-cours?indice_actu='+${indice_dernier}+'&table='+${table}:'/commandes-en-cours?indice_actu='+${indice_dernier}" aria-label="Suivant">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

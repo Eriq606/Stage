@@ -109,6 +109,9 @@ public class Utilisateur extends IrisUser{
             case Constantes.ROLE_CAISSE:
                 links=Constantes.LINK_CAISSIER;
                 break;
+            case Constantes.ROLE_CUISINIER:
+                links=Constantes.LINK_CUISINIER;
+                break;
         }
         return links;
     }
@@ -127,6 +130,10 @@ public class Utilisateur extends IrisUser{
                 responses[0]=Constantes.URL_RESET_CACHE_SUPERVISEUR;
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
                 break;
+            case Constantes.ROLE_CUISINIER:
+                responses[0]=Constantes.URL_RESET_CACHE_SUPERVISEUR;
+                responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
+                break;
         }
         return responses;
     }
@@ -139,7 +146,6 @@ public class Utilisateur extends IrisUser{
         Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
         if(target.length==1){
             utilisateur=target[0];
-            utilisateur.getRoleActuel(connect, dao);
             utilisateur.setMotdepasse("*******");
             utilisateur.setIrisRole(utilisateur.getRole().getNumero());
             utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
@@ -207,7 +213,8 @@ public class Utilisateur extends IrisUser{
     }
 
     public Role getRoleActuel(Connection connect, DAO dao) throws Exception{
-        String query="select idrole, nom_role, numero_role from v_attribution_roles where idutilisateur="+getId();
+        // String query="select idrole, nom_role, numero_role from v_attribution_roles where idutilisateur="+getId();
+        String query="select idrole, nom_role, numero_role from v_utilisateurs where id="+getId();
         HashMap<String, Object>[] objets=dao.select(connect, query);
         Role role=null;
         if(objets.length!=1){
@@ -439,7 +446,7 @@ public class Utilisateur extends IrisUser{
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
         if(table!=null&&table.isEmpty()==false){
-            listQuery.add("table=?");
+            listQuery.add("nom_place=?");
         }
         if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
             listQuery.add("dateheure_ouverture>=?");
@@ -458,14 +465,18 @@ public class Utilisateur extends IrisUser{
             clotureFinTime=LocalDateTime.parse(clotureFin);
         }
         String[] modes={};
+        String modesPaiement="";
         if(modepaiement!=null){
+            modesPaiement="id in (select idcommande from paiements where etat=0 and (";
             modes=modepaiement;
         }
-        String modesPaiement="";
         for(int i=0;i<modes.length;i++){
-            modesPaiement+="(idmodepaiement=? or";
+            modesPaiement+="idmodepaiement=? or ";
         }
-        modesPaiement=modesPaiement.length()>0?modesPaiement.substring(0, modesPaiement.length()-3)+")":modesPaiement;
+        if(modesPaiement.length()>0){
+            modesPaiement=modesPaiement.substring(0, modesPaiement.length()-4)+") group by idcommande)";
+            listQuery.add(modesPaiement);
+        }
         if(produit!=null&&produit.isEmpty()==false){
             listQuery.add("id in (select idcommande from v_commandefille_produits where nom like ? group by idcommande)");
         }
@@ -473,7 +484,7 @@ public class Utilisateur extends IrisUser{
             listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like ? group by idcommande)");
         }
         if(notes!=null&&notes.isEmpty()==false){
-            listQuery.add("notes like ?");
+            listQuery.add("id in (select idcommande from commande_filles where etat=0 and notes like ? group by idcommande)");
         }
         for(String s:listQuery){
             query+=s+" and ";
@@ -561,7 +572,7 @@ public class Utilisateur extends IrisUser{
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
         if(table!=null&&table.isEmpty()==false){
-            listQuery.add("table=?");
+            listQuery.add("nom_place=?");
         }
         if(ouvertureDebut!=null&&ouvertureDebut.isEmpty()==false){
             listQuery.add("dateheure_ouverture>=?");
@@ -580,14 +591,18 @@ public class Utilisateur extends IrisUser{
             clotureFinTime=LocalDateTime.parse(clotureFin);
         }
         String[] modes={};
+        String modesPaiement="";
         if(modepaiement!=null){
+            modesPaiement="id in (select idcommande from paiements where etat=0 and (";
             modes=modepaiement;
         }
-        String modesPaiement="";
         for(int i=0;i<modes.length;i++){
-            modesPaiement+="(idmodepaiement=? or";
+            modesPaiement+="idmodepaiement=? or ";
         }
-        modesPaiement=modesPaiement.length()>0?modesPaiement.substring(0, modesPaiement.length()-3)+")":modesPaiement;
+        if(modesPaiement.length()>0){
+            modesPaiement=modesPaiement.substring(0, modesPaiement.length()-4)+") group by idcommande)";
+            listQuery.add(modesPaiement);
+        }
         if(produit!=null&&produit.isEmpty()==false){
             listQuery.add("id in (select idcommande from v_commandefille_produits where nom like ? group by idcommande)");
         }
@@ -595,7 +610,7 @@ public class Utilisateur extends IrisUser{
             listQuery.add("id in (select idcommande from v_commandefille_accompagnements where nom_accompagnement like ? group by idcommande)");
         }
         if(notes!=null&&notes.isEmpty()==false){
-            listQuery.add("notes like ?");
+            listQuery.add("id in (select idcommande from commande_filles where etat=0 and notes like ? group by idcommande)");
         }
         for(String s:listQuery){
             query+=s+" and ";

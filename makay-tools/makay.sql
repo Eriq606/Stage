@@ -609,3 +609,10 @@ join v_places on commandes.idplace=v_places.id
 join v_type_places on v_places.idtypeplace=v_type_places.id
 join v_utilisateurs vu on commandes.idutilisateur=vu.id
 where commandes.etat<40;
+
+insert into roles values(default, 'cuisinier', 0, '3');
+insert into utilisateurs values(default, 6, 'Luc', 'luc@mail.io', '032 63 156 28', 'root', 0, 0);
+insert into historique_role_utilisateurs values(default, 7, 6, current_timestamp, 0);
+
+insert into role_categorie_produits_checkings values(default, 6, 2, 0),
+                                                    (default, 6, 3, 0);

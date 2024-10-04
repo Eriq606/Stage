@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
-import com.app.makay.entites.Produit;
-import com.app.makay.entites.Role;
+import com.app.makay.entites.Place;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.CheckCommandeFilleREST;
 import com.app.makay.utilitaire.Constantes;
@@ -35,7 +34,7 @@ public class BarmanController {
     private MyFilter filter;
     private MyDAO dao;
     private String ip;
-    private Produit[] produits;
+    private Place[] places;
     public MyFilter getFilter() {
         return filter;
     }
@@ -54,30 +53,16 @@ public class BarmanController {
     public void setIp(String ip) {
         this.ip = ip;
     }
-    public Produit[] getProduits() {
-        return produits;
-    }
-    public void setProduits(Produit[] produits) {
-        this.produits = produits;
-    }
     public BarmanController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
-        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Utilisateur utilisateur=new Utilisateur();
-            Role role=new Role();
-            role.setNumero(Constantes.ROLE_BAR);
-            role=dao.select(connect, Role.class, role)[0];
-            utilisateur.setRole(role);
-            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
-            for(Produit p:produits){
-                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
-            }
+            places=dao.select(connect, Place.class, new Place(0));
         }
+        // ip=System.getenv("IP");
     }
-    @GetMapping("/commandes-en-cours-barman")
+    @GetMapping("/commandes-en-cours")
     public Object commandeEnCours(HttpServletRequest req, Model model, Integer indice_actu, String table) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
@@ -106,8 +91,8 @@ public class BarmanController {
         }
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);
-        model.addAttribute(Constantes.VAR_LINKS, Constantes.LINK_BARMAN);
-        model.addAttribute(Constantes.VAR_PLACES, utilisateur.getPlaces());
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_PLACES, places);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         model.addAttribute(Constantes.VAR_IP, ip);
@@ -139,24 +124,11 @@ public class BarmanController {
         return "reset cache";
     }
 
-    @GetMapping("/reset-role-barman")
-    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
-        return filter.resetUserRole(req, dao, Constantes.ROLE_BAR);
-    }
-
     @GetMapping("/reset-cache-barman")
-    public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
+    public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Utilisateur utilisateur=new Utilisateur();
-            Role role=new Role();
-            role.setNumero(Constantes.ROLE_BAR);
-            role=dao.select(connect, Role.class, role)[0];
-            utilisateur.setRole(role);
-            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
-            for(Produit p:produits){
-                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
-            }
+            places=dao.select(connect, Place.class, new Place(0));
         }
-        return resetCacheRoles(req);
+        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER});
     }
 }

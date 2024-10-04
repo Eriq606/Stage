@@ -190,7 +190,6 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
-        // return iris;
         return iris;
     }
 
@@ -211,7 +210,7 @@ public class SuperviseurController {
 
     @GetMapping("/reset-role-superviseur")
     public RedirectView resetRole(HttpServletRequest req) throws SQLException, Exception{
-        return filter.resetUserRole(req, dao, Constantes.ROLE_SUPERVISEUR);
+        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
     }
     @GetMapping("/dispatch-tables-staff")
     public Object dispatchRangsStaff(HttpServletRequest req, Model model){

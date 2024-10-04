@@ -20,7 +20,6 @@ import com.app.makay.entites.CommandeFilleEnCours;
 import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
-import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.DemandeAdditionREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
@@ -46,14 +45,9 @@ public class ServeurController {
         filter=new MyFilter();
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
-        // ip=System.getenv("IP");
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Utilisateur utilisateur=new Utilisateur();
-            Role role=new Role();
-            role.setNumero(Constantes.ROLE_SERVEUR);
-            role=dao.select(connect, Role.class, role)[0];
-            utilisateur.setRole(role);
-            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
+            Produit whereProduit=new Produit(0);
+            produits=dao.select(connect, Produit.class, whereProduit);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
@@ -147,21 +141,20 @@ public class ServeurController {
 
     @GetMapping("/reset-role-serveur")
     public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
-        return filter.resetUserRole(req, dao, Constantes.ROLE_SERVEUR);
+        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_BAR, Constantes.ROLE_CAISSE, Constantes.ROLE_CUISINIER, Constantes.ROLE_OFF, Constantes.ROLE_SUPERVISEUR});
     }
 
     @GetMapping("/reset-cache-serveur")
     public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Utilisateur utilisateur=new Utilisateur();
-            Role role=new Role();
-            role.setNumero(Constantes.ROLE_SERVEUR);
-            role=dao.select(connect, Role.class, role)[0];
-            utilisateur.setRole(role);
-            produits=utilisateur.recupererProduitsCorrespondant(connect, dao);
+            Produit whereProduit=new Produit(0);
+            produits=dao.select(connect, Produit.class, whereProduit);
             for(Produit p:produits){
                 p.setAccompagnements(p.getAllAccompagnements(connect, dao));
             }
+            Place where=new Place();
+            where.setEtat(0);
+            places=dao.select(connect, Place.class, where);
         }
         return resetCacheRoles(req);
     }
@@ -272,7 +265,7 @@ public class ServeurController {
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
-            response.setMessage(e.getMessage());
+            response.setMessage(java.util.Arrays.toString(e.getStackTrace()));
             return response;
         }
     }

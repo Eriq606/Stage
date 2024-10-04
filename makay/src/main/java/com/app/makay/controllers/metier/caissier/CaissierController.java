@@ -72,12 +72,9 @@ public class CaissierController {
             tableFiltre=table;
         }
         String countQuery="select count(*) from v_commandes where etat=10 and reste_a_payer>0";
-        // CommandeEnCours where=new CommandeEnCours();
-        // where.setEtat(Constantes.COMMANDE_ADDITION);
         if(table!=null){
             countQuery+=" and nom_table='%s'";
             countQuery=String.format(countQuery, table);
-            // where.setNomPlace(table);
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.recupererDemandesAddition(connect, dao, (indiceActu-1)*Constantes.PAGINATION_LIMIT, tableFiltre);

@@ -25,3 +25,29 @@ Nouveaux modules:
             ✔ méthode de récupération des commandes historiques @30m @started(24-10-03 10:20) @done(24-10-03 10:23) @lasted(3m50s)
             ✔ controller historique de commande @30m @done(24-10-03 10:23)
             ✔ page historique de commandes @30m @started(24-10-03 10:24) @done(24-10-03 11:47) @lasted(1h23m59s)
+    Cuisinier:
+        ✔ créer l'utilisateur cuisinier @5m @started(24-10-03 13:57) @done(24-10-03 14:01) @lasted(4m49s)
+        ✔ refactorisé les fonctions reset Cache @20m @started(24-10-03 14:03) @done(24-10-03 14:23) @lasted(20m38s)
+        ✔ verifier les methodes controllers accédées par Cuisinier @30m @started(24-10-03 14:25) @done(24-10-03 14:48) @lasted(23m19s)
+
+Révision du code:
+    ✔ Scénario-type navigation @30m @started(24-10-04 09:15) @done(24-10-04 09:46) @lasted(31m45s)
+    ✔ Scénario-type navigation @30m @started(24-10-04 09:46) @done(24-10-04 10:18) @lasted(32m50s)
+    Points à vérifier:
+        ☐ supprimer la ligne commentée dans le js Plan de table @20m
+        ☐ traiter les erreurs REST dans attribution role @20m
+        ☐ traiter les erreurs REST dans dispatch staff @20m
+        ☐ ajouter le montant de chaque commande fille dans monitoring serveur @20m
+        ☐ ajouter le montant total des commandes dans monitoring serveur @20m
+        ☐ désactiver le bouton modifier commande après demande d'addition @20m
+        ☐ vérifier que la commande n'est pas encore en attente de paiement quand on effectue une modification @30m
+        ☐ gérer la quantité zéro dans la création de commande @20m
+        ☐ ajouter websocket dans liste commande serveur @30m
+        ☐ débugger checkbox mode paiement dans le filtre multicritère de l'historique @30m
+        ☐ ajouter toutes les colonnes de commande et commande fille dans l'historique @20m
+        ☐ ajouter websocket dans historique commandes @30m
+        ☐ ajouter websocket dans commande en cours @30m
+        ☐ ajouter toutes les colonnes de commande fille dans demande addition @20m
+        ☐ ajouter la colonne reste à payer dans demande addition @10m
+        ☐ rendre le radio button de mode de paiement required dans demande addition @10m
+        ☐ ajouter websocket dans demande addition @30m

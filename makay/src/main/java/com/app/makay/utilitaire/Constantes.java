@@ -88,12 +88,16 @@ public class Constantes {
     };
     public static final ModelLink[] LINK_BARMAN={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
-        new ModelLink("/commandes-en-cours-barman", "fa-solid fa-clock", "Commandes en cours"),
+        new ModelLink("/commandes-en-cours", "fa-solid fa-clock", "Commandes en cours"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_CAISSIER={
         new ModelLink("/demande-addition", "fa-solid fa-clock", "En attente d'addition"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
+    };
+    public static final ModelLink[] LINK_CUISINIER={
+        new ModelLink("/commandes-en-cours", "fa-solid fa-clock", "Commandes en cours"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
 

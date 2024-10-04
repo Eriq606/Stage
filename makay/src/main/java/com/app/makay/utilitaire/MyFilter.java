@@ -52,7 +52,7 @@ public class MyFilter implements IrisFilter{
         return null;
     }
 
-    public RedirectView resetUserRole(HttpServletRequest req, MyDAO dao, String targetRole) throws SQLException, Exception{
+    public RedirectView resetUserRole(HttpServletRequest req, MyDAO dao, String[] targetRole) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         RedirectView iris=checkByRolePOST(utilisateur, targetRole);
@@ -159,19 +159,15 @@ public class MyFilter implements IrisFilter{
                 return new RedirectView("/serveur-passer-commande");
             case Constantes.ROLE_CAISSE:
                 return new RedirectView("/demande-addition");
+            case Constantes.ROLE_CUISINIER:
+                return new RedirectView("/commandes-en-cours");
         }
         return new RedirectView("/logout");
     }
 
     @Override
     public RedirectView distributeByRoleToResetCache(IrisUser irisUser) {
-        switch(irisUser.getIrisRole()){
-            case Constantes.ROLE_SERVEUR:
-                return new RedirectView("/reset-cache-serveur");
-            case Constantes.ROLE_SUPERVISEUR:
-                return new RedirectView("/reset-cache-superviseur");
-        }
-        return new RedirectView("/logout");
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -69,7 +69,7 @@
                                             <p th:id="'reste-a-payer-commande'+${c.id}" th:text="'Reste a payer : '+${c.getResteAPayerString()}"></p>
                                             <div class="mb-3">
                                                 <label th:for="'montant-commande'+${c.id}" class="form-label">Montant</label>
-                                                <input type="number" min="0" step="0.01" name="montant" class="form-control" th:id="'montant-commande'+${c.id}"
+                                                <input type="number" th:value="${c.resteAPayer}" min="0" step="0.01" name="montant" class="form-control" th:id="'montant-commande'+${c.id}"
                                                     aria-describedby="emailHelp">
                                             </div>
                                             <fieldset class="row mb-3">
