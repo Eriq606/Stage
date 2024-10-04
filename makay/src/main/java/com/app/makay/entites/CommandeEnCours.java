@@ -47,6 +47,16 @@ public class CommandeEnCours{
         this.resteAPayer = resteAPayer;
     }
 
+    public String getEtatString(){
+        switch(getEtat()){
+            case Constantes.COMMANDE_PAYEE:
+                return Constantes.ETATCOMMANDE_PAYEE;
+            case Constantes.COMMANDE_ANNULEE:
+                return Constantes.ETATCOMMANDE_ANNULEE;
+        }
+        return "...";
+    }
+
     public String getPlaceLabel(){
         String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
@@ -71,6 +81,21 @@ public class CommandeEnCours{
             heureStr="0"+heureStr;
         }
         int minute=getOuverture().getMinute();
+        String minuteStr=String.valueOf(minute);
+        if(minute<10){
+            minuteStr="0"+minuteStr;
+        }
+        reponse+=heureStr+"h"+minuteStr;
+        return reponse;
+    }
+    public String getHeureCloture(){
+        String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
+        int heure=getCloture().getHour();
+        String heureStr=String.valueOf(heure);
+        if(heure<10){
+            heureStr="0"+heureStr;
+        }
+        int minute=getCloture().getMinute();
         String minuteStr=String.valueOf(minute);
         if(minute<10){
             minuteStr="0"+minuteStr;

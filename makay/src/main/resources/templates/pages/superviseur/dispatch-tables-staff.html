@@ -25,6 +25,7 @@
                 }
             </style>
             <div class="bg-secondary rounded h-100 p-4">
+                <div class="alerte-envoye"></div>
                 <h1>Dispatch du staff aux tables respectives</h1>
                 <hr>
                 <div class="table-responsive">
@@ -265,6 +266,9 @@
             stompclient.publish({
                 destination:"/makay/notify-redirect-barman"
             });
+            stompclient.publish({
+                destination:"/makay/notify-redirect-caissier"
+            });
         }
         function redirigerVersResetCache(){
             window.location.href="http://"+ip+":8080/reset-cache-superviseur";
@@ -294,8 +298,18 @@
                     "Content-type":"application/json"
                 },
                 body: JSON.stringify({restdata:toSubmit})
-            }).then(()=>{
+            }).then((response)=>{return response.json()})
+            .then((data)=>{
                 loadingEnvoiCommande.style.display="none";
+                if(data.code==0){
+                    const alerteEnvoye=document.getElementById("alerte-envoye");
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
                 notifierToutUtilisateur();
             });
         }

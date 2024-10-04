@@ -21,7 +21,7 @@
     <div th:each="c:${commandes}">
         <div class="row">
             <div class="col-12">
-                <div th:if="${c.etat==0}" class="btn btn-outline-primary pt-4 w-100" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
+                <div th:if="${c.etat==0}" class="btn btn-outline-primary pt-4 w-100" th:id="'button-commande'+${c.id}" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
                     <h2 th:text="${c.getPlaceLabel()}"></h2>
                     <p th:text="${c.getHeure()}"></p>
                 </div>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-                            <a th:if="${c.etat==0}" th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}"><button type="button" class="btn btn-warning">Modifier</button></a>
+                            <a th:if="${c.etat==0}" th:href="'/modifier-commande?idcommande='+${c.id}+'&indice_pagination='+${indicepagination}+'&table='+${table}" th:id="'link-modifier-commande'+${c.id}"><button type="button" th:id="'modifier-commande'+${c.id}" class="btn btn-warning">Modifier</button></a>
                             <button th:unless="${c.etat==0}" type="button" class="btn btn-warning" disabled>Modifier</button>
                             <button th:if="${c.etat==0}" type="button" class="btn btn-success demande-addition" th:data-etat="${c.etat}" th:data-idcommande="${c.id}">Addition</button>
                             <button th:unless="${c.etat==0}" type="button" class="btn btn-success" disabled><i class="fa-solid fa-check"></i></button>
@@ -122,6 +122,9 @@
         for(let i=0;i<demandesAddition.length;i++){
             const idcommande=demandesAddition[i].dataset.idcommande;
             const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
+            const linkModifier=document.getElementById("link-modifier-commande"+idcommande);
+            const modifierCommande=document.getElementById("modifier-commande"+idcommande);
+            const buttonCommande=document.getElementById("button-commande"+idcommande);
             demandesAddition[i].onclick=()=>{
                 const commande={ id:idcommande };
                 const demandeAdditionREST={
@@ -150,8 +153,32 @@
                     }
                     demandesAddition[i].innerHTML="<i class='fa-solid fa-check'></i>";
                     demandesAddition[i].disabled=true;
+                    linkModifier.setAttribute("href", "#");
+                    modifierCommande.disabled=true;
+                    buttonCommande.style.backgroundColor="#9cff9c";
                 });
             }
+        }
+
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
         }
         /*]]*/
     </script>

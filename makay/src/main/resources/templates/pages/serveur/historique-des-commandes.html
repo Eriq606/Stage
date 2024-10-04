@@ -62,8 +62,7 @@
                                     <legend class="col-form-label col-sm-2 pt-0">Mode de paiement</legend>
                                     <div class="col-sm-10">
                                         <div class="form-check" th:each="m:${modepaiements}">
-                                            <input th:if="${param.modepaiement!=null and #arrays.contains(param.modepaiement, m.id)}" class="form-check-input" type="checkbox" th:id="'mode-paiement'+${m.id}" th:value="${m.id}" name="modepaiement" checked>
-                                            <input th:unless="${param.modepaiement!=null and #arrays.contains(param.modepaiement, m.id)}" class="form-check-input" type="checkbox" th:id="'mode-paiement'+${m.id}" th:value="${m.id}" name="modepaiement">
+                                            <input class="form-check-input mode-paiement-checkbox" th:data-idmode="${m.id}" type="checkbox" th:id="'mode-paiement'+${m.id}" th:value="${m.id}" name="modepaiement">
                                             <label class="form-check-label" th:for="'mode-paiement'+${m.id}" th:text="${m.nom}"></label>
                                         </div>
                                     </div>
@@ -101,7 +100,10 @@
                         <tr>
                             <th>Table</th>
                             <th>Serveur</th>
-                            <th>Date et heure</th>
+                            <th>Date et heure de création</th>
+                            <th>Clôture</th>
+                            <th>Montant</th>
+                            <th>Etat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,6 +111,9 @@
                             <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
                             <td th:text="${c.utilisateur.nom}"></td>
                             <td th:text="${c.getHeure()}"></td>
+                            <td th:text="${c.getHeureCloture()}"></td>
+                            <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
+                            <td th:text="${c.getEtatString()}"></td>
                             <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -119,11 +124,19 @@
                                         <div class="modal-body table-responsive" th:id="'detailCommande'+${c.id}">
                                             <p th:text="'Serveur: '+${c.utilisateur.nom}"></p>
                                             <div th:each="cf:${c.commandeFilles}">
-                                                <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                <p>
+                                                    <span th:text="${cf.getMontantString()}+' : '" style="font-weight: bold;"></span>
+                                                    <span th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></span>
+                                                </p>
                                                 <p><ul>
                                                     <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
                                                 </ul></p>
                                             </div>
+                                            <hr>
+                                            <p>
+                                                <span th:text="'Montant total : '"></span>
+                                                <span style="font-weight: bold;" th:text="${c.getMontantString()}"></span>
+                                            </p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
@@ -157,4 +170,38 @@
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const modePaiementCheckbox=document.getElementsByClassName("mode-paiement-checkbox");
+        const modePaiementChoisis=/*[[${modepaiements_choisis}]]*/[];
+        for(let i=0;i<modePaiementCheckbox.length;i++){
+            const idmode=modePaiementCheckbox[i].dataset.idmode;
+            if(modePaiementChoisis.includes(idmode)){
+                modePaiementCheckbox[i].checked=true;
+            }
+        }
+
+        const ip=/*[[${ip}]]*/"";
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
+        /*]]*/
+    </script>
 </div>

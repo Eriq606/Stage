@@ -27,6 +27,7 @@
                             <th scope="col">Table</th>
                             <th scope="col">Heure</th>
                             <th scope="col">Montant</th>
+                            <th scope="col">Reste à payer</th>
                             <th scope="col"></th>
                         </tr>
                         <tr th:each="c:${commandes}" th:id="'commande-row'+${c.id}">
@@ -54,6 +55,7 @@
                             </div>
                             <td th:text="${c.getHeure()}"></td>
                             <td th:text="${c.getMontantString()}"></td>
+                            <td th:id="'reste-a-payer-colonne'+${c.id}" th:text="${c.getResteAPayerString()}"></td>
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#paieModal'+${c.id}">Payer</button>
                                 <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
@@ -77,7 +79,7 @@
                                                 <div class="col-sm-10">
                                                     <div th:each="mp:${modepaiements}" class="form-check">
                                                         <input class="form-check-input" type="radio" name="mode-paiement"
-                                                            th:id="'paiement-mode'+${mp.id}" th:value="${mp.id}" checked>
+                                                            th:id="'paiement-mode'+${mp.id}" th:value="${mp.id}" checked required>
                                                         <label class="form-check-label" th:for="'paiement-mode'+${mp.id}" th:text="${mp.nom}"></label>
                                                     </div>
                                                 </div>
@@ -196,8 +198,10 @@
                         return;
                     }
                     const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                    const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
                     resteAPayer-=Number(formData.get("montant"));
                     resteAPayerCommande.textContent="Reste a payer : "+new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
                     formulaires[i].setAttribute("data-resteapayer", resteAPayer);
                     if(resteAPayer==0){
                         const commandeRow=document.getElementById("commande-row"+idcommande);
@@ -208,6 +212,27 @@
                     }
                 });
             }
+        }
+
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
         }
         /*]]*/
     </script>

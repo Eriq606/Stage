@@ -5,12 +5,15 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.ModePaiement;
@@ -85,6 +88,9 @@ public class CaissierController {
             model.addAttribute(Constantes.VAR_IP, ip);
             model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
             model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+            String[] urls=utilisateur.recupererResetCacheAndNotify();
+            model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+            model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
             HashMap<String, Object> pagination=dao.paginate(connect, countQuery, Constantes.PAGINATION_LIMIT, indiceActu);
             for(Map.Entry<String, Object> e:pagination.entrySet()){
                 model.addAttribute(e.getKey(), e.getValue());
@@ -101,7 +107,7 @@ public class CaissierController {
      */
     @PostMapping("/payer")
     @ResponseBody
-    public ReponseREST modifierCommande(@RequestBody RestData datas) throws SQLException, Exception{
+    public ReponseREST payer(@RequestBody RestData datas) throws SQLException, Exception{
         ReponseREST response=new ReponseREST();
         PayerCommandeREST modifs=HandyManUtils.fromJson(PayerCommandeREST.class, datas.getRestdata());
         try(Connection connect=DAOConnexion.getConnexion(dao)){
@@ -117,5 +123,23 @@ public class CaissierController {
             response.setMessage(e.getMessage());
             return response;
         }
+    }
+
+    @MessageMapping("/notify-redirect-caissier")
+    @SendTo("/notify/receive-notify-redirect-caissier")
+    public String notifierModifications(){
+        return "reset cache";
+    }
+
+    @GetMapping("/reset-cache-caissier")
+    public RedirectView resetCache(HttpServletRequest req) throws Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Place where=new Place(0);
+            places=dao.select(connect, Place.class, where);
+            ModePaiement wherePaiement=new ModePaiement();
+            wherePaiement.setEtat(0);
+            modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
+        }
+        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_CAISSE});
     }
 }

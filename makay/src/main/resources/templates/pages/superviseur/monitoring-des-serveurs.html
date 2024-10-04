@@ -25,11 +25,16 @@
                                                     </div>
                                                     <div class="modal-body table-responsive" th:id="'detailCommandeServeur'+${s.id}+'Commande'+${c.id}">
                                                         <div th:each="cf:${c.commandeFilles}">
-                                                            <p th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                            <p>
+                                                                <span style="font-weight: bold;" th:text="${cf.getMontantString()}+' : '"></span>
+                                                                <span th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></span>
+                                                            </p>
                                                             <p><ul>
                                                                 <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
                                                             </ul></p>
                                                         </div>
+                                                        <hr>
+                                                        <p style="font-weight: bold;" th:text="'Montant total : '+${c.getMontantString()}"></p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
@@ -37,6 +42,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
                                     </tr>
                                 </tbody>
                             </table>

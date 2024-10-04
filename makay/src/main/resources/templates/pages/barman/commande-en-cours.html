@@ -156,6 +156,27 @@
                 }
             });
         }
+
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
         /*]]*/
     </script>
 </div>

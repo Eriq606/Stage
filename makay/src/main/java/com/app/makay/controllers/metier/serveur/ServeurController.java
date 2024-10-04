@@ -130,6 +130,9 @@ public class ServeurController {
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
         return iris;
     }
 
@@ -181,6 +184,9 @@ public class ServeurController {
             model.addAttribute(Constantes.VAR_IP, ip);
             model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_pagination);
             model.addAttribute(Constantes.VAR_TABLE, table);
+            String[] urls=utilisateur.recupererResetCacheAndNotify();
+            model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+            model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
             return iris;
         }
     }
@@ -227,6 +233,7 @@ public class ServeurController {
                 model.addAttribute(m.getKey(), m.getValue());
             }
             model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
+            model.addAttribute(Constantes.VAR_MODEPAIEMENTS_CHOISIS, modepaiement!=null?modepaiement:new String[0]);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
         }
         String queryString="";
@@ -236,6 +243,10 @@ public class ServeurController {
         }
         model.addAttribute(Constantes.VAR_QUERYSTRING, queryString);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
         return iris;
     }
 

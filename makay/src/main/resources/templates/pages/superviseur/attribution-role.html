@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
+                <div id="alerte-envoye"></div>
                 <h1>Attribution des rôles aux utilisateurs</h1>
                 <hr>
                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#roleActuModal">Rôles actuels</button>
@@ -62,6 +63,7 @@
         const sessionid=/*[[${sessionid}]]*/"";
         const appliquerRoleActu=document.getElementById("appliquer-roleactu");
         const attributionTable=document.getElementById("attribution-table");
+        const superviseurnumero=/*[[${superviseurnumero}]]*/"";
         for(let i=0;i<utilisateurs.length;i++){
             const row=document.createElement("tr");
             const colNom=document.createElement("td");
@@ -73,7 +75,7 @@
             for(let j=0;j<roles.length;j++){
                 const option=document.createElement("option");
                 option.textContent=roles[j].nom;
-                option.value=JSON.stringify({utilisateur:{id:utilisateurs[i].id},role:{id:roles[j].id}});
+                option.value=JSON.stringify({utilisateur:{id:utilisateurs[i].id},role:{id:roles[j].id, numero:roles[j].numero}});
                 selectRole.appendChild(option);
             }
             colSelectRole.appendChild(selectRole);
@@ -95,7 +97,7 @@
                 for(let j=0;j<roles.length;j++){
                     const option=document.createElement("option");
                     option.textContent=roles[j].nom;
-                    option.value=JSON.stringify({utilisateur:{id:attributionsActu[i].utilisateur.id},role:{id:roles[j].id}});
+                    option.value=JSON.stringify({utilisateur:{id:attributionsActu[i].utilisateur.id},role:{id:roles[j].id,numero:roles[j].numero}});
                     if(roles[j].id==attributionsActu[i].role.id){
                         option.selected=true;
                     }
@@ -138,6 +140,9 @@
             stompclient.publish({
                 destination:"/makay/notify-redirect-barman"
             });
+            stompclient.publish({
+                destination:"/makay/notify-redirect-caissier"
+            });
         }
         function redirigerVersResetCache(){
             window.location.href="http://"+ip+":8080/"+resetCache;
@@ -153,13 +158,25 @@
         window.onbeforeunload=()=>{
             stompclient.deactivate();
         }
-
         formAttribution.addEventListener("submit", (ev)=>{
             ev.preventDefault();
+            let avecSuperviseur=false;
             for(let i=0;i<utilisateurs.length;i++){
                 const select=document.getElementById("selectRole"+utilisateurs[i].id);
                 const selectValue=JSON.parse(select.value);
+                if(selectValue.role.numero==superviseurnumero){
+                    avecSuperviseur=true;
+                }
                 attributions.push(selectValue);
+            }
+            if(avecSuperviseur==false){
+                const alerteEnvoye=document.getElementById("alerte-envoye");
+                const alert=document.createElement("div");
+                alert.className="alert alert-danger w-100";
+                alert.setAttribute("role", "alert");
+                alert.textContent="Vous devez sélectionner au moins un superviseur.";
+                alerteEnvoye.appendChild(alert);
+                return;
             }
             toSubmit=JSON.stringify({utilisateur:utilisateur,attributions:attributions,sessionid:sessionid});
             const api="http://"+ip+":8080/attribution-role-rest";
@@ -171,8 +188,18 @@
                     "Content-type":"application/json"
                 },
                 body:JSON.stringify({restdata:toSubmit})
-            }).then(()=>{
+            }).then((response)=>{return response.json()})
+            .then((data)=>{
                 loadingEnvoiCommande.style.display="none";
+                if(data.code==0){
+                    const alerteEnvoye=document.getElementById("alerte-envoye");
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
                 attributions=[];
                 toSubmit="";
                 notifierToutUtilisateur();

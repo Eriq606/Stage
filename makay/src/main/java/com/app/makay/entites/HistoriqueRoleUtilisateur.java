@@ -57,17 +57,18 @@ public class HistoriqueRoleUtilisateur {
         this.etat = etat;
     }
     public static HistoriqueRoleUtilisateur[] getRolesActuels(Connection connect, MyDAO dao) throws Exception{
-        String query="select id, idutilisateur, idrole, dateheure, nom_utilisateur, nom_role, numero_role from v_attribution_roles";
+        // String query="select id, idutilisateur, idrole, dateheure, nom_utilisateur, nom_role, numero_role from v_attribution_roles";
+        String query="select * from v_utilisateurs";
         HashMap<String, Object>[] objets=dao.select(connect, query);
         HistoriqueRoleUtilisateur[] attributions=new HistoriqueRoleUtilisateur[objets.length];
         Utilisateur utilisateur;
         Role role;
         for(int i=0;i<attributions.length;i++){
             attributions[i]=new HistoriqueRoleUtilisateur();
-            attributions[i].setId((int)objets[i].get("id"));
+            // attributions[i].setId((int)objets[i].get("id"));
             utilisateur=new Utilisateur();
-            utilisateur.setId((int)objets[i].get("idutilisateur"));
-            utilisateur.setNom((String)objets[i].get("nom_utilisateur"));
+            utilisateur.setId((int)objets[i].get("id"));
+            utilisateur.setNom((String)objets[i].get("nom"));
             attributions[i].setUtilisateur(utilisateur);
             role=new Role();
             role.setId((int)objets[i].get("idrole"));

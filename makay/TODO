@@ -34,20 +34,21 @@ Révision du code:
     ✔ Scénario-type navigation @30m @started(24-10-04 09:15) @done(24-10-04 09:46) @lasted(31m45s)
     ✔ Scénario-type navigation @30m @started(24-10-04 09:46) @done(24-10-04 10:18) @lasted(32m50s)
     Points à vérifier:
-        ☐ supprimer la ligne commentée dans le js Plan de table @20m
-        ☐ traiter les erreurs REST dans attribution role @20m
-        ☐ traiter les erreurs REST dans dispatch staff @20m
-        ☐ ajouter le montant de chaque commande fille dans monitoring serveur @20m
-        ☐ ajouter le montant total des commandes dans monitoring serveur @20m
-        ☐ désactiver le bouton modifier commande après demande d'addition @20m
-        ☐ vérifier que la commande n'est pas encore en attente de paiement quand on effectue une modification @30m
-        ☐ gérer la quantité zéro dans la création de commande @20m
-        ☐ ajouter websocket dans liste commande serveur @30m
-        ☐ débugger checkbox mode paiement dans le filtre multicritère de l'historique @30m
-        ☐ ajouter toutes les colonnes de commande et commande fille dans l'historique @20m
-        ☐ ajouter websocket dans historique commandes @30m
-        ☐ ajouter websocket dans commande en cours @30m
-        ☐ ajouter toutes les colonnes de commande fille dans demande addition @20m
-        ☐ ajouter la colonne reste à payer dans demande addition @10m
-        ☐ rendre le radio button de mode de paiement required dans demande addition @10m
-        ☐ ajouter websocket dans demande addition @30m
+        ✔ supprimer la ligne commentée dans le js Plan de table @20m @started(24-10-04 10:21) @done(24-10-04 10:23) @lasted(2m35s)
+        ✔ traiter les erreurs REST dans attribution role (vérifier qu'il y ait au moins un responsable de salle) @20m @started(24-10-04 10:23) @done(24-10-04 10:36) @lasted(13m47s)
+        ✔ traiter les erreurs REST dans dispatch staff @20m @started(24-10-04 10:36) @done(24-10-04 10:39) @lasted(3m18s)
+        ✔ ajouter le montant de chaque commande fille dans monitoring serveur @20m @started(24-10-04 10:39) @done(24-10-04 10:47) @lasted(8m35s)
+        ✔ désactiver le bouton modifier commande après demande d'addition @20m @started(24-10-04 10:47) @done(24-10-04 10:57) @lasted(10m10s)
+        ✔ vérifier que la commande n'est pas encore en attente de paiement quand on effectue une modification @30m @started(24-10-04 10:57) @done(24-10-04 11:06) @lasted(9m57s)
+        ✔ gérer la quantité zéro dans la création de commande @20m @started(24-10-04 11:07) @done(24-10-04 11:09) @lasted(2m45s)
+        ✔ ajouter websocket dans liste commande serveur @30m @started(24-10-04 11:09) @done(24-10-04 11:31) @lasted(22m24s)
+        ✔ débugger checkbox mode paiement dans le filtre multicritère de l'historique @30m @started(24-10-04 11:31) @done(24-10-04 11:44) @lasted(13m13s)
+        ✔ ajouter toutes les colonnes de commande et commande fille dans l'historique @20m @started(24-10-04 11:44) @done(24-10-04 11:57) @lasted(13m36s)
+        ✔ ajouter websocket dans historique commandes @30m @started(24-10-04 14:01) @done(24-10-04 14:06) @lasted(5m56s)
+        ✔ ajouter websocket dans commande en cours @30m @started(24-10-04 14:06) @done(24-10-04 14:09) @lasted(3m10s)
+        ✔ ajouter toutes les colonnes de commande fille dans demande addition @20m @started(24-10-04 14:09) @done(24-10-04 14:15) @lasted(6m55s)
+        ✔ ajouter la colonne reste à payer dans demande addition @10m @started(24-10-04 14:18) @done(24-10-04 14:23) @lasted(5m3s)
+        ✔ rendre le radio button de mode de paiement required dans demande addition @10m @started(24-10-04 14:23) @done(24-10-04 14:23) @lasted(35s)
+
+Nouveaux modules:
+    ✔ bouton réinitialiser cache @30m @started(24-10-04 14:28) @done(24-10-04 14:40) @lasted(12m56s)

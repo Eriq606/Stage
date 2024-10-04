@@ -12,6 +12,8 @@ public class Constantes {
     public static final String MSG_SUCCES="Succès";
     public static final String MSG_NON_AUTHORISE="Accès non authorisé";
     public static final String MSG_PAIEMENT_MONTANT_INVALIDE="Le montant du paiement est supérieur au montant de la commande.";
+    public static final String MSG_COMMANDE_DEJA_CLOTUREE="La commande est déjà en attente d'addition";
+    public static final String MSG_COMMANDE_VIDE="Commande vide.";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";
@@ -50,6 +52,8 @@ public class Constantes {
     public static final String VAR_TABLE="table";
     public static final String VAR_MODEPAIEMENTS="modepaiements";
     public static final String VAR_QUERYSTRING="querystring";
+    public static final String VAR_SUPERVISEURNUMERO="superviseurnumero";
+    public static final String VAR_MODEPAIEMENTS_CHOISIS="modepaiements_choisis";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -109,4 +113,9 @@ public class Constantes {
     public static final String URL_RECEIVE_NOTIFY_SUPERVISEUR="receive-notify-redirect-superviseur";
     public static final String URL_RESET_CACHE_BARMAN="reset-cache-barman";
     public static final String URL_RECEIVE_NOTIFY_BARMAN="receive-notify-redirect-barman";
+    public static final String URL_RESET_CACHE_CAISSIER="reset-cache-caissier";
+    public static final String URL_RECEIVE_NOTIFY_CAISSIER="receive-notify-redirect-caissier";
+
+    public static final String ETATCOMMANDE_PAYEE="Payée";
+    public static final String ETATCOMMANDE_ANNULEE="Annulée";
 }

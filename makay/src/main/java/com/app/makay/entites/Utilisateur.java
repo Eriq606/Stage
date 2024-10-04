@@ -131,8 +131,12 @@ public class Utilisateur extends IrisUser{
                 responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
                 break;
             case Constantes.ROLE_CUISINIER:
-                responses[0]=Constantes.URL_RESET_CACHE_SUPERVISEUR;
-                responses[1]=Constantes.URL_RECEIVE_NOTIFY_SUPERVISEUR;
+                responses[0]=Constantes.URL_RESET_CACHE_BARMAN;
+                responses[1]=Constantes.URL_RECEIVE_NOTIFY_BARMAN;
+                break;
+            case Constantes.ROLE_CAISSE:
+                responses[0]=Constantes.URL_RESET_CACHE_CAISSIER;
+                responses[1]=Constantes.URL_RECEIVE_NOTIFY_CAISSIER;
                 break;
         }
         return responses;
@@ -247,8 +251,15 @@ public class Utilisateur extends IrisUser{
     }
     public int passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
-            if(commandeFilles.length==0){
-                throw new Exception("Commande vide");
+            boolean estValide=false;
+            for(CommandeFille c:commandeFilles){
+                if(c.getQuantite()>0){
+                    estValide=true;
+                    break;
+                }
+            }
+            if(commandeFilles.length==0||estValide==false){
+                throw new Exception(Constantes.MSG_COMMANDE_VIDE);
             }
             commande.setOuverture(LocalDateTime.now());
             commande.setResteAPayer(commande.getMontant());
@@ -359,6 +370,9 @@ public class Utilisateur extends IrisUser{
     }
     public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
+            if(commande.getEtat()==Constantes.COMMANDE_ADDITION){
+                throw new Exception(Constantes.MSG_COMMANDE_DEJA_CLOTUREE);
+            }
             Commande where=new Commande();
             where.setId(commande.getId());
             Commande change=new Commande();
@@ -665,6 +679,7 @@ public class Utilisateur extends IrisUser{
         try{
             Commande change=new Commande();
             change.setEtat(Constantes.COMMANDE_ADDITION);
+            change.setCloture(LocalDateTime.now());
             dao.update(connect, change, commande);
         }catch(Exception e){
             connect.rollback();
@@ -700,7 +715,6 @@ public class Utilisateur extends IrisUser{
             Commande change=new Commande();
             change.setResteAPayer(paiement.getCommande().getResteAPayer()-paiement.getMontant());
             if(change.getResteAPayer()==0){
-                change.setCloture(LocalDateTime.now());
                 change.setEtat(Constantes.COMMANDE_PAYEE);
             }
             dao.update(connect, change, where);

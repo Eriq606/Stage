@@ -96,6 +96,9 @@ public class BarmanController {
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         model.addAttribute(Constantes.VAR_IP, ip);
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
         return iris;
     }
     @PostMapping("/terminer-commande-fille")
