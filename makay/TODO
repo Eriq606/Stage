@@ -77,6 +77,6 @@ Nouveaux modules:
             ✔ ajouter colonne dernier stock dans produit @10m @started(24-10-07 15:13) @done(24-10-07 15:15) @lasted(2m37s)
             ✔ creer table stock_produit @10m @started(24-10-07 15:15) @done(24-10-07 15:17) @lasted(2m51s)
         Barman/Cuisinier:
-            ☐ controller modifier stock GET @20m @started(24-10-07 15:18)
-            ☐ page modifier stock @30m
+            ✔ controller modifier stock GET @20m @started(24-10-07 15:18) @done(24-10-07 15:26) @lasted(8m2s)
+            ☐ page modifier stock @30m @started(24-10-07 15:26)
             ☐ controller modifier stock POST @30m

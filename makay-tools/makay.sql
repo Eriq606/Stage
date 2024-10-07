@@ -651,3 +651,8 @@ create table stock_produits(
     dateheure timestamp default current_timestamp,
     etat int default 0
 );
+
+alter table produits drop dernier_stock;
+
+alter table produits add dernier_stock int;
+update produits set dernier_stock=-1;

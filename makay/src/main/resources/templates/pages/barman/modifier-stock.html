@@ -2,7 +2,27 @@
     <div class="row">
         <div class="col-10">
             <div class="bg-secondary rounded p-4">
-
+                <h1>Modification de stock</h1>
+                <div class="input-group mb-3"></div>
+                    <input type="text" id="recherche-produit" class="form-control" aria-label="Recherche">
+                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
+                </div>
+                <table class="table">
+                    <tbody id="suggestion-table">
+                        <!-- Autocomplete suggestions -->
+                    </tbody>
+                </table>
+                <table class="table">
+                    <tbody>
+                        <tr th:each="p:${produits}">
+                            <td th:text="${p.nom}"></td>
+                            <td>
+                                <input type="text" name="stock" value="${p.dernierStock}">
+                            </td>
+                            <td><button type="submit"></button></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

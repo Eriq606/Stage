@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.Place;
+import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.CheckCommandeFilleREST;
 import com.app.makay.utilitaire.Constantes;
@@ -136,12 +137,16 @@ public class BarmanController {
     }
 
     @GetMapping("/modifier-stock")
-    public Object modifierStock(HttpServletRequest req, Model model){
+    public Object modifierStock(HttpServletRequest req, Model model) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR}, "Makay - Mettre à jour le stock", "pages/barman/modifier-stock", "layout/layout", model);
         if(utilisateur==null){
             return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Produit[] produits=Produit.recupereProduitsStockLimite(connect, dao);
+            model.addAttribute(Constantes.VAR_PRODUITS, produits);
         }
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);

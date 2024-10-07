@@ -25,7 +25,15 @@ public class Produit {
     @Column("idcategorie")
     private Categorie categorie;
     private Accompagnement[] accompagnements;
+    @Column("dernier_stock")
+    private Integer dernierStock;
     
+    public Integer getDernierStock() {
+        return dernierStock;
+    }
+    public void setDernierStock(Integer dernierStock) {
+        this.dernierStock = dernierStock;
+    }
     public Produit(Integer etat) {
         this.etat = etat;
     }
@@ -90,5 +98,10 @@ public class Produit {
             accompagnements[i].setEtat((int)query[i].get("etat"));
         }
         return accompagnements;
+    }
+    public static Produit[] recupereProduitsStockLimite(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where dernier_stock<=0 and etat=0";
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        return produits;
     }
 }
