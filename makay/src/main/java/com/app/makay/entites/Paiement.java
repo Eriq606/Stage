@@ -1,7 +1,9 @@
 package com.app.makay.entites;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -69,5 +71,22 @@ public class Paiement {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
-    
+    public String recupererHeure(){
+        String reponse=LocalDate.now().isAfter(getDateheure().toLocalDate())?getDateheure().toLocalDate().toString()+" ":"";
+        int heure=getDateheure().getHour();
+        String heureStr=String.valueOf(heure);
+        if(heure<10){
+            heureStr="0"+heureStr;
+        }
+        int minute=getDateheure().getMinute();
+        String minuteStr=String.valueOf(minute);
+        if(minute<10){
+            minuteStr="0"+minuteStr;
+        }
+        reponse+=heureStr+"h"+minuteStr;
+        return reponse;
+    }
+    public String recupererMontantString(){
+        return HandyManUtils.number_format(getMontant(), ' ', ',', 2)+" Ar";
+    }
 }

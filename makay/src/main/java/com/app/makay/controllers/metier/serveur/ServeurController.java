@@ -211,7 +211,7 @@ public class ServeurController {
     }
     @GetMapping("/historique-de-commande")
     public Object historiqueCommandes(HttpServletRequest req, Model model, Integer indice_actu, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut, String clotureFin,
-                                      String[] modepaiement, String produit, String accompagnement, String notes) throws SQLException, Exception{
+                                      String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur,
@@ -225,8 +225,8 @@ public class ServeurController {
             indice_actu_controller=indice_actu;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
-            int countCommandes=utilisateur.recupererCountHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
+            CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
+            int countCommandes=utilisateur.recupererCountHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
             ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class);
             HashMap<String, Object> pagination=HandyManUtils.paginate(countCommandes, Constantes.PAGINATION_LIMIT, indice_actu_controller);
             for(Map.Entry<String, Object> m:pagination.entrySet()){
@@ -239,7 +239,7 @@ public class ServeurController {
         String queryString="";
         if(req.getQueryString()!=null){
             queryString=req.getQueryString();
-            queryString=queryString.replaceAll("indice_actu=\\d", "");
+            queryString=queryString.replaceAll("indice_actu=\\d&", "");
         }
         model.addAttribute(Constantes.VAR_QUERYSTRING, queryString);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());

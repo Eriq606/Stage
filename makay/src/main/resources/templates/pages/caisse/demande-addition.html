@@ -54,8 +54,8 @@
                                 </div>
                             </div>
                             <td th:text="${c.getHeure()}"></td>
-                            <td th:text="${c.getMontantString()}"></td>
-                            <td th:id="'reste-a-payer-colonne'+${c.id}" th:text="${c.getResteAPayerString()}"></td>
+                            <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
+                            <td style="font-weight: bold;" th:id="'reste-a-payer-colonne'+${c.id}" th:text="${c.getResteAPayerString()}"></td>
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#paieModal'+${c.id}">Payer</button>
                                 <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
@@ -68,7 +68,10 @@
                                         </div>
                                         <div class="modal-body">
                                             <div th:id="'alerte-envoye-commande'+${c.id}"></div>
-                                            <p th:id="'reste-a-payer-commande'+${c.id}" th:text="'Reste a payer : '+${c.getResteAPayerString()}"></p>
+                                            <p>
+                                                <span th:text="'Reste a payer : '"></span>
+                                                <span th:id="'reste-a-payer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.getResteAPayerString()}"></span>
+                                            </p>
                                             <div class="mb-3">
                                                 <label th:for="'montant-commande'+${c.id}" class="form-label">Montant</label>
                                                 <input type="number" th:value="${c.resteAPayer}" min="0" step="0.01" name="montant" class="form-control" th:id="'montant-commande'+${c.id}"
@@ -200,7 +203,7 @@
                     const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
                     const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
                     resteAPayer-=Number(formData.get("montant"));
-                    resteAPayerCommande.textContent="Reste a payer : "+new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
                     resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
                     formulaires[i].setAttribute("data-resteapayer", resteAPayer);
                     if(resteAPayer==0){

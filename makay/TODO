@@ -55,9 +55,20 @@ Révision du code:
 Nouveaux modules:
     ✔ bouton réinitialiser cache @30m @started(24-10-04 14:28) @done(24-10-04 14:40) @lasted(12m56s)
     ✔ recherche des nouveaux sprints @started(24-10-04 15:30) @done(24-10-04 15:44) @lasted(14m50s)
+    ✔ révision de l'application @30m @started(24-10-07 08:31) @done(24-10-07 08:35) @lasted(4m31s)
     Points à vérifier:
         ✔ dispatch staff: afficher le role du staff à côté @10m @started(24-10-04 15:45) @done(24-10-04 16:02) @lasted(17m9s)
-        ☐ demande addition: mettre les montants en gras @5m
-        ☐ historique: afficher la liste de paiements et leurs mode de paiement @20m
-        ☐ historique: pagination avec les éléments du filtre @30m
-        ☐ historique: retirer sysout println du sql @10m 
+        ✔ demande addition: mettre les montants en gras @5m @done(24-10-07 08:35)
+        ✔ historique: afficher la liste de paiements et leurs mode de paiement @20m @started(24-10-07 08:35) @done(24-10-07 08:45) @lasted(10m55s)
+        ✔ historique: pagination avec les éléments du filtre @30m @started(24-10-07 08:46) @done(24-10-07 08:54) @lasted(8m10s)
+        ✔ historique: ajouter champ montant au filtre @20m @started(24-10-07 08:54) @done(24-10-07 09:06) @lasted(12m52s)
+        ✔ historique: afficher leurs mode de paiement @20m @started(24-10-07 09:06) @done(24-10-07 09:10) @lasted(4m8s)
+        ✔ historique: retirer sysout println du sql @10m @started(24-10-07 09:10) @done(24-10-07 09:10) @lasted(33s)
+        ✔ historique: retirer sysout println du querystring @10m @started(24-10-07 09:10) @done(24-10-07 09:10) @lasted(44s)
+        ✔ historique: ajouter vert/rouge sur les commandes payées/annulées @20m @started(24-10-07 09:11) @done(24-10-07 09:19) @lasted(8m7s)
+        ✔ historique: rendre table responsive @5m @started(24-10-07 09:19) @done(24-10-07 09:20) @lasted(1m55s)
+
+    Administration:
+        Brainstorming:
+            ☐ identification des données pertinentes @30m
+            ☐ identification des charts correspondants @30m

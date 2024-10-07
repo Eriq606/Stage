@@ -1,7 +1,7 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
     <div class="row">
         <div class="col-12">
-            <div class="bg-secondary rounded p-4">
+            <div class="bg-secondary rounded p-4 table-responsive">
                 <div class="accordion" id="accordionRecherche">
                     <div class="accordion-item bg-transparent">
                         <h2 class="accordion-header" id="headingRecherche">
@@ -54,6 +54,23 @@
                                             <label for="cloture-fin" class="col-sm-2 col-form-label">Au: </label>
                                             <div class="col-sm-10">
                                                 <input type="datetime-local" class="form-control" name="clotureFin" id="cloture-fin" th:value="${param.clotureFin}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="row mb-3">
+                                    <legend class="col-form-label col-sm-2 pt-0">Montant</legend>
+                                    <div class="col-sm-10">
+                                        <div class="row mb-3">
+                                            <label for="montant-debut" class="col-sm-2 col-form-label">Entre </label>
+                                            <div class="col-sm-10">
+                                                <input type="number" step="0.01" min="0" class="form-control" name="montantDebut" id="montant-debut" th:value="${param.montantDebut}">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="montant-fin" class="col-sm-2 col-form-label">Et </label>
+                                            <div class="col-sm-10">
+                                                <input type="number" step="0.01" min="0" class="form-control" name="montantFin" id="montant-fin" th:value="${param.montantFin}">
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +130,7 @@
                             <td th:text="${c.getHeure()}"></td>
                             <td th:text="${c.recupererHeureCloture()}"></td>
                             <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
-                            <td th:text="${c.getEtatString()}"></td>
+                            <td th:style="'background-color: '+${c.recupererCouleur()}" th:text="${c.getEtatString()}"></td>
                             <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -137,6 +154,15 @@
                                                 <span th:text="'Montant total : '"></span>
                                                 <span style="font-weight: bold;" th:text="${c.getMontantString()}"></span>
                                             </p>
+                                            <hr>
+                                            <p>Paiements:</p>
+                                            <div th:each="cp:${c.paiements}">
+                                                <p>
+                                                    <span th:text="${cp.recupererHeure()}+' : '"></span>
+                                                    <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
+                                                    <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
+                                                </p>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
@@ -151,17 +177,17 @@
                 <nav>
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
-                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_premier}+'&'+${queryString}" aria-label="Precedent">
+                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_premier}+'&'+${querystring}" aria-label="Precedent">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item disabled"><a class="page-link">...</a></li>
-                        <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_precedent}+'&'+${queryString}" th:text="${indice_precedent}"></a></li>
+                        <li th:class="'page-item '+${bouton_precedent}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_precedent}+'&'+${querystring}" th:text="${indice_precedent}"></a></li>
                         <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu}"></a></li>
-                        <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_suivant}+'&'+${queryString}" th:text="${indice_suivant}"></a></li>
+                        <li th:class="'page-item '+${bouton_suivant}"><a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_suivant}+'&'+${querystring}" th:text="${indice_suivant}"></a></li>
                         <li class="page-item disabled"><a class="page-link">...</a></li>
                         <li class="page-item">
-                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_dernier}+'&'+${queryString}" aria-label="Suivant">
+                            <a class="page-link" th:href="'/historique-de-commande?indice_actu='+${indice_dernier}+'&'+${querystring}" aria-label="Suivant">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

@@ -455,7 +455,7 @@ public class Utilisateur extends IrisUser{
         }
     }
     public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
-                                                         String clotureFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+                                                        String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select * from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
@@ -477,6 +477,12 @@ public class Utilisateur extends IrisUser{
         if(clotureFin!=null&&clotureFin.isEmpty()==false){
             listQuery.add("dateheure_cloture<?");
             clotureFinTime=LocalDateTime.parse(clotureFin);
+        }
+        if(montantDebut!=null&&montantDebut.isEmpty()==false){
+            listQuery.add("montant>=?");
+        }
+        if(montantFin!=null&&montantFin.isEmpty()==false){
+            listQuery.add("montant<?");
         }
         String[] modes={};
         String modesPaiement="";
@@ -505,7 +511,6 @@ public class Utilisateur extends IrisUser{
         }
         query=query.substring(0, query.length()-5);
         query+=" order by dateheure_ouverture desc limit ? offset ?";
-        System.out.println(query);
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
             if(table!=null&&table.isEmpty()==false){
@@ -526,6 +531,14 @@ public class Utilisateur extends IrisUser{
             }
             if(clotureFin!=null&&clotureFin.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(clotureFinTime));
+                indice++;
+            }
+            if(montantDebut!=null&&montantDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantDebut));
+                indice++;
+            }
+            if(montantFin!=null&&montantFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantFin));
                 indice++;
             }
             for(String s:modes){
@@ -573,6 +586,7 @@ public class Utilisateur extends IrisUser{
                     commande.setUtilisateur(dao.select(connect, Utilisateur.class, utilisateur)[0]);
                     commande.setOuverture(result.getTimestamp("dateheure_ouverture").toLocalDateTime());
                     commande.recupererCommandeFilles(connect, dao);
+                    commande.recupererPaiements(connect, dao);
                     liste.add(commande);
                 }
                 CommandeEnCours[] commandes=liste.toArray(new CommandeEnCours[]{});
@@ -581,7 +595,7 @@ public class Utilisateur extends IrisUser{
         }
     }
     public int recupererCountHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
-                                                         String clotureFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+                                                         String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select count(*) from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
@@ -603,6 +617,12 @@ public class Utilisateur extends IrisUser{
         if(clotureFin!=null&&clotureFin.isEmpty()==false){
             listQuery.add("dateheure_cloture<?");
             clotureFinTime=LocalDateTime.parse(clotureFin);
+        }
+        if(montantDebut!=null&&montantDebut.isEmpty()==false){
+            listQuery.add("montant>=?");
+        }
+        if(montantFin!=null&&montantFin.isEmpty()==false){
+            listQuery.add("montant<?");
         }
         String[] modes={};
         String modesPaiement="";
@@ -650,6 +670,14 @@ public class Utilisateur extends IrisUser{
             }
             if(clotureFin!=null&&clotureFin.isEmpty()==false){
                 statement.setTimestamp(indice, Timestamp.valueOf(clotureFinTime));
+                indice++;
+            }
+            if(montantDebut!=null&&montantDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantDebut));
+                indice++;
+            }
+            if(montantFin!=null&&montantFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantFin));
                 indice++;
             }
             for(String s:modes){

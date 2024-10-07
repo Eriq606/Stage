@@ -117,5 +117,7 @@ public class Constantes {
     public static final String URL_RECEIVE_NOTIFY_CAISSIER="receive-notify-redirect-caissier";
 
     public static final String ETATCOMMANDE_PAYEE="Payée";
+    public static final String COULEUR_PAYEE="#70ff9b";
     public static final String ETATCOMMANDE_ANNULEE="Annulée";
+    public static final String COULEUR_ANNULEE="#ff7171";
 }

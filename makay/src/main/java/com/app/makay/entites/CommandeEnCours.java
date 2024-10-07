@@ -39,6 +39,15 @@ public class CommandeEnCours{
     private CommandeFilleEnCours[] commandeFilles;
     @Column("reste_a_payer")
     private Double resteAPayer;
+    private Paiement[] paiements;
+    public Paiement[] getPaiements() {
+        return paiements;
+    }
+
+    public void setPaiements(Paiement[] paiements) {
+        this.paiements = paiements;
+    }
+
     public Double getResteAPayer() {
         return resteAPayer;
     }
@@ -230,5 +239,24 @@ public class CommandeEnCours{
     }
     public String getResteAPayerString(){
         return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
+    }
+    public Paiement[] recupererPaiements(Connection connect, MyDAO dao) throws Exception{
+        Commande commande=new Commande();
+        commande.setId(getId());
+        Paiement where=new Paiement();
+        where.setCommande(commande);
+        where.setEtat(0);
+        Paiement[] paiements=dao.select(connect, Paiement.class, where);
+        setPaiements(paiements);
+        return paiements;
+    }
+    public String recupererCouleur(){
+        switch(getEtat()){
+            case Constantes.COMMANDE_PAYEE:
+                return Constantes.COULEUR_PAYEE;
+            case Constantes.COMMANDE_ANNULEE:
+                return Constantes.COULEUR_ANNULEE;
+        }
+        return "";
     }
 }
