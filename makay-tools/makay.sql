@@ -640,3 +640,14 @@ create or replace view v_serveurs_encours_1 as
 select idutilisateur, nom_utilisateur, email_utilisateur, contact_utilisateur
 from v_dispatch_staff
 where idrangee=-1;
+
+alter table produits add dernier_stock quantity;
+
+create table stock_produits(
+    id serial primary key,
+    idproduit int not null references produits(id),
+    idutilisateur int not null references utilisateurs(id),
+    stock quantity not null,
+    dateheure timestamp default current_timestamp,
+    etat int default 0
+);

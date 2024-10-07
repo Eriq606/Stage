@@ -134,4 +134,20 @@ public class BarmanController {
         }
         return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER});
     }
+
+    @GetMapping("/modifier-stock")
+    public Object modifierStock(HttpServletRequest req, Model model){
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR}, "Makay - Mettre à jour le stock", "pages/barman/modifier-stock", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        return iris;
+    }
 }

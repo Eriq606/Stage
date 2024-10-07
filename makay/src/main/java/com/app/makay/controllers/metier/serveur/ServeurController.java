@@ -1,10 +1,17 @@
 package com.app.makay.controllers.metier.serveur;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.Commande;
 import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.CommandeFilleEnCours;
 import com.app.makay.entites.ModePaiement;
@@ -30,6 +38,7 @@ import com.app.makay.utilitaire.ReponseREST;
 import com.app.makay.utilitaire.RestData;
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import veda.godao.utils.DAOConnexion;
 
@@ -40,7 +49,8 @@ public class ServeurController {
     private String ip;
     private MyDAO dao;
     private Place[] places;
-
+    @Autowired
+    private ResourceLoader loader;
     public ServeurController() throws SQLException, Exception{
         filter=new MyFilter();
         dao=new MyDAO();
@@ -229,6 +239,7 @@ public class ServeurController {
             int countCommandes=utilisateur.recupererCountHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
             ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class);
             HashMap<String, Object> pagination=HandyManUtils.paginate(countCommandes, Constantes.PAGINATION_LIMIT, indice_actu_controller);
+            // HandyManUtils.gene
             for(Map.Entry<String, Object> m:pagination.entrySet()){
                 model.addAttribute(m.getKey(), m.getValue());
             }
@@ -278,6 +289,27 @@ public class ServeurController {
             response.setCode(Constantes.CODE_ERROR);
             response.setMessage(java.util.Arrays.toString(e.getStackTrace()));
             return response;
+        }
+    }
+    @GetMapping("/exporter")
+    public void exporter(String idcommande, HttpServletResponse response) throws SQLException, Exception{
+        Resource htmlresource=loader.getResource("classpath:static/htmlpdf/commande.html");
+        Resource fauxresource=loader.getResource("classpath:static/htmlpdf/faux.html");
+        File html=htmlresource.getFile();
+        File faux=fauxresource.getFile();
+        Commande where=new Commande();
+        where.setId(Integer.parseInt(idcommande));
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Commande commande=dao.select(connect, Commande.class, where)[0];
+            commande.recupererCommandeFilles(connect, dao);
+            commande.recupererPaiements(connect, dao);
+            String newHTML=commande.formatterHTML(connect, dao, html);
+            HandyManUtils.overwriteFileContent(faux, newHTML);
+            File pdf=HandyManUtils.generatePDF(faux, "commande-"+commande.getOuverture().toString().replace("T", "--").replace(":", "-").replace(".", "-")+".pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + pdf.getName());
+            try(InputStream is=new FileInputStream(pdf);OutputStream os=response.getOutputStream()){
+                os.write(is.readAllBytes());
+            }
         }
     }
 }

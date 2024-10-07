@@ -35,4 +35,8 @@ public class Accompagnement {
     public String toString() {
         return "Accompagnement [id=" + id + ", nom=" + nom + ", etat=" + etat + "]";
     }
+    public String getHtml(){
+        String html="<li>%s</li>";
+        return String.format(html, getNom());
+    }
 }

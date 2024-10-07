@@ -1,5 +1,6 @@
 package com.app.makay.entites;
 
+import java.io.File;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +37,14 @@ public class Commande {
     private CommandeFille[] commandeFilles;
     @Column("reste_a_payer")
     private Double resteAPayer;
+    private Paiement[] paiements;
+    public Paiement[] getPaiements() {
+        return paiements;
+    }
+
+    public void setPaiements(Paiement[] paiements) {
+        this.paiements = paiements;
+    }
     public Double getResteAPayer() {
         return resteAPayer;
     }
@@ -71,6 +80,16 @@ public class Commande {
         }
         reponse+=heureStr+"h"+minuteStr;
         return reponse;
+    }
+    public String recupererOuvertureStringDocument(){
+        String date=getOuverture().toLocalDate().toString();
+        String heure=getOuverture().toLocalTime().minusNanos(getOuverture().toLocalTime().getNano()).toString();
+        return date+" "+heure;
+    }
+    public String recupererClotureStringDocument(){
+        String date=getCloture().toLocalDate().toString();
+        String heure=getCloture().toLocalTime().minusNanos(getCloture().toLocalTime().getNano()).toString();
+        return date+" "+heure;
     }
     
     public Integer getId() {
@@ -140,5 +159,42 @@ public class Commande {
     }
     public String getResteAPayerString(){
         return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
+    }
+    public String getMontantString(){
+        return HandyManUtils.number_format(getMontant(), ' ', ',', 2)+" Ar";
+    }
+    public Paiement[] recupererPaiements(Connection connect, MyDAO dao) throws Exception{
+        Commande commande=new Commande();
+        commande.setId(getId());
+        Paiement where=new Paiement();
+        where.setCommande(commande);
+        where.setEtat(0);
+        Paiement[] paiements=dao.select(connect, Paiement.class, where);
+        setPaiements(paiements);
+        return paiements;
+    }
+    public String formatterHTML(Connection connect, MyDAO dao, File html) throws Exception{
+        Utilisateur utilisateur=dao.select(connect, Utilisateur.class, getUtilisateur())[0];
+        utilisateur.setMotdepasse(null);
+        String htmlContent=HandyManUtils.getFileContent(html);
+        htmlContent=htmlContent.replace("<!-- PLACE-LABEL -->", getPlaceLabel());
+        htmlContent=htmlContent.replace("<!-- DATEHEURE -->", recupererOuvertureStringDocument());
+        htmlContent=htmlContent.replace("<!-- SERVEUR -->", utilisateur.getNom());
+
+        String lignesCmdFilles="";
+        for(CommandeFille cf:getCommandeFilles()){
+            lignesCmdFilles+=cf.toHtml();
+        }
+        htmlContent=htmlContent.replace("<!-- LIGNES -->", lignesCmdFilles);
+
+        htmlContent=htmlContent.replace("<!-- MONTANT TOTAL -->", getMontantString());
+
+        String lignesPaiements="";
+        for(Paiement p:getPaiements()){
+            lignesPaiements+=p.toHtml();
+        }
+        htmlContent=htmlContent.replace("<!-- PAIEMENTS -->", lignesPaiements);
+        htmlContent=htmlContent.replace("<!-- CLOTURE -->", recupererClotureStringDocument());
+        return htmlContent;
     }
 }

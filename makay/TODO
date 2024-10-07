@@ -70,5 +70,13 @@ Nouveaux modules:
 
     Administration:
         Brainstorming:
-            ☐ identification des données pertinentes @30m
-            ☐ identification des charts correspondants @30m
+            ✔ export PDF @30m @started(24-10-07 09:53) @done(24-10-07 10:30) @lasted(37m24s)
+            ✔ prochains todos @started(24-10-07 14:49) @done(24-10-07 15:23) @lasted(34m17s)
+        Tous:
+            ✔ export pdf @30m @started(24-10-07 10:31) @done(24-10-07 14:45) @lasted(4h14m16s)
+            ✔ ajouter colonne dernier stock dans produit @10m @started(24-10-07 15:13) @done(24-10-07 15:15) @lasted(2m37s)
+            ✔ creer table stock_produit @10m @started(24-10-07 15:15) @done(24-10-07 15:17) @lasted(2m51s)
+        Barman/Cuisinier:
+            ☐ controller modifier stock GET @20m @started(24-10-07 15:18)
+            ☐ page modifier stock @30m
+            ☐ controller modifier stock POST @30m

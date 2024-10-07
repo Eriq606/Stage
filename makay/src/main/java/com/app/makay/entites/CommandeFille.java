@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -101,5 +102,29 @@ public class CommandeFille {
                 + ", quantite=" + quantite + ", montant=" + montant + ", notes=" + notes + ", etat=" + etat
                 + ", accompagnements=" + Arrays.toString(accompagnements) + "]";
     }
-    
+    public String recupererPUString(){
+        return HandyManUtils.number_format(getPu(), ' ', ',', 2)+" Ar";
+    }
+    public String recupererMontantString(){
+        return HandyManUtils.number_format(getMontant(), ' ', ',', 2)+" Ar";
+    }
+    public String toHtml(){
+        String html="""
+        <tr class="details-travaux">
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;list-decoration:none">%s</td>
+            <td style="padding: 10px; border: 1px solid;text-align: right;">%s</td>
+            <td style="padding: 10px; border: 1px solid;text-align: right;font-weight:bold">%s</td>
+        </tr>
+        """;
+        String htmlAccomps="<ul>";
+        for(Accompagnement a:getAccompagnements()){
+            htmlAccomps+=a.getHtml();
+        }
+        htmlAccomps+="</ul>";
+        html=String.format(html, getQuantite(), getProduit().getNom(), getNotes(), htmlAccomps, recupererPUString(), recupererMontantString());
+        return html;
+    }
 }

@@ -86,7 +86,23 @@ public class Paiement {
         reponse+=heureStr+"h"+minuteStr;
         return reponse;
     }
+    public String recupererHeureStringDocument(){
+        String date=getDateheure().toLocalDate().toString();
+        String heure=getDateheure().toLocalTime().minusNanos(getDateheure().toLocalTime().getNano()).toString();
+        return date+" "+heure;
+    }
     public String recupererMontantString(){
         return HandyManUtils.number_format(getMontant(), ' ', ',', 2)+" Ar";
+    }
+    public String toHtml(){
+        String html="""
+        <tr class="details-travaux">
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;text-align:right">%s</td>
+        </tr>
+        """;
+        html=String.format(html, recupererHeureStringDocument(), getModePaiement().getNom(), recupererMontantString());
+        return html;
     }
 }
