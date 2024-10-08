@@ -18,9 +18,21 @@
                     <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
                 </div>
                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Produit</th>
+                            <th scope="col">En stock</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody id="suggestion-table">
                         <!-- Autocomplete suggestions -->
                     </tbody>
+                    <tfoot>
+                        <br>
+                        <a href="/actualiser-stock"><button type="button" class="btn btn-primary">Actualiser l'état de stock</button></a>
+                        <br>
+                    </tfoot>
                 </table>
                 <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#commandeModal" type="button">Commande en cours</button>
                 <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
@@ -141,10 +153,13 @@
                         table.innerHTML='';
                         filteredProducts.forEach(product=>{
                             const accomps=[], accompsID=[];
+
                             const row=document.createElement("tr");
                             const colonneNom=document.createElement("th");
                             colonneNom.setAttribute("scope", "row");
                             colonneNom.textContent=product.nom;
+                            const colonneStock=document.createElement("td");
+                            colonneStock.textContent=product.dernierStock;
                             const bouton=document.createElement("td");
                             bouton.innerHTML="<button class=\"btn btn-primary w-100\" data-bs-toggle=\"modal\" data-bs-target=\"#productModal"+product.id+"\"><i class=\"fa fa-plus\"></i></button>";
 
@@ -416,6 +431,7 @@
                             modal.appendChild(modalDialog);
 
                             row.appendChild(colonneNom);
+                            row.appendChild(colonneStock);
                             row.appendChild(bouton);
                             row.appendChild(modal);
                             table.appendChild(row);
@@ -509,11 +525,16 @@
                         }).then((data)=>{
                             loadingEnvoiCommande.style.display="none";
                             if(data.code==0){
-                                const alerteEnvoye=document.getElementById("alerte-envoye");
                                 const alert=document.createElement("div");
-                                alert.className="alert alert-danger w-100";
+                                alert.className="alert alert-danger alert-dismissible show w-100";
                                 alert.setAttribute("role", "alert");
-                                alert.textContent=data.message;
+                                alert.innerHTML=data.message;
+                                const button = document.createElement('button');
+                                button.type = 'button';
+                                button.className = 'btn-close';
+                                button.setAttribute('data-bs-dismiss', 'alert');
+                                button.setAttribute('aria-label', 'Close');
+                                alert.appendChild(button);
                                 alerteEnvoye.appendChild(alert);
                                 return;
                             }

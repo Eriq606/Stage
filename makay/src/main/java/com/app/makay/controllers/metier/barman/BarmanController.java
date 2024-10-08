@@ -20,6 +20,7 @@ import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.CheckCommandeFilleREST;
+import com.app.makay.entites.REST.ModificationStockREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
@@ -132,8 +133,8 @@ public class BarmanController {
     public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             places=dao.select(connect, Place.class, new Place(0));
+            return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER});
         }
-        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER});
     }
 
     @GetMapping("/modifier-stock")
@@ -145,7 +146,7 @@ public class BarmanController {
             return iris;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Produit[] produits=Produit.recupereProduitsStockLimite(connect, dao);
+            Produit[] produits=utilisateur.recupereProduitsStockLimite(connect, dao);
             model.addAttribute(Constantes.VAR_PRODUITS, produits);
         }
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
@@ -153,6 +154,45 @@ public class BarmanController {
         String[] urls=utilisateur.recupererResetCacheAndNotify();
         model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
         model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         return iris;
+    }
+
+    @PostMapping("/modifier-stock-rest")
+    @ResponseBody
+    public ReponseREST modifierStock(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        ModificationStockREST modifs=HandyManUtils.fromJson(ModificationStockREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().modifierStock(connect, dao, modifs.getProduit(), modifs.getQuantite());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+    @PostMapping("/modifier-stock")
+    public RedirectView modifierStock(HttpServletRequest req, Integer idproduit, String stock) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        RedirectView iris=filter.checkByRolePOST(utilisateur, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR});
+        if(iris!=null){
+            return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Produit produit=new Produit();
+            produit.setId(idproduit);
+            double quantite=Double.parseDouble(stock);
+            utilisateur.modifierStock(connect, dao, produit, quantite);
+            connect.commit();
+            return new RedirectView("/modifier-stock");
+        }
     }
 }

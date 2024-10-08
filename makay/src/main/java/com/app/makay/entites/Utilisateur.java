@@ -14,6 +14,7 @@ import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.ModelLink;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.SessionUtilisateur;
+import com.app.makay.utilitaire.exception.StockException;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpSession;
@@ -252,11 +253,19 @@ public class Utilisateur extends IrisUser{
     public int passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
             boolean estValide=false;
+            double stockRestant;
+            LinkedList<Exception> exceptionsStock=new LinkedList<>();
             for(CommandeFille c:commandeFilles){
-                if(c.getQuantite()>0){
+                if(c.getQuantite()>0&&estValide==false){
                     estValide=true;
-                    break;
                 }
+                stockRestant=c.getProduit().recupererStockRestant(connect, dao);
+                if(stockRestant==0||(stockRestant>0&&stockRestant<c.getQuantite())){
+                    exceptionsStock.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+" : il reste "+stockRestant+" "+c.getProduit().getNom()));
+                }
+            }
+            if(exceptionsStock.size()>0){
+                throw new StockException(exceptionsStock);
             }
             if(commandeFilles.length==0||estValide==false){
                 throw new Exception(Constantes.MSG_COMMANDE_VIDE);
@@ -287,6 +296,7 @@ public class Utilisateur extends IrisUser{
             return idCommande;
         }catch(Exception e){
             connect.rollback();
+            e.printStackTrace();
             throw e;
         }
     }
@@ -326,12 +336,6 @@ public class Utilisateur extends IrisUser{
             utilisateurs[i].setCommandes(utilisateurs[i].recupererCommandesCorrespondantes(connect, dao));
         }
         return utilisateurs;
-    }
-    public Produit[] recupererProduitsCorrespondant(Connection connect, MyDAO dao) throws Exception{
-        String addOn="where idcategorie in (select idcategorie from v_role_categorie_produits where idrole=%s) and etat=0";
-        addOn=String.format(addOn, getRole().getId());
-        Produit[] produits=dao.select(connect, Produit.class, addOn);
-        return produits;
     }
     public CommandeEnCours[] recupererCommandesCorrespondantes(Connection connect, MyDAO dao) throws Exception{
         String addOn="where idutilisateur=%s and etat<20 order by dateheure_ouverture";
@@ -750,5 +754,34 @@ public class Utilisateur extends IrisUser{
             connect.rollback();
             throw e;
         }
+    }
+    public void modifierStock(Connection connect, MyDAO dao, Produit produit, double quantite) throws Exception{
+        try{
+            ModificationStock modif=new ModificationStock();
+            modif.setProduit(produit);
+            modif.setStock(quantite);
+            modif.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, modif);
+            Produit where=new Produit();
+            where.setId(produit.getId());
+            Produit change=new Produit();
+            change.setDernierStock(quantite);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
+    public Produit[] rechercheProduit(Connection connect, MyDAO dao, String nomProduit) throws Exception{
+        String addOn="where nom like '%s' and etat=0 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0 group by idcategorie)";
+        addOn=String.format(addOn, "%"+nomProduit.replace("'", "''")+"%", getRole().getId());
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        return produits;
+    }
+    public Produit[] recupereProduitsStockLimite(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where dernier_stock>=0 and etat=0 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0 group by idcategorie)";
+        addOn=String.format(addOn, getRole().getId());
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        return produits;
     }
 }

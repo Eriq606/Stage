@@ -18,7 +18,6 @@ import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import veda.godao.DAO;
-import veda.godao.utils.DAOConnexion;
 
 public class MyFilter implements IrisFilter{
     
@@ -52,18 +51,16 @@ public class MyFilter implements IrisFilter{
         return null;
     }
 
-    public RedirectView resetUserRole(HttpServletRequest req, MyDAO dao, String[] targetRole) throws SQLException, Exception{
+    public RedirectView resetUserRole(HttpServletRequest req, Connection connect, MyDAO dao, String[] targetRole) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         RedirectView iris=checkByRolePOST(utilisateur, targetRole);
         if(iris!=null){
             return iris;
         }
-        try(Connection connect=DAOConnexion.getConnexion(dao)){
-            utilisateur.getRoleActuel(connect, dao);
-            utilisateur.getPlacesActuels(connect, dao);
-            session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
-        }
+        utilisateur.getRoleActuel(connect, dao);
+        utilisateur.getPlacesActuels(connect, dao);
+        session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         return distributeByRole(utilisateur);
     }
 

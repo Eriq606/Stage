@@ -656,3 +656,25 @@ alter table produits drop dernier_stock;
 
 alter table produits add dernier_stock int;
 update produits set dernier_stock=-1;
+
+drop table demande_additions;
+drop view v_role_categorie_produits;
+drop table role_categorie_produits;
+
+alter table produits drop dernier_stock;
+alter table produits add dernier_stock real;
+
+alter table stock_produits drop stock;
+alter table stock_produits add stock real;
+update stock_produits set stock=-1;
+alter table stock_produits alter column stock set default -1;
+
+alter table produits alter column dernier_stock set default -1;
+
+update produits set dernier_stock=-1;
+
+alter table produits drop dernier_stock;
+alter table stock_produits drop stock;
+
+alter table produits add dernier_stock numeric(16,2) default -1;
+alter table stock_produits add stock numeric(16,2) default -1;

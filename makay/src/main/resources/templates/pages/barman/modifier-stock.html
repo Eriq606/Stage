@@ -1,11 +1,17 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
     <div class="row">
-        <div class="col-10">
+        <div class="col-12">
             <div class="bg-secondary rounded p-4">
                 <h1>Modification de stock</h1>
-                <div class="input-group mb-3"></div>
-                    <input type="text" id="recherche-produit" class="form-control" aria-label="Recherche">
-                    <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
+                <div id="alerte-envoye"></div>
+                <form id="recherche-produit">
+                <div class="input-group mb-3">
+                        <input type="text" name="produit" class="form-control" aria-label="Recherche">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                </form>
+                <div class="d-flex justify-content-center">
+                    <img id="loading-recherche" th:src="@{img/loading.gif}" width="50" alt="loading" style="display: none;">
                 </div>
                 <table class="table">
                     <tbody id="suggestion-table">
@@ -15,15 +21,160 @@
                 <table class="table">
                     <tbody>
                         <tr th:each="p:${produits}">
-                            <td th:text="${p.nom}"></td>
-                            <td>
-                                <input type="text" name="stock" value="${p.dernierStock}">
-                            </td>
-                            <td><button type="submit"></button></td>
+                            <form action="/modifier-stock" method="post">
+                                <td th:text="${p.nom}"></td>
+                                <td>
+                                    <input class="form-control" type="text" name="stock" th:value="${p.dernierStock}">
+                                </td>
+                                <input type="hidden" name="idproduit" th:value="${p.id}">
+                                <td><button type="submit" class="btn btn-primary">Mettre à jour</button></td>
+                            </form>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+        const formRecherche=document.getElementById("recherche-produit");
+        const alerteEnvoye=document.getElementById("alerte-envoye");
+        const loadingRecherche=document.getElementById("loading-recherche");
+        formRecherche.onsubmit=(ev)=>{
+            ev.preventDefault();
+            const formData=new FormData(formRecherche);
+            const rechercheProduit={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                produit:{nom:formData.get("produit")}
+            }
+            const api="http://"+ip+":8080/recherche-produit";
+            loadingRecherche.style.display="block";
+            fetch(api, {
+                method:"POST",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(rechercheProduit)})
+            }).then((response)=>{return response.json()})
+            .then((data)=>{
+                const suggestionTable=document.getElementById("suggestion-table");
+                suggestionTable.innerHTML="";
+                loadingRecherche.style.display="none";
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                const produits=data.donnees.produits;
+                for(let i=0;i<produits.length;i++){
+                    const produitRow=document.createElement("tr");
+                    const produitNomCol=document.createElement("td");
+                    const produitStockCol=document.createElement("td");
+                    const produitSubmitCol=document.createElement("td");
+                    
+                    produitNomCol.textContent=produits[i].nom;
+
+                    const produitStockInput=document.createElement("input");
+                    produitStockInput.setAttribute("type", "text");
+                    produitStockInput.setAttribute("name", "stock");
+                    produitStockInput.setAttribute("class", "form-control");
+                    produitStockInput.setAttribute("value", produits[i].dernierStock);
+                    
+                    const produitSubmitButton=document.createElement("button");
+                    produitSubmitButton.setAttribute("type", "button");
+                    produitSubmitButton.setAttribute("class", "btn btn-primary");
+                    produitSubmitButton.textContent="Mettre à jour";
+                    produitSubmitButton.onclick=()=>{
+                        const apiModifier="http://"+ip+":8080/modifier-stock-rest";
+                        const modification={
+                            utilisateur:utilisateur,
+                            sessionid:sessionid,
+                            produit:produits[i],
+                            quantite:produitStockInput.value
+                        }
+                        produitSubmitButton.disabled=true;
+                        fetch(apiModifier, {
+                            method:"post",
+                            headers:{
+                                "Content-type": "application/json"
+                            },
+                            body:JSON.stringify({restdata:JSON.stringify(modification)})
+                        }).then((response)=>{return response.json()})
+                        .then((data)=>{
+                            produitSubmitButton.disabled=false;
+                            if(data.code===0){
+                                const alert=document.createElement("div");
+                                alert.className="alert alert-danger alert-dismissible show w-100";
+                                alert.setAttribute("role", "alert");
+                                alert.textContent=data.message;
+                                const button = document.createElement('button');
+                                button.type = 'button';
+                                button.className = 'btn-close';
+                                button.setAttribute('data-bs-dismiss', 'alert');
+                                button.setAttribute('aria-label', 'Close');
+                                alert.appendChild(button);
+                                alerteEnvoye.appendChild(alert);
+                                return;
+                            }
+                            const alert=document.createElement("div");
+                            alert.className="alert alert-success alert-dismissible show w-100";
+                            alert.setAttribute("role", "alert");
+                            alert.textContent="Stock mis à jour";
+                            const button = document.createElement('button');
+                            button.type = 'button';
+                            button.className = 'btn-close';
+                            button.setAttribute('data-bs-dismiss', 'alert');
+                            button.setAttribute('aria-label', 'Close');
+                            alert.appendChild(button);
+                            alerteEnvoye.appendChild(alert);
+                        });
+                    }
+
+                    produitStockCol.appendChild(produitStockInput);
+                    produitSubmitCol.appendChild(produitSubmitButton);
+
+                    produitRow.appendChild(produitNomCol);
+                    produitRow.appendChild(produitStockCol);
+                    produitRow.appendChild(produitSubmitCol);
+                    
+                    suggestionTable.appendChild(produitRow);
+                }
+            });
+        }
+
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
+        /*]]*/
+    </script>
 </div>

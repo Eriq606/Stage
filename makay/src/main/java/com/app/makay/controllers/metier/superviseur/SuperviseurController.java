@@ -214,7 +214,9 @@ public class SuperviseurController {
 
     @GetMapping("/reset-role-superviseur")
     public RedirectView resetRole(HttpServletRequest req) throws SQLException, Exception{
-        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+        }
     }
     @GetMapping("/dispatch-tables-staff")
     public Object dispatchRangsStaff(HttpServletRequest req, Model model){

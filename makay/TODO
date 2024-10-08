@@ -78,5 +78,5 @@ Nouveaux modules:
             ✔ creer table stock_produit @10m @started(24-10-07 15:15) @done(24-10-07 15:17) @lasted(2m51s)
         Barman/Cuisinier:
             ✔ controller modifier stock GET @20m @started(24-10-07 15:18) @done(24-10-07 15:26) @lasted(8m2s)
-            ☐ page modifier stock @30m @started(24-10-07 15:26)
+            ✔ page modifier stock @30m @started(24-10-08 09:07) @done(24-10-08 09:35) @lasted(28m59s)
             ☐ controller modifier stock POST @30m

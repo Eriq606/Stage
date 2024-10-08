@@ -139,7 +139,7 @@ public class CaissierController {
             ModePaiement wherePaiement=new ModePaiement();
             wherePaiement.setEtat(0);
             modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
+            return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_CAISSE});
         }
-        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_CAISSE});
     }
 }

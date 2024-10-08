@@ -31,11 +31,14 @@ import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.DemandeAdditionREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
+import com.app.makay.entites.REST.RechercheProduitREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 import com.app.makay.utilitaire.ReponseREST;
 import com.app.makay.utilitaire.RestData;
+import com.app.makay.utilitaire.exception.StockException;
+
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -100,6 +103,14 @@ public class ServeurController {
             connect.commit();
             response.addItem("idcommande", String.valueOf(idcommande));
             return response;
+        }catch(StockException se){
+            response.setCode(Constantes.CODE_ERROR);
+            String message="";
+            for(Exception e:se.getExceptions()){
+                message+="<p>"+e.getMessage()+"</p>";
+            }
+            response.setMessage(message);
+            return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
             response.setMessage(e.getMessage());
@@ -154,7 +165,9 @@ public class ServeurController {
 
     @GetMapping("/reset-role-serveur")
     public RedirectView resetCacheRoles(HttpServletRequest req) throws Exception{
-        return filter.resetUserRole(req, dao, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_BAR, Constantes.ROLE_CAISSE, Constantes.ROLE_CUISINIER, Constantes.ROLE_OFF, Constantes.ROLE_SUPERVISEUR});
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_SERVEUR, Constantes.ROLE_BAR, Constantes.ROLE_CAISSE, Constantes.ROLE_CUISINIER, Constantes.ROLE_OFF, Constantes.ROLE_SUPERVISEUR});
+        }
     }
 
     @GetMapping("/reset-cache-serveur")
@@ -170,6 +183,17 @@ public class ServeurController {
             places=dao.select(connect, Place.class, where);
         }
         return resetCacheRoles(req);
+    }
+    @GetMapping("/actualiser-stock")
+    public RedirectView actualiserEtatStock(HttpServletRequest req) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            double stock;
+            for(Produit p:produits){
+                stock=p.recupererStockRestant(connect, dao);
+                p.setDernierStock(stock);
+            }
+            return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SERVEUR, Constantes.ROLE_SUPERVISEUR});
+        }
     }
 
     @GetMapping("/modifier-commande")
@@ -310,6 +334,25 @@ public class ServeurController {
             try(InputStream is=new FileInputStream(pdf);OutputStream os=response.getOutputStream()){
                 os.write(is.readAllBytes());
             }
+        }
+    }
+    @PostMapping("/recherche-produit")
+    @ResponseBody
+    public ReponseREST rechercheProduits(@RequestBody RestData datas){
+        ReponseREST reponse=new ReponseREST();
+        RechercheProduitREST recherche=HandyManUtils.fromJson(RechercheProduitREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            reponse=filter.checkByRoleREST(recherche, connect, dao, new String[]{Constantes.ROLE_BAR, Constantes.ROLE_CUISINIER, Constantes.ROLE_SUPERVISEUR});
+            if(reponse.getCode()==Constantes.CODE_ERROR){
+                return reponse;
+            }
+            Produit[] produits=recherche.getUtilisateur().rechercheProduit(connect, dao, recherche.getProduit().getNom());
+            reponse.addItem("produits", produits);
+            return reponse;
+        }catch(Exception e){
+            reponse.setCode(Constantes.CODE_ERROR);
+            reponse.setMessage(e.getMessage());
+            return reponse;
         }
     }
 }

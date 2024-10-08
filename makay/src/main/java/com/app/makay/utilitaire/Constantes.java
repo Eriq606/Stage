@@ -14,6 +14,7 @@ public class Constantes {
     public static final String MSG_PAIEMENT_MONTANT_INVALIDE="Le montant du paiement est supérieur au montant de la commande.";
     public static final String MSG_COMMANDE_DEJA_CLOTUREE="La commande est déjà en attente d'addition";
     public static final String MSG_COMMANDE_VIDE="Commande vide.";
+    public static final String MSG_STOCK_INSUFFISANT="Stock insuffisant";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";
@@ -94,6 +95,7 @@ public class Constantes {
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/commandes-en-cours", "fa-solid fa-clock", "Commandes en cours"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes"),
+        new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_CAISSIER={
@@ -102,6 +104,7 @@ public class Constantes {
     };
     public static final ModelLink[] LINK_CUISINIER={
         new ModelLink("/commandes-en-cours", "fa-solid fa-clock", "Commandes en cours"),
+        new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
 

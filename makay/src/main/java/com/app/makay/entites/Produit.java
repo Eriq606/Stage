@@ -1,5 +1,6 @@
 package com.app.makay.entites;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashMap;
 
@@ -26,12 +27,14 @@ public class Produit {
     private Categorie categorie;
     private Accompagnement[] accompagnements;
     @Column("dernier_stock")
-    private Integer dernierStock;
-    
-    public Integer getDernierStock() {
+    private Double dernierStock;
+    public Double getDernierStock() {
+        if(dernierStock<0){
+            return -1.;
+        }
         return dernierStock;
     }
-    public void setDernierStock(Integer dernierStock) {
+    public void setDernierStock(Double dernierStock) {
         this.dernierStock = dernierStock;
     }
     public Produit(Integer etat) {
@@ -100,8 +103,15 @@ public class Produit {
         return accompagnements;
     }
     public static Produit[] recupereProduitsStockLimite(Connection connect, MyDAO dao) throws Exception{
-        String addOn="where dernier_stock<=0 and etat=0";
+        String addOn="where dernier_stock>=0 and etat=0";
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
+    }
+    public double recupererStockRestant(Connection connect, MyDAO dao) throws Exception{
+        String query="select dernier_stock from produits where id=%s";
+        query=String.format(query, getId());
+        HashMap<String, Object>[] result=dao.select(connect, query);
+        double stockRestant=((BigDecimal)result[0].get("dernier_stock")).doubleValue();
+        return stockRestant;
     }
 }
