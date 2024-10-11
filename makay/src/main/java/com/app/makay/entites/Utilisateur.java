@@ -270,6 +270,10 @@ public class Utilisateur extends IrisUser{
             if(commandeFilles.length==0||estValide==false){
                 throw new Exception(Constantes.MSG_COMMANDE_VIDE);
             }
+            boolean placeValide=dao.exists(connect, "v_places_utilisateurs", "idutilisateur="+getId(), "idplace="+commande.getPlace().getId());
+            if(placeValide==false){
+                throw new Exception(Constantes.MSG_TABLE_NON_AUTHORISEE+" : "+commande.recupererPlaceLabel());
+            }
             commande.setOuverture(LocalDateTime.now());
             commande.setResteAPayer(commande.getMontant());
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
@@ -342,6 +346,7 @@ public class Utilisateur extends IrisUser{
         addOn=String.format(addOn, getId());
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
         for(int i=0;i<commandes.length;i++){
+            commandes[i].recupererPaiements(connect, dao);
             commandes[i].recupererCommandeFilles(connect, dao);
         }
         return commandes;
@@ -374,11 +379,15 @@ public class Utilisateur extends IrisUser{
     }
     public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
-            if(commande.getEtat()==Constantes.COMMANDE_ADDITION){
-                throw new Exception(Constantes.MSG_COMMANDE_DEJA_CLOTUREE);
-            }
             Commande where=new Commande();
             where.setId(commande.getId());
+            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
+            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(commandeBase.getUtilisateur().getId()!=getId()){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
+            }
             Commande change=new Commande();
             change.setMontant(commande.getMontant());
             change.setResteAPayer(commande.getMontant());
@@ -418,44 +427,6 @@ public class Utilisateur extends IrisUser{
         }catch(Exception e){
             connect.rollback();
             throw e;
-        }
-    }
-    public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset) throws Exception{
-        try(PreparedStatement statement=connect.prepareStatement("select * from v_commandes where etat>10 and etat<40 order by dateheure_ouverture desc limit ? offset ?");
-            PreparedStatement statement2=connect.prepareStatement("select count(*) from v_commandes where etat>10 and etat<40 limit ?")){
-            statement.setInt(1, Constantes.PAGINATION_LIMIT);
-            statement.setInt(2, (offset-1)*Constantes.PAGINATION_LIMIT);
-            statement2.setInt(1, Constantes.PAGINATION_LIMIT);
-            try(ResultSet result=statement.executeQuery();
-                ResultSet result2=statement2.executeQuery()){
-                int compte=result2.next()?result2.getInt(1):0;
-                CommandeEnCours[] commandes=new CommandeEnCours[compte];
-                Place place;
-                TypePlace typePlace;
-                Utilisateur utilisateur;
-                for(int i=0;result.next();i++){
-                    commandes[i]=new CommandeEnCours();
-                    commandes[i].setId(result.getInt("id"));
-                    commandes[i].setCloture(result.getTimestamp("dateheure_cloture").toLocalDateTime());
-                    commandes[i].setEtat(result.getInt("etat"));
-                    commandes[i].setMontant(result.getDouble("montant"));
-                    commandes[i].setNomPlace(result.getString("nom_place"));
-                    place=new Place();
-                    place.setId(result.getInt("idplace"));
-                    place.setNom(result.getString("nom_place"));
-                    typePlace=new TypePlace();
-                    typePlace.setId(result.getInt("idtypeplace"));
-                    typePlace.setNumero(result.getString("numero_type_place"));
-                    place.setTypePlace(typePlace);
-                    commandes[i].setPlace(place);
-                    utilisateur=new Utilisateur();
-                    utilisateur.setId(result.getInt("idutilisateur"));
-                    commandes[i].setUtilisateur(dao.select(connect, Utilisateur.class, utilisateur)[0]);
-                    commandes[i].setOuverture(result.getTimestamp("dateheure_ouverture").toLocalDateTime());
-                    commandes[i].recupererCommandeFilles(connect, dao);
-                }
-                return commandes;
-            }
         }
     }
     public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
@@ -709,6 +680,10 @@ public class Utilisateur extends IrisUser{
 
     public void demandeAddition(Connection connect, MyDAO dao, Commande commande) throws Exception{
         try{
+            int idutilisateur=commande.recupererIdUtilisateur(connect, dao);
+            if(idutilisateur!=getId()){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
+            }
             Commande change=new Commande();
             change.setEtat(Constantes.COMMANDE_ADDITION);
             change.setCloture(LocalDateTime.now());
@@ -726,7 +701,7 @@ public class Utilisateur extends IrisUser{
         addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, offset);
         if(table.isEmpty()==false){
             addOn="where nom_table='%s' and etat=10 and reste_a_payer>0 order by dateheure_ouverture limit %s offset %s";
-            addOn=String.format(addOn, table.replace("\'", "\'\'"), Constantes.PAGINATION_LIMIT, offset);
+            addOn=String.format(addOn, table.replace("'", "''"), Constantes.PAGINATION_LIMIT, offset);
             // where.setNomPlace(table);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
@@ -737,13 +712,18 @@ public class Utilisateur extends IrisUser{
     }
     public void payer(Connection connect, MyDAO dao, Paiement paiement) throws Exception{
         try{
-            if(paiement.getMontant()>paiement.getCommande().getResteAPayer()){
+            Commande where=new Commande();
+            where.setId(paiement.getCommande().getId());
+            Commande commande=dao.select(connect, Commande.class, where)[0];
+            if(paiement.getMontant()>commande.getResteAPayer()){
                 throw new Exception(Constantes.MSG_PAIEMENT_MONTANT_INVALIDE);
+            }
+            Integer[] etatInvalides=new Integer[]{Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_SUPPRIMEE};
+            if(Arrays.asList(etatInvalides).contains(commande.getEtat().intValue())){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
             paiement.setUtilisateur(this);
             dao.insertWithoutPrimaryKey(connect, paiement);
-            Commande where=new Commande();
-            where.setId(paiement.getCommande().getId());
             Commande change=new Commande();
             change.setResteAPayer(paiement.getCommande().getResteAPayer()-paiement.getMontant());
             if(change.getResteAPayer()==0){
@@ -783,5 +763,36 @@ public class Utilisateur extends IrisUser{
         addOn=String.format(addOn, getRole().getId());
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
+    }
+    public Object[] actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur action) throws Exception{
+        try{
+            CommandeFille where=new CommandeFille();
+            where.setId(action.getCommandeFille().getId());
+            where.setEtat(Constantes.COMMANDEFILLE_CREEE);
+            CommandeFille[] commandeFille=dao.select(connect, CommandeFille.class, where);
+            if(commandeFille.length!=1){
+                throw new Exception(Constantes.MSG_COMMANDEFILLE_INTOUCHABLE);
+            }
+            if(Arrays.asList(new Integer[]{Constantes.COMMANDEFILLE_OFFERT, Constantes.COMMANDEFILLE_ANNULEE}).contains(action.getAction())==false){
+                throw new Exception(Constantes.MSG_ACTION_INVALIDE);
+            }
+            action.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, action);
+            where.setEtat(null);
+            CommandeFille change=new CommandeFille();
+            change.setEtat(action.getAction());
+            dao.update(connect, change, where);
+            Commande whereCommande=new Commande();
+            whereCommande.setId(commandeFille[0].getCommande().getId());
+            Commande commande=dao.select(connect, Commande.class, whereCommande)[0];
+            Commande changeCommande=new Commande();
+            changeCommande.setMontant(commande.getMontant()-commandeFille[0].getMontant());
+            dao.update(connect, changeCommande, whereCommande);
+            return new Object[]{change, changeCommande.getMontant()};
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

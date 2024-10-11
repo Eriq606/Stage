@@ -15,6 +15,11 @@ public class Constantes {
     public static final String MSG_COMMANDE_DEJA_CLOTUREE="La commande est déjà en attente d'addition";
     public static final String MSG_COMMANDE_VIDE="Commande vide.";
     public static final String MSG_STOCK_INSUFFISANT="Stock insuffisant";
+    public static final String MSG_TABLE_NON_AUTHORISEE="Cette table n'est pas sous votre juridiction.";
+    public static final String MSG_COMMANDE_NON_AUTHORISEE="Vous n'êtes pas celui qui a issu cette commande.";
+    public static final String MSG_COMMANDE_INTOUCHABLE="Cette commande ne peut plus être altérée.";
+    public static final String MSG_COMMANDEFILLE_INTOUCHABLE="Cette commande-fille ne peut plus être altérée.";
+    public static final String MSG_ACTION_INVALIDE="Action invalide";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";
@@ -55,6 +60,8 @@ public class Constantes {
     public static final String VAR_QUERYSTRING="querystring";
     public static final String VAR_SUPERVISEURNUMERO="superviseurnumero";
     public static final String VAR_MODEPAIEMENTS_CHOISIS="modepaiements_choisis";
+    public static final String VAR_COMMANDEFILLE_OFFERT="offert";
+    public static final String VAR_COMMANDEFILLE_ANNULEE="annulee";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -79,6 +86,15 @@ public class Constantes {
     public static final int COMMANDE_ANNULEE=30;
     public static final int COMMANDE_SUPPRIMEE=40;
 
+    public static final int COMMANDEFILLE_CREEE=0;
+    public static final String COMMANDEFILLE_CREEE_LABEL="Creee";
+    public static final int COMMANDEFILLE_OFFERT=10;
+    public static final String COMMANDEFILLE_OFFERT_LABEL="Offert";
+    public static final int COMMANDEFILLE_ANNULEE=-10;
+    public static final String COMMANDEFILLE_ANNULEE_LABEL="Annulee";
+    public static final int COMMANDEFILLE_SUPPRIMEE=20;
+    public static final String COMMANDEFILLE_SUPPRIMEE_LABEL="Supprimee";
+
     public static final ModelLink[] LINK_SERVEUR={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours"),
@@ -89,6 +105,7 @@ public class Constantes {
         new ModelLink("/attribution-de-roles", "fa-solid fa-user", "Roles"),
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
         new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service"),
+        new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_BARMAN={
@@ -120,7 +137,7 @@ public class Constantes {
     public static final String URL_RECEIVE_NOTIFY_CAISSIER="receive-notify-redirect-caissier";
 
     public static final String ETATCOMMANDE_PAYEE="Payée";
-    public static final String COULEUR_PAYEE="#70ff9b";
+    public static final String COULEUR_SUCCES="#70ff9b";
     public static final String ETATCOMMANDE_ANNULEE="Annulée";
-    public static final String COULEUR_ANNULEE="#ff7171";
+    public static final String COULEUR_CANCELED="#ff7171";
 }

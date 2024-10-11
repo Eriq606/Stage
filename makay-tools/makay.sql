@@ -678,3 +678,24 @@ alter table stock_produits drop stock;
 
 alter table produits add dernier_stock numeric(16,2) default -1;
 alter table stock_produits add stock numeric(16,2) default -1;
+
+create table action_superviseurs(
+    id serial primary key,
+    idutilisateur int not null references utilisateurs(id),
+    idcommandefille int not null references commande_filles(id),
+    dateheure timestamp default current_timestamp,
+    "action" int not null,
+    etat int default 0
+);
+
+create or replace view v_commande_filles as
+select *
+from commande_filles where etat<20;
+
+drop view v_commandefille_produits;
+
+create or replace view v_commandefille_produits as
+select vcf.*, vp.nom, vp.prix, vp.idcategorie, coalesce(vcft.est_termine, -1) as est_termine
+from v_commande_filles vcf
+join v_produits vp on vcf.idproduit=vp.id
+left join v_commande_filles_terminees vcft on vcf.id=vcft.idcommandefille;

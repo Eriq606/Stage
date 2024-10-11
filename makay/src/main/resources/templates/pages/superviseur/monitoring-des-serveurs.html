@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
+                <div id="alerte-envoye"></div>
                 <div class="d-flex align-items-start">
                     <div class="nav flex-column nav-pills me-3 border-right border-primary" id="v-pills-tab" role="tablist"
                         aria-orientation="vertical">
@@ -14,27 +15,65 @@
                             <table class="table">
                                 <tbody th:id="'commandes-'+${s.id}">
                                     <tr th:each="c:${s.commandes}">
-                                        <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
-                                        <td th:text="${c.getHeure()}"></td>
+                                        <td><a th:text="${c.recupererPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
+                                        <td th:text="${c.recupererHeure()}"></td>
                                         <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
+                                                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.recupererPlaceLabel()}"></h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body table-responsive" th:id="'detailCommandeServeur'+${s.id}+'Commande'+${c.id}">
-                                                        <div th:each="cf:${c.commandeFilles}">
-                                                            <p>
-                                                                <span style="font-weight: bold;" th:text="${cf.getMontantString()}+' : '"></span>
-                                                                <span th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></span>
-                                                            </p>
-                                                            <p><ul>
-                                                                <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
-                                                            </ul></p>
+                                                        <nav>
+                                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                                <button class="nav-link active" th:id="'nav-commandes-tab'+${c.id}" data-bs-toggle="tab"
+                                                                    th:data-bs-target="'#nav-commandes'+${c.id}" type="button" role="tab" th:aria-controls="'nav-commandes'+${c.id}"
+                                                                    aria-selected="true">Commandes</button>
+                                                                <button class="nav-link" th:id="'nav-paiements-tab'+${c.id}" data-bs-toggle="tab"
+                                                                    th:data-bs-target="'#nav-paiements'+${c.id}" type="button" role="tab"
+                                                                    th:aria-controls="'nav-paiements'+${c.id}" aria-selected="false">Paiements</button>
+                                                            </div>
+                                                        </nav>
+                                                        <div class="tab-content pt-3" id="nav-tabContent">
+                                                            <div class="tab-pane fade show active" th:id="'nav-commandes'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-commandes-tab'+${c.id}">
+                                                                <div th:each="cf:${c.commandeFilles}">
+                                                                    <p class="d-flex justify-content-between">
+                                                                        <span>
+                                                                            <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
+                                                                            <span th:text="${cf.quantite}+' '+${cf.produit.nom}"></span>
+                                                                        </span>
+                                                                        <span th:if="${cf.etat==0}" th:id="'boutons-actions-commandefille'+${cf.id}">
+                                                                            <button th:data-idcommandefille="${cf.id}" th:data-action="${offert}" th:data-idcommande="${c.id}" class="btn btn-success action-superviseur">Offert</button>
+                                                                            <button th:data-idcommandefille="${cf.id}" th:data-action="${annulee}" th:data-idcommande="${c.id}" class="btn btn-danger action-superviseur">Annuler</button>
+                                                                            <img th:id="'loading'+${cf.id}" th:src="@{img/loading.gif}" width="50" alt="loading" style="display: none;">
+                                                                        </span>
+                                                                        <span th:unless="${cf.etat==0}">
+                                                                            <span th:style="'color:'+${cf.recupererEtatCouleur()}" th:text="${cf.recupererEtatString()}"></span>
+                                                                        </span>
+                                                                    </p>
+                                                                    <p style="font-style: italic;font-weight: lighter;font-size: small;" th:text="${cf.notes}"></p>
+                                                                    <p><ul>
+                                                                        <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                                    </ul></p>
+                                                                </div>
+                                                                <hr>
+                                                                <p>
+                                                                    <span>Montant total : </span>
+                                                                    <span th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></span>
+                                                                </p>
+                                                            </div>
+                                                            <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
+                                                                <p>Paiements:</p>
+                                                                <div th:each="cp:${c.paiements}">
+                                                                    <p>
+                                                                        <span th:text="${cp.recupererHeure()}+' : '"></span>
+                                                                        <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
+                                                                        <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <hr>
-                                                        <p style="font-weight: bold;" th:text="'Montant total : '+${c.getMontantString()}"></p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
@@ -42,7 +81,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
+                                        <td th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -186,6 +225,64 @@
             receiveNotificationRedirect();
             receiveModificationCommande();
         };
+
+        const actionButtons=document.getElementsByClassName("action-superviseur");
+        const api="http://"+ip+":8080/action-superviseur";
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const alerteEnvoye=document.getElementById("alerte-envoye");
+        for(let i=0;i<actionButtons.length;i++){
+            const idcommandefille=actionButtons[i].dataset.idcommandefille;
+            const action=actionButtons[i].dataset.action;
+            const idcommande=actionButtons[i].dataset.idcommande;
+            const loading=document.getElementById("loading"+idcommandefille);
+            actionButtons[i].onclick=()=>{
+                const envoiAction={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    actionSuperviseur:{
+                        commandeFille:{id:idcommandefille},
+                        action:action
+                    }
+                }
+                loading.style.display="block";
+                fetch(api, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiAction)})
+                }).then((response)=>{return response.json()})
+                .then((data)=>{
+                    loading.style.display="none";
+                    if(data.code==0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.innerHTML=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    const boutonsActions=document.getElementById("boutons-actions-commandefille"+idcommandefille);
+                    const actionSpan=document.createElement("span");
+                    actionSpan.style.color=data.donnees.couleur;
+                    actionSpan.style.fontWeight="bold";
+                    actionSpan.textContent=data.donnees.etat;
+                    boutonsActions.innerHTML="";
+                    boutonsActions.appendChild(actionSpan);
+                    const montantTotalCmd=document.getElementsByClassName("montant-total-commande"+idcommande);
+                    for(let j=0;j<montantTotalCmd.length;j++){
+                        montantTotalCmd[j].textContent=new Intl.NumberFormat("de-DE").format(data.donnees.nouveauMontant).replace(".", " ")+" Ar";
+                    }
+                });
+            }
+        }
         /*]]*/
     </script>
 </div>

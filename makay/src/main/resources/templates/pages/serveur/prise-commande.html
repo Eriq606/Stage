@@ -8,7 +8,19 @@
                     <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
                     <div class="col-6">
                         <select class="form-select mb-3" aria-label="Table" id="tableInner">
-                            <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                const places=/*[[${places}]]*/[];
+                                const tableInner=document.getElementById("tableInner");
+                                for(let i=0;i<places.length;i++){
+                                    const placeOption=document.createElement("option");
+                                    placeOption.textContent=places[i].nom;
+                                    placeOption.value=JSON.stringify(places[i]);
+                                    tableInner.appendChild(placeOption);
+                                }
+                                /*]]*/
+                            </script>
+                            <!-- <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option> -->
                         </select>
                     </div>
                 </div>
@@ -47,7 +59,18 @@
                                 <label for="tableInner" class="col-3 offset-3 col-form-label">Table</label>
                                 <div class="col-6">
                                     <select class="form-select mb-3" aria-label="Table" id="tableOuter">
-                                        <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option>
+                                        <script th:inline="javascript">
+                                            /*<![CDATA[*/
+                                            const tableOuter=document.getElementById("tableOuter");
+                                            for(let i=0;i<places.length;i++){
+                                                const placeOption=document.createElement("option");
+                                                placeOption.textContent=places[i].nom;
+                                                placeOption.value=JSON.stringify(places[i]);
+                                                tableOuter.appendChild(placeOption);
+                                            }
+                                            /*]]*/
+                                        </script>
+                                        <!-- <option th:each="p:${places}" th:text="${p.nom}" th:value="${p.id}"></option> -->
                                     </select>
                                 </div>
                                 <input type="hidden" name="commandes" id="submitCommand">
@@ -69,18 +92,18 @@
                 </div>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                    const places=/*[[${places}]]*/[];
+                    // const places=/*[[${places}]]*/[];
                     const utilisateur=/*[[${utilisateur}]]*/{};
                     const sessionid=/*[[${sessionid}]]*/"";
-                    const tableOuter=document.getElementById("tableOuter");
-                    const tableInner=document.getElementById("tableInner");
+                    // const tableOuter=document.getElementById("tableOuter");
+                    // const tableInner=document.getElementById("tableInner");
                     tableOuter.addEventListener("change", function(){
                         tableInner.innerHTML="";
                         for(let i=0;i<places.length;i++){
                             const tableInnerOption=document.createElement("option");
                             tableInnerOption.textContent=places[i].nom;
-                            tableInnerOption.value=places[i].id;
-                            if(places[i].id==tableOuter.value){
+                            tableInnerOption.value=JSON.stringify(places[i]);
+                            if(places[i].id==JSON.parse(tableOuter.value).id){
                                 tableInnerOption.selected=true;
                             }
                             tableInner.appendChild(tableInnerOption);
@@ -91,8 +114,8 @@
                         for(let i=0;i<places.length;i++){
                             const tableOuterOption=document.createElement("option");
                             tableOuterOption.textContent=places[i].nom;
-                            tableOuterOption.value=places[i].id;
-                            if(places[i].id==tableInner.value){
+                            tableOuterOption.value=JSON.stringify(places[i]);
+                            if(places[i].id==JSON.parse(tableInner.value).id){
                                 tableOuterOption.selected=true;
                             }
                             tableOuter.appendChild(tableOuterOption);
@@ -473,10 +496,7 @@
                             montant+=commandes[i].produit.prix*commandes[i].quantite;
                         }
                         const commande={
-                            utilisateur:utilisateur,
-                            place:{
-                                id:tableInner.value
-                            },
+                            place:JSON.parse(tableInner.value),
                             montant:montant
                         };
                         const commandeFilles=[];

@@ -22,18 +22,18 @@
         <div class="row">
             <div class="col-12">
                 <div th:if="${c.etat==0}" class="btn btn-outline-primary pt-4 w-100" th:id="'button-commande'+${c.id}" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
-                    <h2 th:text="${c.getPlaceLabel()}"></h2>
-                    <p th:text="${c.getHeure()}"></p>
+                    <h2 th:text="${c.recupererPlaceLabel()}"></h2>
+                    <p th:text="${c.recupererHeure()}"></p>
                 </div>
                 <div th:unless="${c.etat==0}" class="btn btn-primary pt-4 w-100" style="background-color: #9cff9c;" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}">
-                    <h2 th:text="${c.getPlaceLabel()}"></h2>
-                    <p class="text-primary" th:text="${c.getHeure()}"></p>
+                    <h2 th:text="${c.recupererPlaceLabel()}"></h2>
+                    <p class="text-primary" th:text="${c.recupererHeure()}"></p>
                 </div>
                 <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
+                        <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.recupererPlaceLabel()}"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body table-responsive">
@@ -128,7 +128,6 @@
             demandesAddition[i].onclick=()=>{
                 const commande={ id:idcommande };
                 const demandeAdditionREST={
-                    utilisateur:utilisateur,
                     sessionid:sessionid,
                     commande:commande
                 }

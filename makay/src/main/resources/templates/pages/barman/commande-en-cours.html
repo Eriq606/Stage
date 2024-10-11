@@ -24,7 +24,7 @@
             <h2 class="accordion-header" th:id="'headingOne'+${c.id}">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     th:data-bs-target="'#collapseCommande'+${c.id}" aria-expanded="true"
-                    th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}"
+                    th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.recupererPlaceLabel()}+' - '+${c.recupererHeure()}"
                     th:id="'buttonCheckCommande'+${c.id}">
                 </button>
             </h2>
@@ -112,7 +112,8 @@
                 utilisateur:utilisateur,
                 sessionid:sessionid,
                 commandeFille:{
-                    id:idcommandeFille
+                    id:idcommandeFille,
+                    commande:{id:idcommande}
                 }
             }
             fetch(api, {

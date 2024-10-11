@@ -100,7 +100,6 @@
                     produitSubmitButton.onclick=()=>{
                         const apiModifier="http://"+ip+":8080/modifier-stock-rest";
                         const modification={
-                            utilisateur:utilisateur,
                             sessionid:sessionid,
                             produit:produits[i],
                             quantite:produitStockInput.value

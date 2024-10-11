@@ -125,43 +125,58 @@
                     </thead>
                     <tbody>
                         <tr th:each="c:${commandes}">
-                            <td><a th:text="${c.getPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
+                            <td><a th:text="${c.recupererPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
                             <td th:text="${c.utilisateur.nom}"></td>
-                            <td th:text="${c.getHeure()}"></td>
+                            <td th:text="${c.recupererHeure()}"></td>
                             <td th:text="${c.recupererHeureCloture()}"></td>
-                            <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
-                            <td th:style="'background-color: '+${c.recupererCouleur()}" th:text="${c.getEtatString()}"></td>
+                            <td style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
+                            <td th:style="'background-color: '+${c.recupererCouleur()}" th:text="${c.recupererEtatString()}"></td>
                             <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}"></h1>
+                                            <h1 class="modal-title fs-5" th:id="'detailCommandeModalLabel'+${c.id}" th:text="${c.recupererPlaceLabel()}"></h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body table-responsive" th:id="'detailCommande'+${c.id}">
                                             <p th:text="'Serveur: '+${c.utilisateur.nom}"></p>
-                                            <div th:each="cf:${c.commandeFilles}">
-                                                <p>
-                                                    <span th:text="${cf.getMontantString()}+' : '" style="font-weight: bold;"></span>
-                                                    <span th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></span>
-                                                </p>
-                                                <p><ul>
-                                                    <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
-                                                </ul></p>
-                                            </div>
-                                            <hr>
-                                            <p>
-                                                <span th:text="'Montant total : '"></span>
-                                                <span style="font-weight: bold;" th:text="${c.getMontantString()}"></span>
-                                            </p>
-                                            <hr>
-                                            <p>Paiements:</p>
-                                            <div th:each="cp:${c.paiements}">
-                                                <p>
-                                                    <span th:text="${cp.recupererHeure()}+' : '"></span>
-                                                    <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
-                                                    <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
-                                                </p>
+                                            <nav>
+                                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                    <button class="nav-link active" th:id="'nav-commande-tab'+${c.id}" data-bs-toggle="tab"
+                                                        th:data-bs-target="'#nav-commande'+${c.id}" type="button" role="tab" th:aria-controls="'nav-commande'+${c.id}"
+                                                        aria-selected="true">Commandes</button>
+                                                    <button class="nav-link" th:id="'nav-paiements-tab'+${c.id}" data-bs-toggle="tab"
+                                                        th:data-bs-target="'#nav-paiements'+${c.id}" type="button" role="tab"
+                                                        th:aria-controls="'nav-paiements'+${c.id}" aria-selected="false">Paiements</button>
+                                                </div>
+                                            </nav>
+                                            <div class="tab-content pt-3" id="nav-tabContent">
+                                                <div class="tab-pane fade show active" th:id="'nav-commande'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-commande-tab'+${c.id}">
+                                                    <div th:each="cf:${c.commandeFilles}">
+                                                        <p>
+                                                            <span th:text="${cf.recupererMontantString()}+' : '" style="font-weight: bold;"></span>
+                                                            <span th:text="${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></span>
+                                                        </p>
+                                                        <p><ul>
+                                                            <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                        </ul></p>
+                                                    </div>
+                                                    <hr>
+                                                    <p>
+                                                        <span th:text="'Montant total : '"></span>
+                                                        <span style="font-weight: bold;" th:text="${c.recupererMontantString()}"></span>
+                                                    </p>
+                                                </div>
+                                                <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
+                                                    <p>Paiements:</p>
+                                                    <div th:each="cp:${c.paiements}">
+                                                        <p>
+                                                            <span th:text="${cp.recupererHeure()}+' : '"></span>
+                                                            <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
+                                                            <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">

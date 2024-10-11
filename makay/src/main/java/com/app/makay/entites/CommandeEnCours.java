@@ -56,7 +56,7 @@ public class CommandeEnCours{
         this.resteAPayer = resteAPayer;
     }
 
-    public String getEtatString(){
+    public String recupererEtatString(){
         switch(getEtat()){
             case Constantes.COMMANDE_PAYEE:
                 return Constantes.ETATCOMMANDE_PAYEE;
@@ -66,7 +66,7 @@ public class CommandeEnCours{
         return "...";
     }
 
-    public String getPlaceLabel(){
+    public String recupererPlaceLabel(){
         String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
             case Constantes.PLACE_BAR:
@@ -82,7 +82,7 @@ public class CommandeEnCours{
         return label;
     }
     
-    public String getHeure(){
+    public String recupererHeure(){
         String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
@@ -180,6 +180,7 @@ public class CommandeEnCours{
             commandeFilles[i].setMontant(((BigDecimal)objets[i].get("montant")).doubleValue());
             commandeFilles[i].setNotes((String)objets[i].get("notes"));
             commandeFilles[i].setEstTermine((int)objets[i].get("est_termine"));
+            commandeFilles[i].setEtat((int)objets[i].get("etat"));
             commandeFilles[i].recupererAccompagnements(connect, dao);
         }
         // setCommandeFilles(commandeFilles);
@@ -232,12 +233,12 @@ public class CommandeEnCours{
     public void setNomPlace(String nomPlace) {
         this.nomPlace = nomPlace;
     }
-    public String getMontantString(){
+    public String recupererMontantString(){
         String montantString=HandyManUtils.number_format(getMontant(), ' ', ',', 2);
         montantString+=" Ar";
         return montantString;
     }
-    public String getResteAPayerString(){
+    public String recupererResteAPayerString(){
         return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
     }
     public Paiement[] recupererPaiements(Connection connect, MyDAO dao) throws Exception{
@@ -253,9 +254,9 @@ public class CommandeEnCours{
     public String recupererCouleur(){
         switch(getEtat()){
             case Constantes.COMMANDE_PAYEE:
-                return Constantes.COULEUR_PAYEE;
+                return Constantes.COULEUR_SUCCES;
             case Constantes.COMMANDE_ANNULEE:
-                return Constantes.COULEUR_ANNULEE;
+                return Constantes.COULEUR_CANCELED;
         }
         return "";
     }

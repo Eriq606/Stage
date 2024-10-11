@@ -5,7 +5,7 @@
                 <h1>Modification de commande</h1>
                 <div id="alerte-envoye"></div>
                 <div class="row mb-3">
-                    <p class="col-9 offset-3 col-form-label" th:text="${commande.getPlaceLabel()}"></p>
+                    <p class="col-9 offset-3 col-form-label" th:text="${commande.recupererPlaceLabel()}"></p>
                 </div>
                 <hr>
                 <div class="input-group mb-3">
@@ -27,7 +27,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="row mb-3">
-                                <p class="col-9 offset-3 col-form-label" th:text="${commande.getPlaceLabel()}"></p>
+                                <p class="col-9 offset-3 col-form-label" th:text="${commande.recupererPlaceLabel()}"></p>
                                 <input type="hidden" name="commandes" id="submitCommand">
                             </div>
                             <div class="table-responsive">

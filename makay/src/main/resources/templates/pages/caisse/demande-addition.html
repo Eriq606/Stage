@@ -31,17 +31,17 @@
                             <th scope="col"></th>
                         </tr>
                         <tr th:each="c:${commandes}" th:id="'commande-row'+${c.id}">
-                            <td scope="row"><a href="#" th:text="${c.getPlaceLabel()}" data-bs-toggle="modal" th:data-bs-target="'#commandeModal'+${c.id}"></a></td>
+                            <td scope="row"><a href="#" th:text="${c.recupererPlaceLabel()}" data-bs-toggle="modal" th:data-bs-target="'#commandeModal'+${c.id}"></a></td>
                             <div class="modal fade" th:id="'commandeModal'+${c.id}" tabindex="-1" th:aria-labelledby="'commandeModalLabel'+${c.id}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" th:id="'commandeModalLabel'+${c.id}" th:text="${c.getPlaceLabel()}+' - '+${c.getHeure()}"></h1>
+                                            <h1 class="modal-title fs-5" th:id="'commandeModalLabel'+${c.id}" th:text="${c.recupererPlaceLabel()}+' - '+${c.recupererHeure()}"></h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body table-responsive">
                                             <div th:each="cf:${c.commandeFilles}">
-                                                <p th:text="${cf.getMontantString()}+' : '+${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                <p th:text="${cf.recupererMontantString()}+' : '+${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
                                                 <p><ul>
                                                     <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
                                                 </ul></p>
@@ -53,9 +53,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <td th:text="${c.getHeure()}"></td>
-                            <td style="font-weight: bold;" th:text="${c.getMontantString()}"></td>
-                            <td style="font-weight: bold;" th:id="'reste-a-payer-colonne'+${c.id}" th:text="${c.getResteAPayerString()}"></td>
+                            <td th:text="${c.recupererHeure()}"></td>
+                            <td style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
+                            <td style="font-weight: bold;" th:id="'reste-a-payer-colonne'+${c.id}" th:text="${c.recupererResteAPayerString()}"></td>
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#paieModal'+${c.id}">Payer</button>
                                 <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
@@ -70,7 +70,7 @@
                                             <div th:id="'alerte-envoye-commande'+${c.id}"></div>
                                             <p>
                                                 <span th:text="'Reste a payer : '"></span>
-                                                <span th:id="'reste-a-payer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.getResteAPayerString()}"></span>
+                                                <span th:id="'reste-a-payer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></span>
                                             </p>
                                             <div class="mb-3">
                                                 <label th:for="'montant-commande'+${c.id}" class="form-label">Montant</label>

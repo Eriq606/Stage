@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
@@ -20,6 +21,7 @@ import com.app.makay.entites.RangeePlace;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
+import com.app.makay.entites.REST.ActionSuperviseurREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.utilitaire.Constantes;
@@ -273,6 +275,10 @@ public class SuperviseurController {
         String[] urls=utilisateur.recupererResetCacheAndNotify();
         model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
         model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        model.addAttribute(Constantes.VAR_COMMANDEFILLE_OFFERT, Constantes.COMMANDEFILLE_OFFERT);
+        model.addAttribute(Constantes.VAR_COMMANDEFILLE_ANNULEE, Constantes.COMMANDEFILLE_ANNULEE);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         return iris;
     }
 
@@ -299,5 +305,27 @@ public class SuperviseurController {
     @SendTo("/notify/recevoir-modifier-commande")
     public EnvoiCommandeREST modifierCommande(EnvoiCommandeREST commandes) throws Exception{
         return commandes;
+    }
+    @PostMapping("/action-superviseur")
+    @ResponseBody
+    public ReponseREST actionSuperviseur(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        ActionSuperviseurREST modifs=HandyManUtils.fromJson(ActionSuperviseurREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            Object[] nouvelEtat=modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
+            connect.commit();
+            response.addItem("etat", ((CommandeFille)nouvelEtat[0]).recupererEtatString());
+            response.addItem("couleur", ((CommandeFille)nouvelEtat[0]).recupererEtatCouleur());
+            response.addItem("nouveauMontant", nouvelEtat[1]);
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
     }
 }

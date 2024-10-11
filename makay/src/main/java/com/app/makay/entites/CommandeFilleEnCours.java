@@ -2,6 +2,7 @@ package com.app.makay.entites;
 
 import java.sql.Connection;
 
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
 import handyman.HandyManUtils;
@@ -102,9 +103,31 @@ public class CommandeFilleEnCours {
     public void setEstTermine(int estTermine) {
         this.estTermine = estTermine;
     }
-    public String getMontantString(){
+    public String recupererMontantString(){
         String montantString=HandyManUtils.number_format(getMontant(), ' ', ',', 2);
         montantString+=" Ar";
         return montantString;
+    }
+    public String recupererEtatString(){
+        switch(getEtat()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return Constantes.COMMANDEFILLE_OFFERT_LABEL;
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return Constantes.COMMANDEFILLE_ANNULEE_LABEL;
+            case Constantes.COMMANDEFILLE_SUPPRIMEE:
+                return Constantes.COMMANDEFILLE_SUPPRIMEE_LABEL;
+            default:
+                return Constantes.COMMANDEFILLE_CREEE_LABEL;
+        }
+    }
+    public String recupererEtatCouleur(){
+        switch(getEtat()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return "green";
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return "crimson";
+            default:
+                return "";
+        }
     }
 }

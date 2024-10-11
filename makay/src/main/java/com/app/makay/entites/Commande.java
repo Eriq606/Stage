@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -51,7 +52,7 @@ public class Commande {
     public void setResteAPayer(Double resteAPayer) {
         this.resteAPayer = resteAPayer;
     }
-    public String getPlaceLabel(){
+    public String recupererPlaceLabel(){
         String label="Place : ";
         switch(getPlace().getTypePlace().getNumero()){
             case Constantes.PLACE_BAR:
@@ -66,7 +67,7 @@ public class Commande {
         label+=getPlace().getNom();
         return label;
     }
-    public String getHeure(){
+    public String recupererHeure(){
         String reponse=LocalDate.now().isAfter(getOuverture().toLocalDate())?getOuverture().toLocalDate().toString()+" ":"";
         int heure=getOuverture().getHour();
         String heureStr=String.valueOf(heure);
@@ -157,10 +158,10 @@ public class Commande {
                 + ", cloture=" + cloture + ", montant=" + montant + ", etat=" + etat + ", commandeFilles="
                 + Arrays.toString(commandeFilles) + "]";
     }
-    public String getResteAPayerString(){
+    public String recupererResteAPayerString(){
         return HandyManUtils.number_format(getResteAPayer(), ' ', ',', 2)+" Ar";
     }
-    public String getMontantString(){
+    public String recupererMontantString(){
         return HandyManUtils.number_format(getMontant(), ' ', ',', 2)+" Ar";
     }
     public Paiement[] recupererPaiements(Connection connect, MyDAO dao) throws Exception{
@@ -177,7 +178,7 @@ public class Commande {
         Utilisateur utilisateur=dao.select(connect, Utilisateur.class, getUtilisateur())[0];
         utilisateur.setMotdepasse(null);
         String htmlContent=HandyManUtils.getFileContent(html);
-        htmlContent=htmlContent.replace("<!-- PLACE-LABEL -->", getPlaceLabel());
+        htmlContent=htmlContent.replace("<!-- PLACE-LABEL -->", recupererPlaceLabel());
         htmlContent=htmlContent.replace("<!-- DATEHEURE -->", recupererOuvertureStringDocument());
         htmlContent=htmlContent.replace("<!-- SERVEUR -->", utilisateur.getNom());
 
@@ -187,7 +188,7 @@ public class Commande {
         }
         htmlContent=htmlContent.replace("<!-- LIGNES -->", lignesCmdFilles);
 
-        htmlContent=htmlContent.replace("<!-- MONTANT TOTAL -->", getMontantString());
+        htmlContent=htmlContent.replace("<!-- MONTANT TOTAL -->", recupererMontantString());
 
         String lignesPaiements="";
         for(Paiement p:getPaiements()){
@@ -196,5 +197,12 @@ public class Commande {
         htmlContent=htmlContent.replace("<!-- PAIEMENTS -->", lignesPaiements);
         htmlContent=htmlContent.replace("<!-- CLOTURE -->", recupererClotureStringDocument());
         return htmlContent;
+    }
+    public int recupererIdUtilisateur(Connection connect, MyDAO dao) throws Exception{
+        String query="select idutilisateur from commandes where id=%s";
+        query=String.format(query, getId());
+        HashMap<String, Object>[] result=dao.select(connect, query);
+        int iduser=(int)result[0].get("idutilisateur");
+        return iduser;
     }
 }

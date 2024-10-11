@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.util.Arrays;
 
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
 import handyman.HandyManUtils;
@@ -126,5 +127,27 @@ public class CommandeFille {
         htmlAccomps+="</ul>";
         html=String.format(html, getQuantite(), getProduit().getNom(), getNotes(), htmlAccomps, recupererPUString(), recupererMontantString());
         return html;
+    }
+    public String recupererEtatString(){
+        switch(getEtat()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return Constantes.COMMANDEFILLE_OFFERT_LABEL;
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return Constantes.COMMANDEFILLE_ANNULEE_LABEL;
+            case Constantes.COMMANDEFILLE_SUPPRIMEE:
+                return Constantes.COMMANDEFILLE_SUPPRIMEE_LABEL;
+            default:
+                return Constantes.COMMANDEFILLE_CREEE_LABEL;
+        }
+    }
+    public String recupererEtatCouleur(){
+        switch(getEtat()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return "green";
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return "crimson";
+            default:
+                return "";
+        }
     }
 }
