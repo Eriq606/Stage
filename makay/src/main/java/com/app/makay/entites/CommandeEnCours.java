@@ -260,4 +260,20 @@ public class CommandeEnCours{
         }
         return "";
     }
+    public boolean estTermine(){
+        boolean termine=true;
+        for(CommandeFilleEnCours cf:getCommandeFilles()){
+            if(cf.getEstTermine()==Constantes.COMMANDEFILLE_ESTENCOURS){
+                termine=false;
+                break;
+            }
+        }
+        return termine;
+    }
+    public String recupererTermineCouleur(){
+        if(estTermine()){
+            return "#9cff9c";
+        }
+        return "";
+    }
 }

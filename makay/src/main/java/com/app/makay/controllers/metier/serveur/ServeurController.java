@@ -311,7 +311,7 @@ public class ServeurController {
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
-            response.setMessage(java.util.Arrays.toString(e.getStackTrace()));
+            response.setMessage(e.getMessage());
             return response;
         }
     }

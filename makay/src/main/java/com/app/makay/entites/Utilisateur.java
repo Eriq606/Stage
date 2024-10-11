@@ -365,10 +365,10 @@ public class Utilisateur extends IrisUser{
         return commandes;
     }
     public CommandeEnCours[] recupererCommandesChecking(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
         addOn=String.format(addOn, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         if(table!=null){
-            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
             addOn=String.format(addOn, table, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);

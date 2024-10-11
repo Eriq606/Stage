@@ -25,7 +25,8 @@
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     th:data-bs-target="'#collapseCommande'+${c.id}" aria-expanded="true"
                     th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.recupererPlaceLabel()}+' - '+${c.recupererHeure()}"
-                    th:id="'buttonCheckCommande'+${c.id}">
+                    th:id="'buttonCheckCommande'+${c.id}"
+                    th:style="'background-color:'+${c.recupererTermineCouleur()}">
                 </button>
             </h2>
             <div th:id="'collapseCommande'+${c.id}" class="accordion-collapse collapse"

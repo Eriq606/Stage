@@ -140,4 +140,7 @@ public class Constantes {
     public static final String COULEUR_SUCCES="#70ff9b";
     public static final String ETATCOMMANDE_ANNULEE="Annulée";
     public static final String COULEUR_CANCELED="#ff7171";
+
+    public static final int COMMANDEFILLE_ESTTERMINEE=1;
+    public static final int COMMANDEFILLE_ESTENCOURS=-1;
 }
