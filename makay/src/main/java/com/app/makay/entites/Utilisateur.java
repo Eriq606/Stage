@@ -3,7 +3,6 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -238,7 +237,7 @@ public class Utilisateur extends IrisUser{
         return role;
     }
     public Place[] getPlacesActuels(Connection connect, MyDAO dao) throws Exception{
-        String query="select idplace, nom_place, nom_type_place, numero_type_place from v_places_utilisateurs where idutilisateur="+getId();
+        String query="select idplace, nom_place, idtypeplace, nom_type_place, numero_type_place from v_places_utilisateurs where idutilisateur="+getId();
         HashMap<String, Object>[] objets=dao.select(connect, query);
         Place[] places=new Place[objets.length];
         TypePlace type;
@@ -247,6 +246,7 @@ public class Utilisateur extends IrisUser{
             places[i].setId((int)objets[i].get("idplace"));
             places[i].setNom((String)objets[i].get("nom_place"));
             type=new TypePlace();
+            type.setId((int)objets[i].get("idtypeplace"));
             type.setNom((String)objets[i].get("nom_type_place"));
             type.setNumero((String)objets[i].get("numero_type_place"));
             places[i].setTypePlace(type);
@@ -258,7 +258,7 @@ public class Utilisateur extends IrisUser{
         EntityTable table=new EntityTable();
         table.setNom("table_fictive_stock");
         table.getColonnes().put("id", "serial primary key");
-        table.getColonnes().put("idproduit", "int not null references produits(id)");
+        table.getColonnes().put("idproduit", "int not null");
         table.getColonnes().put("quantite", "quantity not null");
         table.getColonnes().put("nom_produit", "varchar not null");
         try{
@@ -275,32 +275,43 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
-    public void verifierStock(Connection connect, MyDAO dao) throws Exception{
+    public ModificationStock[] verifierStock(Connection connect, MyDAO dao) throws Exception{
         String query="select tf.idproduit, sum(tf.quantite) as quantite, tf.nom_produit, produits.dernier_stock from table_fictive_stock tf join produits on tf.idproduit=produits.id group by tf.idproduit, tf.nom_produit, produits.dernier_stock";
         ProduitCommandeStockForSelect[] qteCommandes=dao.select(connect, query, ProduitCommandeStockForSelect.class);
         LinkedList<Exception> exceptions=new LinkedList<>();
+        LinkedList<ModificationStock> modifStocks=new LinkedList<>();
+        ModificationStock modif;
+        Produit produit;
+        double nouveauStock;
         for(ProduitCommandeStockForSelect p:qteCommandes){
-            if(p.getQuantite()<p.getStock()){
-                exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+" : Qte demandee "+p.getStock()));
+            if(p.getQuantite()>p.getStock()&&p.getStock()>=0){
+                exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+"."+p.getNomProduit()+" : Qte demandee "+p.getQuantite()+"| En stock "+p.getStock()));
+                continue;
             }
+            nouveauStock=p.getStock()-p.getQuantite();
+            produit=new Produit();
+            produit.setId(p.getIdproduit());
+            modif=new ModificationStock();
+            modif.setProduit(produit);
+            modif.setStock(nouveauStock);
+            modif.setUtilisateur(this);
+            modifStocks.add(modif);
         }
+        if(exceptions.size()>0){
+            throw new StockException(exceptions);
+        }
+        return modifStocks.toArray(new ModificationStock[modifStocks.size()]);
     }
     public int passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
             boolean estValide=false;
-            double stockRestant;
-            LinkedList<Exception> exceptionsStock=new LinkedList<>();
+            creerTableFictiveVerificationStock(connect, dao, commandeFilles);
+            ModificationStock[] modifStocks= verifierStock(connect, dao);
             for(CommandeFille c:commandeFilles){
                 if(c.getQuantite()>0&&estValide==false){
                     estValide=true;
+                    break;
                 }
-                stockRestant=c.getProduit().recupererStockRestant(connect, dao);
-                if(stockRestant==0||(stockRestant>0&&stockRestant<c.getQuantite())){
-                    exceptionsStock.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+" : il reste "+stockRestant+" "+c.getProduit().getNom()));
-                }
-            }
-            if(exceptionsStock.size()>0){
-                throw new StockException(exceptionsStock);
             }
             if(commandeFilles.length==0||estValide==false){
                 throw new Exception(Constantes.MSG_COMMANDE_VIDE);
@@ -313,6 +324,16 @@ public class Utilisateur extends IrisUser{
             commande.setResteAPayer(commande.getMontant());
             commande.setUtilisateur(this);
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
+            dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            Produit change, where;
+            for(ModificationStock m:modifStocks){
+                change=new Produit();
+                change.setDernierStock(m.getStock());
+
+                where=new Produit();
+                where.setId(m.getProduit().getId());
+                dao.update(connect, change, where);
+            }
             commande.setId(idCommande);
             int idcommandeFille;
             LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();

@@ -701,3 +701,20 @@ join v_produits vp on vcf.idproduit=vp.id
 left join v_commande_filles_terminees vcft on vcf.id=vcft.idcommandefille;
 
 insert into role_categorie_produits_checkings values(default, 2, 3, 0);
+
+create or replace view v_arrangement_place_part as
+select rp.*, v_rangees.nom as nom_rangee, v_places.nom as nom_place, v_type_places.nom as nom_type_place, v_type_places.numero as numero_type_place, dm.max_dateheure, v_type_places.id as idtypeplace
+from v_rangee_places rp
+join v_rangees on rp.idrangee=v_rangees.id
+join v_places on rp.idplace=v_places.id
+join v_type_places on v_places.idtypeplace=v_type_places.id
+left join v_dateheure_max_rangee_places dm on rp.dateheure=dm.max_dateheure;
+
+create or replace view v_arrangement_place as
+select *
+from v_arrangement_place_part where max_dateheure is not null;
+
+create or replace view v_places_utilisateurs as
+select vds.*, vap.idplace, vap.nom_place, vap.nom_type_place, vap.numero_type_place, vap.idtypeplace
+from v_dispatch_staff vds
+join v_arrangement_place vap on vds.idrangee=vap.idrangee;      

@@ -209,6 +209,8 @@ public class SuperviseurController {
     public EnvoiCommandeREST nouvelleCommande(EnvoiCommandeREST commandes) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             commandes.getCommande().setOuverture(LocalDateTime.now());
+            commandes.getCommande().setUtilisateur(commandes.getUtilisateur());
+            commandes.setCommandeFilles(commandes.getCommande().recupererCommandeFilles(connect, dao));
             commandes.getCommande().setPlace(dao.select(connect, Place.class, commandes.getCommande().getPlace())[0]);
         }
         return commandes;

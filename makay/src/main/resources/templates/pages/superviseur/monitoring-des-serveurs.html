@@ -118,76 +118,222 @@
             cfDiv.appendChild(accompagnementP);
             modalBody.appendChild(cfDiv);
         }
-        function createCommandeRow(commande, utilisateur) {
-            const tr = document.createElement('tr');
-            const td1 = document.createElement('td');
-            const a = document.createElement('a');
-            a.textContent = commande.placeLabel;
-            a.href = "#";
-            a.setAttribute('data-bs-toggle', 'modal');
-            a.setAttribute('data-bs-target', '#detailCommandeModal' + commande.id);
-            td1.appendChild(a);
-            const td2 = document.createElement('td');
-            td2.textContent = commande.heure;
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            const modalDiv = document.createElement('div');
-            modalDiv.className = 'modal fade';
-            modalDiv.id = 'detailCommandeModal' + commande.id;
-            modalDiv.tabIndex = -2;
-            modalDiv.setAttribute('aria-labelledby', 'detailCommandeModalLabel' + commande.id);
-            modalDiv.setAttribute('aria-hidden', 'true');
+        function createCommandeRow(commande) {
+            // Create table row
+            const tr = document.createElement("tr");
 
-            const modalDialog = document.createElement('div');
-            modalDialog.className = 'modal-dialog modal-dialog-centered';
+            // Create the first table cell with the link
+            const tdLink = document.createElement("td");
+            const link = document.createElement("a");
+            link.textContent = "Place : "+commande.place.nom;
+            link.href = "#";
+            link.dataset.bsToggle = "modal";
+            link.dataset.bsTarget = `#detailCommandeModal${commande.id}`;
+            tdLink.appendChild(link);
+            tr.appendChild(tdLink);
 
-            const modalContent = document.createElement('div');
-            modalContent.className = 'modal-content';
+            // Create the second table cell with the hour
+            const tdHeure = document.createElement("td");
+            tdHeure.textContent = new Date(commande.ouverture).getHours()+":"+new Date(commande.ouverture).getMinutes()+":"+new Date(commande.ouverture).getSeconds();
+            tr.appendChild(tdHeure);
 
-            const modalHeader = document.createElement('div');
-            modalHeader.className = 'modal-header';
+            // Create the modal structure
+            const modalDiv = document.createElement("div");
+            modalDiv.className = "modal fade";
+            modalDiv.id = `detailCommandeModal${commande.id}`;
+            modalDiv.tabIndex = "-2";
+            modalDiv.setAttribute("aria-labelledby", `detailCommandeModalLabel${commande.id}`);
+            modalDiv.setAttribute("aria-hidden", "true");
 
-            const modalTitle = document.createElement('h1');
-            modalTitle.className = 'modal-title fs-5';
-            modalTitle.id = 'detailCommandeModalLabel' + commande.id;
-            modalTitle.textContent = commande.placeLabel;
-
-            const closeButton = document.createElement('button');
-            closeButton.className = 'btn-close';
-            closeButton.setAttribute('data-bs-dismiss', 'modal');
-            closeButton.setAttribute('aria-label', 'Close');
-
-            modalHeader.appendChild(modalTitle);
-            modalHeader.appendChild(closeButton);
-
-            const modalBody = document.createElement('div');
-            modalBody.className = 'modal-body table-responsive';
-            modalBody.id="detailCommandeServeur"+utilisateur.id+"Commande"+commande.id;
-            commande.commandeFilles.forEach(cf => {
-                createCommandeFilleRow(cf, modalBody);
-            });
-
-            const modalFooter = document.createElement('div');
-            modalFooter.className = 'modal-footer';
-
-            const retourButton = document.createElement('button');
-            retourButton.className = 'btn btn-secondary';
-            retourButton.setAttribute('data-bs-dismiss', 'modal');
-            retourButton.textContent = 'Retour';
-
-            modalFooter.appendChild(retourButton);
-
-            modalContent.appendChild(modalHeader);
-            modalContent.appendChild(modalBody);
-            modalContent.appendChild(modalFooter);
-
-            modalDialog.appendChild(modalContent);
+            const modalDialog = document.createElement("div");
+            modalDialog.className = "modal-dialog modal-dialog-centered";
             modalDiv.appendChild(modalDialog);
 
-            document.body.appendChild(modalDiv);
+            const modalContent = document.createElement("div");
+            modalContent.className = "modal-content";
+            modalDialog.appendChild(modalContent);
+
+            const modalHeader = document.createElement("div");
+            modalHeader.className = "modal-header";
+            modalContent.appendChild(modalHeader);
+
+            const modalTitle = document.createElement("h1");
+            modalTitle.className = "modal-title fs-5";
+            modalTitle.id = `detailCommandeModalLabel${commande.id}`;
+            modalTitle.textContent = "Place : "+commande.place.nom;
+            modalHeader.appendChild(modalTitle);
+
+            const closeButton = document.createElement("button");
+            closeButton.type = "button";
+            closeButton.className = "btn-close";
+            closeButton.dataset.bsDismiss = "modal";
+            closeButton.setAttribute("aria-label", "Close");
+            modalHeader.appendChild(closeButton);
+
+            const modalBody = document.createElement("div");
+            modalBody.className = "modal-body table-responsive";
+            modalBody.id = `detailCommandeServeur${commande.id}Commande${commande.id}`;
+            modalContent.appendChild(modalBody);
+
+            // Tab structure
+            const nav = document.createElement("nav");
+            modalBody.appendChild(nav);
+
+            const navTabs = document.createElement("div");
+            navTabs.className = "nav nav-tabs";
+            navTabs.id = "nav-tab";
+            navTabs.setAttribute("role", "tablist");
+            nav.appendChild(navTabs);
+
+            // Commandes tab
+            const commandesTab = document.createElement("button");
+            commandesTab.className = "nav-link active";
+            commandesTab.id = `nav-commandes-tab${commande.id}`;
+            commandesTab.dataset.bsToggle = "tab";
+            commandesTab.dataset.bsTarget = `#nav-commandes${commande.id}`;
+            commandesTab.type = "button";
+            commandesTab.setAttribute("role", "tab");
+            commandesTab.setAttribute("aria-controls", `nav-commandes${commande.id}`);
+            commandesTab.ariaSelected = "true";
+            commandesTab.textContent = "Commandes";
+            navTabs.appendChild(commandesTab);
+
+            // Paiements tab
+            const paiementsTab = document.createElement("button");
+            paiementsTab.className = "nav-link";
+            paiementsTab.id = `nav-paiements-tab${commande.id}`;
+            paiementsTab.dataset.bsToggle = "tab";
+            paiementsTab.dataset.bsTarget = `#nav-paiements${commande.id}`;
+            paiementsTab.type = "button";
+            paiementsTab.setAttribute("role", "tab");
+            paiementsTab.setAttribute("aria-controls", `nav-paiements${commande.id}`);
+            paiementsTab.ariaSelected = "false";
+            paiementsTab.textContent = "Paiements";
+            navTabs.appendChild(paiementsTab);
+
+            const tabContent = document.createElement("div");
+            tabContent.className = "tab-content pt-3";
+            tabContent.id = "nav-tabContent";
+            modalBody.appendChild(tabContent);
+
+            // Commandes tab-pane
+            const commandesTabPane = document.createElement("div");
+            commandesTabPane.className = "tab-pane fade show active";
+            commandesTabPane.id = `nav-commandes${commande.id}`;
+            commandesTabPane.setAttribute("role", "tabpanel");
+            commandesTabPane.setAttribute("aria-labelledby", `nav-commandes-tab${commande.id}`);
+            tabContent.appendChild(commandesTabPane);
+
+            // Loop through commandeFilles to generate each entry in Commandes tab
+            commande.commandeFilles.forEach(cf => {
+                // const loading=document.getElementById("loading"+cf.id);
+                const p = document.createElement("p");
+                p.className = "d-flex justify-content-between";
+
+                const spanLeft = document.createElement("span");
+                const boldText = document.createElement("span");
+                boldText.style.fontWeight = "bold";
+                boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
+                spanLeft.appendChild(boldText);
+
+                const productInfo = document.createElement("span");
+                productInfo.textContent = cf.quantite + " " + cf.produit.nom;
+                spanLeft.appendChild(productInfo);
+
+                p.appendChild(spanLeft);
+
+                const spanRight = document.createElement("span");
+                spanRight.id="boutons-actions-commandefille"+cf.id;
+
+                const loading=document.createElement("img");
+                loading.id="loading"+cf.id;
+                loading.src="img/loading.gif";
+                loading.width="50";
+                loading.alt="loading";
+                loading.style.display="none";
+
+                const offertButton = document.createElement("button");
+                offertButton.className = "btn btn-success action-superviseur";
+                offertButton.textContent = "Offert";
+                offertButton.dataset.idcommandefille = cf.id;
+                offertButton.dataset.action = /*[[${offert}]]*/0;
+                offertButton.dataset.idcommande = commande.id;
+                offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
+
+                const annulerButton = document.createElement("button");
+                annulerButton.className = "btn btn-danger action-superviseur";
+                annulerButton.textContent = "Annuler";
+                annulerButton.dataset.idcommandefille = cf.id;
+                annulerButton.dataset.action = /*[[${annulee}]]*/0;
+                annulerButton.dataset.idcommande = commande.id;
+                annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
+
+
+                spanRight.appendChild(offertButton);
+                spanRight.appendChild(annulerButton);
+                spanRight.appendChild(loading);
+
+                p.appendChild(spanRight);
+                commandesTabPane.appendChild(p);
+
+                const notesP = document.createElement("p");
+                notesP.style.fontStyle = "italic";
+                notesP.style.fontWeight = "lighter";
+                notesP.style.fontSize = "small";
+                notesP.textContent = cf.notes;
+                commandesTabPane.appendChild(notesP);
+
+                const ul = document.createElement("ul");
+                cf.accompagnements.forEach(cfa => {
+                    const li = document.createElement("li");
+                    li.textContent = cfa.nom;
+                    ul.appendChild(li);
+                });
+                commandesTabPane.appendChild(ul);
+            });
+
+            const hr = document.createElement("hr");
+            commandesTabPane.appendChild(hr);
+
+            const totalP = document.createElement("p");
+            const montantString=new Intl.NumberFormat("de-DE").format(commande.montant).replace(".", " ")+" Ar";
+            totalP.innerHTML = `<span>Montant total : </span>
+                                <span class="montant-total-commande${commande.id}" style="font-weight: bold;">${montantString}</span>`;
+            commandesTabPane.appendChild(totalP);
+
+            // Paiements tab-pane
+            const paiementsTabPane = document.createElement("div");
+            paiementsTabPane.className = "tab-pane fade";
+            paiementsTabPane.id = `nav-paiements${commande.id}`;
+            paiementsTabPane.setAttribute("role", "tabpanel");
+            paiementsTabPane.setAttribute("aria-labelledby", `nav-paiements-tab${commande.id}`);
+            tabContent.appendChild(paiementsTabPane);
+
+            paiementsTabPane.innerHTML = `<p>Paiements:</p>`;
+
+            // Add modal footer
+            const modalFooter = document.createElement("div");
+            modalFooter.className = "modal-footer";
+            const retourButton = document.createElement("button");
+            retourButton.className = "btn btn-secondary";
+            retourButton.dataset.bsDismiss = "modal";
+            retourButton.textContent = "Retour";
+            modalFooter.appendChild(retourButton);
+            modalContent.appendChild(modalFooter);
+
+            // Add modal to the table row
+            tr.appendChild(modalDiv);
+
+            // Final cell for montant-total
+            const tdMontantTotal = document.createElement("td");
+            tdMontantTotal.className = `montant-total-commande${commande.id}`;
+            tdMontantTotal.style.fontWeight = "bold";
+            tdMontantTotal.textContent = montantString;
+            tr.appendChild(tdMontantTotal);
 
             return tr;
         }
+
         function modifierCommande(commandeFille, commande, utilisateur){
             const modalBody=document.getElementById("detailCommandeServeur"+utilisateur.id+"Commande"+commande.id);
             createCommandeFilleRow(commandeFille, modalBody);
@@ -197,7 +343,7 @@
                 const envoiCommande=JSON.parse(commandeEnvoyee.body);
                 let commande=envoiCommande.commande;
                 commande.commandeFilles=envoiCommande.commandeFilles;
-                const commandeRow=createCommandeRow(commande, envoiCommande.utilisateur);
+                const commandeRow=createCommandeRow(commande);
                 const commandes=document.getElementById("commandes-"+envoiCommande.utilisateur.id);
                 commandes.insertBefore(commandeRow, commandes.firstChild);
             });
@@ -231,56 +377,61 @@
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
         const alerteEnvoye=document.getElementById("alerte-envoye");
+
+        function actionButtonTrigger(idcommandefille, action, idcommande, loading){
+            const envoiAction={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                actionSuperviseur:{
+                    commandeFille:{id:idcommandefille},
+                    action:action
+                }
+            }
+            loading.style.display="block";
+            fetch(api, {
+                method:"post",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(envoiAction)})
+            }).then((response)=>{return response.json()})
+            .then((data)=>{
+                loading.style.display="none";
+                if(data.code==0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.innerHTML=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                const boutonsActions=document.getElementById("boutons-actions-commandefille"+idcommandefille);
+                const actionSpan=document.createElement("span");
+                actionSpan.style.color=data.donnees.couleur;
+                actionSpan.style.fontWeight="bold";
+                actionSpan.textContent=data.donnees.etat;
+                boutonsActions.innerHTML="";
+                boutonsActions.appendChild(actionSpan);
+                const montantTotalCmd=document.getElementsByClassName("montant-total-commande"+idcommande);
+                for(let j=0;j<montantTotalCmd.length;j++){
+                    montantTotalCmd[j].textContent=new Intl.NumberFormat("de-DE").format(data.donnees.nouveauMontant).replace(".", " ")+" Ar";
+                }
+            });
+        }
+        
         for(let i=0;i<actionButtons.length;i++){
             const idcommandefille=actionButtons[i].dataset.idcommandefille;
             const action=actionButtons[i].dataset.action;
             const idcommande=actionButtons[i].dataset.idcommande;
             const loading=document.getElementById("loading"+idcommandefille);
             actionButtons[i].onclick=()=>{
-                const envoiAction={
-                    utilisateur:utilisateur,
-                    sessionid:sessionid,
-                    actionSuperviseur:{
-                        commandeFille:{id:idcommandefille},
-                        action:action
-                    }
-                }
-                loading.style.display="block";
-                fetch(api, {
-                    method:"post",
-                    headers:{
-                        "Content-type":"application/json"
-                    },
-                    body:JSON.stringify({restdata:JSON.stringify(envoiAction)})
-                }).then((response)=>{return response.json()})
-                .then((data)=>{
-                    loading.style.display="none";
-                    if(data.code==0){
-                        const alert=document.createElement("div");
-                        alert.className="alert alert-danger alert-dismissible show w-100";
-                        alert.setAttribute("role", "alert");
-                        alert.innerHTML=data.message;
-                        const button = document.createElement('button');
-                        button.type = 'button';
-                        button.className = 'btn-close';
-                        button.setAttribute('data-bs-dismiss', 'alert');
-                        button.setAttribute('aria-label', 'Close');
-                        alert.appendChild(button);
-                        alerteEnvoye.appendChild(alert);
-                        return;
-                    }
-                    const boutonsActions=document.getElementById("boutons-actions-commandefille"+idcommandefille);
-                    const actionSpan=document.createElement("span");
-                    actionSpan.style.color=data.donnees.couleur;
-                    actionSpan.style.fontWeight="bold";
-                    actionSpan.textContent=data.donnees.etat;
-                    boutonsActions.innerHTML="";
-                    boutonsActions.appendChild(actionSpan);
-                    const montantTotalCmd=document.getElementsByClassName("montant-total-commande"+idcommande);
-                    for(let j=0;j<montantTotalCmd.length;j++){
-                        montantTotalCmd[j].textContent=new Intl.NumberFormat("de-DE").format(data.donnees.nouveauMontant).replace(".", " ")+" Ar";
-                    }
-                });
+                actionButtonTrigger(idcommandefille, action, idcommande, loading);
             }
         }
         /*]]*/
