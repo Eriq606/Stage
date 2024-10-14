@@ -361,6 +361,68 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
+        try{
+            boolean estValide=false;
+            creerTableFictiveVerificationStock(connect, dao, commandeFilles);
+            ModificationStock[] modifStocks= verifierStock(connect, dao);
+            for(CommandeFille c:commandeFilles){
+                if(c.getQuantite()>0&&estValide==false){
+                    estValide=true;
+                    break;
+                }
+            }
+            if(commandeFilles.length==0||estValide==false){
+                throw new Exception(Constantes.MSG_COMMANDE_VIDE);
+            }
+            dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            Produit changeProduit, whereProduit;
+            for(ModificationStock m:modifStocks){
+                changeProduit=new Produit();
+                changeProduit.setDernierStock(m.getStock());
+
+                whereProduit=new Produit();
+                whereProduit.setId(m.getProduit().getId());
+                dao.update(connect, changeProduit, whereProduit);
+            }
+
+            Commande where=new Commande();
+            where.setId(commande.getId());
+            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
+            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(commandeBase.getUtilisateur().getId()!=getId()){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
+            }
+            Commande change=new Commande();
+            change.setMontant(commande.getMontant());
+            change.setResteAPayer(commande.getMontant());
+            dao.update(connect, change, where);
+            int idcommandeFille;
+            LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
+            AccompagnementCommande accompCommande;
+            for(int i=0;i<commandeFilles.length;i++){
+                commandeFilles[i].setCommande(where);
+                idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
+                commandeFilles[i].setId(idcommandeFille);
+                for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
+                    accompCommande=new AccompagnementCommande();
+                    accompCommande.setCommandeFille(commandeFilles[i]);
+                    accompCommande.setAccompagnement(commandeFilles[i].getAccompagnements()[j]);
+                    accompCommandes.add(accompCommande);
+                }
+            }
+            if(accompCommandes.size()==0){
+                return;
+            }
+            AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
+            dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
     public Utilisateur() {
     }
     public Utilisateur(Integer etat) {
@@ -433,45 +495,6 @@ public class Utilisateur extends IrisUser{
             commandes[i].recupererCommandeFillesChecking(connect, dao, getRole());
         }
         return commandes;
-    }
-    public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
-        try{
-            Commande where=new Commande();
-            where.setId(commande.getId());
-            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
-            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
-                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
-            }
-            if(commandeBase.getUtilisateur().getId()!=getId()){
-                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
-            }
-            Commande change=new Commande();
-            change.setMontant(commande.getMontant());
-            change.setResteAPayer(commande.getMontant());
-            dao.update(connect, change, where);
-            int idcommandeFille;
-            LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
-            AccompagnementCommande accompCommande;
-            for(int i=0;i<commandeFilles.length;i++){
-                commandeFilles[i].setCommande(where);
-                idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
-                commandeFilles[i].setId(idcommandeFille);
-                for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
-                    accompCommande=new AccompagnementCommande();
-                    accompCommande.setCommandeFille(commandeFilles[i]);
-                    accompCommande.setAccompagnement(commandeFilles[i].getAccompagnements()[j]);
-                    accompCommandes.add(accompCommande);
-                }
-            }
-            if(accompCommandes.size()==0){
-                return;
-            }
-            AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
-            dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
-        }catch(Exception e){
-            connect.rollback();
-            throw e;
-        }
     }
     public void checkCommandeFille(Connection connect, MyDAO dao, CommandeFille commandeFille) throws Exception{
         try{

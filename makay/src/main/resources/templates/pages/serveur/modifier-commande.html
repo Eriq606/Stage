@@ -488,9 +488,15 @@
                             console.log(data);
                             if(data.code===0){
                                 const alert=document.createElement("div");
-                                alert.className="alert alert-danger w-100";
+                                alert.className="alert alert-danger alert-dismissible show w-100";
                                 alert.setAttribute("role", "alert");
-                                alert.textContent=data.message;
+                                alert.innerHTML=data.message;
+                                const button = document.createElement('button');
+                                button.type = 'button';
+                                button.className = 'btn-close';
+                                button.setAttribute('data-bs-dismiss', 'alert');
+                                button.setAttribute('aria-label', 'Close');
+                                alert.appendChild(button);
                                 alerteEnvoye.appendChild(alert);
                                 return;
                             }

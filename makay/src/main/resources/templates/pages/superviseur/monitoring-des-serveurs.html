@@ -3,6 +3,8 @@
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
                 <div id="alerte-envoye"></div>
+                <a href="/monitoring-des-serveurs"><button id="rafraichir" type="button" class="btn btn-primary" style="display: none;">Rafraîchir</button></a>
+                <br>
                 <div class="d-flex align-items-start">
                     <div class="nav flex-column nav-pills me-3 border-right border-primary" id="v-pills-tab" role="tablist"
                         aria-orientation="vertical">
@@ -101,23 +103,72 @@
         window.onbeforeunload=()=>{
             stompclient.deactivate();
         }
-        function createCommandeFilleRow(cf, modalBody){
-            const cfDiv = document.createElement('div');
-            const p = document.createElement('p');
-            p.textContent = cf.quantite + ' ' + cf.produit.nom + ' ' + cf.notes;
-            cfDiv.appendChild(p);
-            const ul = document.createElement('ul');
+        function createCommandeFilleRow(commande, cf, commandesTabPane){
+            const p = document.createElement("p");
+            p.className = "d-flex justify-content-between";
+
+            const spanLeft = document.createElement("span");
+            const boldText = document.createElement("span");
+            boldText.style.fontWeight = "bold";
+            boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
+            spanLeft.appendChild(boldText);
+
+            const productInfo = document.createElement("span");
+            productInfo.textContent = cf.quantite + " " + cf.produit.nom;
+            spanLeft.appendChild(productInfo);
+
+            p.appendChild(spanLeft);
+
+            const spanRight = document.createElement("span");
+            spanRight.id="boutons-actions-commandefille"+cf.id;
+
+            const loading=document.createElement("img");
+            loading.id="loading"+cf.id;
+            loading.src="img/loading.gif";
+            loading.width="50";
+            loading.alt="loading";
+            loading.style.display="none";
+
+            const offertButton = document.createElement("button");
+            offertButton.className = "btn btn-success action-superviseur";
+            offertButton.textContent = "Offert";
+            offertButton.dataset.idcommandefille = cf.id;
+            offertButton.dataset.action = /*[[${offert}]]*/0;
+            offertButton.dataset.idcommande = commande.id;
+            offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
+
+            const annulerButton = document.createElement("button");
+            annulerButton.className = "btn btn-danger action-superviseur";
+            annulerButton.textContent = "Annuler";
+            annulerButton.dataset.idcommandefille = cf.id;
+            annulerButton.dataset.action = /*[[${annulee}]]*/0;
+            annulerButton.dataset.idcommande = commande.id;
+            annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
+
+
+            spanRight.appendChild(offertButton);
+            spanRight.appendChild(annulerButton);
+            spanRight.appendChild(loading);
+
+            p.appendChild(spanRight);
+            commandesTabPane.appendChild(p);
+
+            const notesP = document.createElement("p");
+            notesP.style.fontStyle = "italic";
+            notesP.style.fontWeight = "lighter";
+            notesP.style.fontSize = "small";
+            notesP.textContent = cf.notes;
+            commandesTabPane.appendChild(notesP);
+
+            const ul = document.createElement("ul");
             cf.accompagnements.forEach(cfa => {
-                const li = document.createElement('li');
+                const li = document.createElement("li");
                 li.textContent = cfa.nom;
                 ul.appendChild(li);
             });
-
-            const accompagnementP = document.createElement('p');
-            accompagnementP.appendChild(ul);
-            cfDiv.appendChild(accompagnementP);
-            modalBody.appendChild(cfDiv);
+            commandesTabPane.appendChild(ul);
         }
+
         function createCommandeRow(commande) {
             // Create table row
             const tr = document.createElement("tr");
@@ -226,70 +277,7 @@
 
             // Loop through commandeFilles to generate each entry in Commandes tab
             commande.commandeFilles.forEach(cf => {
-                // const loading=document.getElementById("loading"+cf.id);
-                const p = document.createElement("p");
-                p.className = "d-flex justify-content-between";
-
-                const spanLeft = document.createElement("span");
-                const boldText = document.createElement("span");
-                boldText.style.fontWeight = "bold";
-                boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
-                spanLeft.appendChild(boldText);
-
-                const productInfo = document.createElement("span");
-                productInfo.textContent = cf.quantite + " " + cf.produit.nom;
-                spanLeft.appendChild(productInfo);
-
-                p.appendChild(spanLeft);
-
-                const spanRight = document.createElement("span");
-                spanRight.id="boutons-actions-commandefille"+cf.id;
-
-                const loading=document.createElement("img");
-                loading.id="loading"+cf.id;
-                loading.src="img/loading.gif";
-                loading.width="50";
-                loading.alt="loading";
-                loading.style.display="none";
-
-                const offertButton = document.createElement("button");
-                offertButton.className = "btn btn-success action-superviseur";
-                offertButton.textContent = "Offert";
-                offertButton.dataset.idcommandefille = cf.id;
-                offertButton.dataset.action = /*[[${offert}]]*/0;
-                offertButton.dataset.idcommande = commande.id;
-                offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
-
-                const annulerButton = document.createElement("button");
-                annulerButton.className = "btn btn-danger action-superviseur";
-                annulerButton.textContent = "Annuler";
-                annulerButton.dataset.idcommandefille = cf.id;
-                annulerButton.dataset.action = /*[[${annulee}]]*/0;
-                annulerButton.dataset.idcommande = commande.id;
-                annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
-
-
-                spanRight.appendChild(offertButton);
-                spanRight.appendChild(annulerButton);
-                spanRight.appendChild(loading);
-
-                p.appendChild(spanRight);
-                commandesTabPane.appendChild(p);
-
-                const notesP = document.createElement("p");
-                notesP.style.fontStyle = "italic";
-                notesP.style.fontWeight = "lighter";
-                notesP.style.fontSize = "small";
-                notesP.textContent = cf.notes;
-                commandesTabPane.appendChild(notesP);
-
-                const ul = document.createElement("ul");
-                cf.accompagnements.forEach(cfa => {
-                    const li = document.createElement("li");
-                    li.textContent = cfa.nom;
-                    ul.appendChild(li);
-                });
-                commandesTabPane.appendChild(ul);
+                createCommandeFilleRow(commande, cf, commandesTabPane);
             });
 
             const hr = document.createElement("hr");
@@ -335,8 +323,11 @@
         }
 
         function modifierCommande(commandeFille, commande, utilisateur){
-            const modalBody=document.getElementById("detailCommandeServeur"+utilisateur.id+"Commande"+commande.id);
-            createCommandeFilleRow(commandeFille, modalBody);
+            // const modalBody=document.getElementById("detailCommandeServeur"+utilisateur.id+"Commande"+commande.id);
+            // const commandesTabPane=document.getElementById("nav-commandes"+commande.id);
+            // createCommandeFilleRow(commande, commandeFille, commandesTabPane);
+            const rafraichir=document.getElementById("rafraichir");
+            rafraichir.style.display="block";
         }
         function receiveNotificationCommande(){
             stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoyee)=>{

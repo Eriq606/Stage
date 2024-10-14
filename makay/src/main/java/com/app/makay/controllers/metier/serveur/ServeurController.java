@@ -237,6 +237,14 @@ public class ServeurController {
             modifs.getUtilisateur().modifierCommande(connect, dao, modifs.getCommande(), modifs.getCommandeFilles());
             connect.commit();
             return response;
+        }catch(StockException se){
+            response.setCode(Constantes.CODE_ERROR);
+            String message="";
+            for(Exception e:se.getExceptions()){
+                message+="<p>"+e.getMessage()+"</p>";
+            }
+            response.setMessage(message);
+            return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
             response.setMessage(e.getMessage());
