@@ -3,12 +3,15 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.app.makay.entites.temporary.ProduitCommandeStock;
+import com.app.makay.entites.temporary.ProduitCommandeStockForSelect;
 import com.app.makay.iris.IrisUser;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.ModelLink;
@@ -18,6 +21,7 @@ import com.app.makay.utilitaire.exception.StockException;
 
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpSession;
+import veda.EntityTable;
 import veda.godao.DAO;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
@@ -250,6 +254,37 @@ public class Utilisateur extends IrisUser{
         setPlaces(places);
         return places;
     }
+    public void creerTableFictiveVerificationStock(Connection connect, MyDAO dao, CommandeFille[] commandeFilles) throws Exception{
+        EntityTable table=new EntityTable();
+        table.setNom("table_fictive_stock");
+        table.getColonnes().put("id", "serial primary key");
+        table.getColonnes().put("idproduit", "int not null references produits(id)");
+        table.getColonnes().put("quantite", "quantity not null");
+        table.getColonnes().put("nom_produit", "varchar not null");
+        try{
+            dao.createTable(connect, table, true);
+            LinkedList<ProduitCommandeStock> liste=new LinkedList<>();
+            ProduitCommandeStock produitCommande;
+            for(CommandeFille c:commandeFilles){
+                produitCommande=new ProduitCommandeStock(c.getProduit().getId(), c.getQuantite(), c.getProduit().getNom());
+                liste.add(produitCommande);
+            }
+            dao.insertWithoutPrimaryKey(connect, ProduitCommandeStock.class, liste.toArray(new ProduitCommandeStock[liste.size()]));
+        }catch(Exception e){
+            connect.rollback();
+            throw e;
+        }
+    }
+    public void verifierStock(Connection connect, MyDAO dao) throws Exception{
+        String query="select tf.idproduit, sum(tf.quantite) as quantite, tf.nom_produit, produits.dernier_stock from table_fictive_stock tf join produits on tf.idproduit=produits.id group by tf.idproduit, tf.nom_produit, produits.dernier_stock";
+        ProduitCommandeStockForSelect[] qteCommandes=dao.select(connect, query, ProduitCommandeStockForSelect.class);
+        LinkedList<Exception> exceptions=new LinkedList<>();
+        for(ProduitCommandeStockForSelect p:qteCommandes){
+            if(p.getQuantite()<p.getStock()){
+                exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+" : Qte demandee "+p.getStock()));
+            }
+        }
+    }
     public int passerCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
             boolean estValide=false;
@@ -276,6 +311,7 @@ public class Utilisateur extends IrisUser{
             }
             commande.setOuverture(LocalDateTime.now());
             commande.setResteAPayer(commande.getMontant());
+            commande.setUtilisateur(this);
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
             commande.setId(idCommande);
             int idcommandeFille;

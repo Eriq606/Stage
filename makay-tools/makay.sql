@@ -699,3 +699,5 @@ select vcf.*, vp.nom, vp.prix, vp.idcategorie, coalesce(vcft.est_termine, -1) as
 from v_commande_filles vcf
 join v_produits vp on vcf.idproduit=vp.id
 left join v_commande_filles_terminees vcft on vcf.id=vcft.idcommandefille;
+
+insert into role_categorie_produits_checkings values(default, 2, 3, 0);
