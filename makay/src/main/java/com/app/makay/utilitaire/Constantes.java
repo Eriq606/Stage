@@ -17,9 +17,10 @@ public class Constantes {
     public static final String MSG_STOCK_INSUFFISANT="Stock insuffisant";
     public static final String MSG_TABLE_NON_AUTHORISEE="Cette table n'est pas sous votre juridiction.";
     public static final String MSG_COMMANDE_NON_AUTHORISEE="Vous n'êtes pas celui qui a issu cette commande.";
-    public static final String MSG_COMMANDE_INTOUCHABLE="Cette commande ne peut plus être altérée.";
+    public static final String MSG_COMMANDE_INTOUCHABLE="Cette commande ne peut pas encore ou ne peut plus être altérée.";
     public static final String MSG_COMMANDEFILLE_INTOUCHABLE="Cette commande-fille ne peut plus être altérée.";
     public static final String MSG_ACTION_INVALIDE="Action invalide";
+    public static final String MSG_COMMANDE_NON_TERMINEE="Commande pas encore terminée.";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";

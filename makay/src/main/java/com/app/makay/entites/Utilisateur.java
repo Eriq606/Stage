@@ -285,7 +285,7 @@ public class Utilisateur extends IrisUser{
         double nouveauStock;
         for(ProduitCommandeStockForSelect p:qteCommandes){
             if(p.getQuantite()>p.getStock()&&p.getStock()>=0){
-                exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+"."+p.getNomProduit()+" : Qte demandee "+p.getQuantite()+"| En stock "+p.getStock()));
+                exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+". "+p.getNomProduit()+" : Qte demandee "+p.getQuantite()+"| En stock "+p.getStock()));
                 continue;
             }
             nouveauStock=p.getStock()-p.getQuantite();
@@ -364,8 +364,6 @@ public class Utilisateur extends IrisUser{
     public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
             boolean estValide=false;
-            creerTableFictiveVerificationStock(connect, dao, commandeFilles);
-            ModificationStock[] modifStocks= verifierStock(connect, dao);
             for(CommandeFille c:commandeFilles){
                 if(c.getQuantite()>0&&estValide==false){
                     estValide=true;
@@ -375,6 +373,23 @@ public class Utilisateur extends IrisUser{
             if(commandeFilles.length==0||estValide==false){
                 throw new Exception(Constantes.MSG_COMMANDE_VIDE);
             }
+            
+            Commande where=new Commande();
+            where.setId(commande.getId());
+            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
+            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(commandeBase.getUtilisateur().getId()!=getId()){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
+            }
+            creerTableFictiveVerificationStock(connect, dao, commandeFilles);
+            ModificationStock[] modifStocks= verifierStock(connect, dao);
+            Commande change=new Commande();
+            change.setMontant(commande.getMontant());
+            change.setResteAPayer(commande.getMontant());
+            dao.update(connect, change, where);
+            
             dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
             Produit changeProduit, whereProduit;
             for(ModificationStock m:modifStocks){
@@ -386,19 +401,6 @@ public class Utilisateur extends IrisUser{
                 dao.update(connect, changeProduit, whereProduit);
             }
 
-            Commande where=new Commande();
-            where.setId(commande.getId());
-            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
-            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
-                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
-            }
-            if(commandeBase.getUtilisateur().getId()!=getId()){
-                throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
-            }
-            Commande change=new Commande();
-            change.setMontant(commande.getMontant());
-            change.setResteAPayer(commande.getMontant());
-            dao.update(connect, change, where);
             int idcommandeFille;
             LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
             AccompagnementCommande accompCommande;
@@ -498,12 +500,25 @@ public class Utilisateur extends IrisUser{
     }
     public void checkCommandeFille(Connection connect, MyDAO dao, CommandeFille commandeFille) throws Exception{
         try{
+            String query="select * from v_commandefille_produits where etat=%s and id=%s and est_termine=-1 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0)";
+            query=String.format(query, Constantes.COMMANDEFILLE_CREEE, commandeFille.getId(), getRole().getId());
+            CommandeFille commandeFilleBase=dao.select(connect, query, CommandeFille.class)[0];
+            Commande where=new Commande();
+            where.setId(commandeFilleBase.getCommande().getId());
+            where.setEtat(Constantes.COMMANDE_CREEE);
+            Commande[] commandeBase=dao.select(connect, Commande.class, where);
+            if(commandeBase.length!=1){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
             CommandeFilleTerminee ct=new CommandeFilleTerminee();
             ct.setUtilisateur(this);
             ct.setCommandeFille(commandeFille);
             ct.setDateheure(LocalDateTime.now());
             ct.setEstTermine(1);
             dao.insertWithoutPrimaryKey(connect, ct);
+        }catch(ArrayIndexOutOfBoundsException e){
+            connect.rollback();
+            throw new Exception(Constantes.MSG_ACTION_INVALIDE);
         }catch(Exception e){
             connect.rollback();
             throw e;
@@ -760,14 +775,26 @@ public class Utilisateur extends IrisUser{
 
     public void demandeAddition(Connection connect, MyDAO dao, Commande commande) throws Exception{
         try{
-            int idutilisateur=commande.recupererIdUtilisateur(connect, dao);
-            if(idutilisateur!=getId()){
+            String queryCmdFilleTerminee="select * from v_commandefille_produits where est_termine=-1 and idcommande=%s";
+            queryCmdFilleTerminee=String.format(queryCmdFilleTerminee, commande.getId());
+            CommandeFille[] cmdFillesNonTerminees=dao.select(connect, queryCmdFilleTerminee, CommandeFille.class);
+            if(cmdFillesNonTerminees.length>0){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_TERMINEE);
+            }
+            Commande where=new Commande();
+            where.setId(commande.getId());
+            where.setEtat(Constantes.COMMANDE_CREEE);
+            Commande commandeBase=dao.select(connect, Commande.class, where)[0];
+            if(commandeBase.getUtilisateur().getId()!=getId()){
                 throw new Exception(Constantes.MSG_COMMANDE_NON_AUTHORISEE);
             }
             Commande change=new Commande();
             change.setEtat(Constantes.COMMANDE_ADDITION);
             change.setCloture(LocalDateTime.now());
             dao.update(connect, change, commande);
+        }catch(ArrayIndexOutOfBoundsException e){
+            connect.rollback();
+            throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
@@ -798,8 +825,7 @@ public class Utilisateur extends IrisUser{
             if(paiement.getMontant()>commande.getResteAPayer()){
                 throw new Exception(Constantes.MSG_PAIEMENT_MONTANT_INVALIDE);
             }
-            Integer[] etatInvalides=new Integer[]{Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_SUPPRIMEE};
-            if(Arrays.asList(etatInvalides).contains(commande.getEtat().intValue())){
+            if(commande.getEtat()!=Constantes.COMMANDE_ADDITION){
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
             paiement.setUtilisateur(this);
