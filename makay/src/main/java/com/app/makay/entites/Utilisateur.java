@@ -288,6 +288,9 @@ public class Utilisateur extends IrisUser{
                 exceptions.add(new Exception(Constantes.MSG_STOCK_INSUFFISANT+". "+p.getNomProduit()+" : Qte demandee "+p.getQuantite()+"| En stock "+p.getStock()));
                 continue;
             }
+            if(p.getStock()<0){
+                continue;
+            }
             nouveauStock=p.getStock()-p.getQuantite();
             produit=new Produit();
             produit.setId(p.getIdproduit());
@@ -377,7 +380,7 @@ public class Utilisateur extends IrisUser{
             Commande where=new Commande();
             where.setId(commande.getId());
             Commande commandeBase=dao.select(connect, Commande.class, where)[0];
-            if(Arrays.asList(new Integer[]{Constantes.COMMANDE_ADDITION, Constantes.COMMANDE_PAYEE, Constantes.COMMANDE_ANNULEE, Constantes.COMMANDE_SUPPRIMEE}).contains(commandeBase.getEtat())){
+            if(commandeBase.getEtat()!=Constantes.COMMANDE_CREEE){
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
             if(commandeBase.getUtilisateur().getId()!=getId()){
