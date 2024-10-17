@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.Commande;
 import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Place;
@@ -329,5 +330,35 @@ public class SuperviseurController {
             response.setMessage(e.getMessage());
             return response;
         }
+    }
+    @GetMapping("/action-superviseur")
+    public Object actionSuperviseur(HttpServletRequest req, Model model, Integer idcommande) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Action de superviseur", "pages/superviseur/action-superviseur", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Commande where=new Commande();
+            where.setId(idcommande);
+            where.setEtat(Constantes.COMMANDE_ADDITION);
+            Commande[] commande=dao.select(connect, Commande.class, where);
+            if(commande.length!=1){
+                iris=new RedirectView("/error?code=423");
+                return iris;
+            }
+            commande[0].recupererCommandeFilles(connect, dao);
+            commande[0].recupereUtilisateur(connect, dao);
+            model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        return iris;
     }
 }

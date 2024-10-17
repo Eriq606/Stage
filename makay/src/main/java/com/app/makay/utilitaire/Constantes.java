@@ -1,4 +1,5 @@
 package com.app.makay.utilitaire;
+import java.util.HashMap;
 
 public class Constantes {
     public static final String BRAND="Makay";
@@ -63,6 +64,8 @@ public class Constantes {
     public static final String VAR_MODEPAIEMENTS_CHOISIS="modepaiements_choisis";
     public static final String VAR_COMMANDEFILLE_OFFERT="offert";
     public static final String VAR_COMMANDEFILLE_ANNULEE="annulee";
+    public static final String VAR_CODE_ERREUR="code";
+    public static final String VAR_MSG_ERREUR="message";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -144,4 +147,11 @@ public class Constantes {
 
     public static final int COMMANDEFILLE_ESTTERMINEE=1;
     public static final int COMMANDEFILLE_ESTENCOURS=-1;
+
+    public static final int IDMODEPAIEMENT_VAT=-1;
+
+    public static final HashMap<String, String> ERREURS=new HashMap<>(){{
+        put("403", "Accès non autorisé");
+        put("423", "Ressource vérouillée");
+    }};
 }

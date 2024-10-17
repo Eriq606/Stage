@@ -45,9 +45,8 @@ public class CaissierController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Place where=new Place(0);
             places=dao.select(connect, Place.class, where);
-            ModePaiement wherePaiement=new ModePaiement();
-            wherePaiement.setEtat(0);
-            modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
+            String addOn="where etat=0 and id<>-1";
+            modePaiements=dao.select(connect, ModePaiement.class, addOn);
         }
     }
 

@@ -19,12 +19,14 @@ public class ErrorController {
         filter=new MyFilter();
     }
 
-    @GetMapping("/403")
-    public Object error403(HttpServletRequest req, Model model){
+    @GetMapping("/error")
+    public Object errorerror(HttpServletRequest req, Model model, String code){
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkIfLoggedIn(utilisateur, "Makay - Accès non autorisé", "errors/403", "layout/layout", model);
+        Object iris=filter.checkIfLoggedIn(utilisateur, "Makay - "+Constantes.ERREURS.get(code), "errors/error", "layout/layout", model);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_CODE_ERREUR, code);
+        model.addAttribute(Constantes.VAR_MSG_ERREUR, Constantes.ERREURS.get(code));
         return iris;
     }
 }

@@ -205,4 +205,12 @@ public class Commande {
         int iduser=(int)result[0].get("idutilisateur");
         return iduser;
     }
+    public Utilisateur recupereUtilisateur(Connection connect, MyDAO dao) throws Exception{
+        Utilisateur where=new Utilisateur();
+        where.setId(getUtilisateur().getId());
+        Utilisateur utilisateur=dao.select(connect, Utilisateur.class, where)[0];
+        utilisateur.setMotdepasse("null");
+        setUtilisateur(utilisateur);
+        return utilisateur;
+    }
 }

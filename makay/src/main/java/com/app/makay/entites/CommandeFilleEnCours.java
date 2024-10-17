@@ -108,6 +108,11 @@ public class CommandeFilleEnCours {
         montantString+=" Ar";
         return montantString;
     }
+    public String recupererPUString(){
+        String montantString=HandyManUtils.number_format(getPu(), ' ', ',', 2);
+        montantString+=" Ar";
+        return montantString;
+    }
     public String recupererEtatString(){
         switch(getEtat()){
             case Constantes.COMMANDEFILLE_OFFERT:

@@ -668,3 +668,9 @@ insert into mode_paiements values(default, 'V.A.T', 0);
 
 alter domain email drop constraint email_check;
 insert into utilisateurs values(default, 6, 'admin', 'admin@mail.io', '123456', 'root', 0, 10);
+
+drop table action_superviseurs;
+
+delete from mode_paiements where nom='V.A.T';
+
+insert into mode_paiements values(-1, 'V.A.T', 0);

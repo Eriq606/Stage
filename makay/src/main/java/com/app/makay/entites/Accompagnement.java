@@ -36,7 +36,7 @@ public class Accompagnement {
         return "Accompagnement [id=" + id + ", nom=" + nom + ", etat=" + etat + "]";
     }
     public String getHtml(){
-        String html="<li>%s</li>";
+        String html="<li style='list-style:none'>%s</li>";
         return String.format(html, getNom());
     }
 }

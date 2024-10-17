@@ -327,7 +327,9 @@ public class Utilisateur extends IrisUser{
             commande.setResteAPayer(commande.getMontant());
             commande.setUtilisateur(this);
             int idCommande=dao.insertWithoutPrimaryKey(connect, commande);
-            dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            if(modifStocks.length>0){
+                dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            }
             Produit change, where;
             for(ModificationStock m:modifStocks){
                 change=new Produit();
@@ -393,7 +395,9 @@ public class Utilisateur extends IrisUser{
             change.setResteAPayer(commande.getMontant());
             dao.update(connect, change, where);
             
-            dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            if(modifStocks.length>0){
+                dao.insertWithoutPrimaryKey(connect, ModificationStock.class, modifStocks);
+            }
             Produit changeProduit, whereProduit;
             for(ModificationStock m:modifStocks){
                 changeProduit=new Produit();
@@ -425,6 +429,7 @@ public class Utilisateur extends IrisUser{
             dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
         }catch(Exception e){
             connect.rollback();
+            e.printStackTrace();
             throw e;
         }
     }
@@ -505,6 +510,7 @@ public class Utilisateur extends IrisUser{
         try{
             String query="select * from v_commandefille_produits where etat=%s and id=%s and est_termine=-1 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0)";
             query=String.format(query, Constantes.COMMANDEFILLE_CREEE, commandeFille.getId(), getRole().getId());
+            System.out.println(query);
             CommandeFille commandeFilleBase=dao.select(connect, query, CommandeFille.class)[0];
             Commande where=new Commande();
             where.setId(commandeFilleBase.getCommande().getId());

@@ -12,7 +12,7 @@
                             th:data-bs-target="'#v-pills-serveur-'+${s.id}" type="button" role="tab"
                             th:aria-controls="'v-pills-serveur-'+${s.id}" aria-selected="true" th:text="${s.nom}"></button>
                     </div>
-                    <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-content table-responsive" id="v-pills-tabContent">
                         <div th:each="s:${serveurs}" class="tab-pane fade" th:id="'v-pills-serveur-'+${s.id}" role="tabpanel" th:aria-labelledby="'v-pills-serveur-tab-'+${s.id}">
                             <table class="table">
                                 <tbody th:id="'commandes-'+${s.id}">
@@ -41,18 +41,9 @@
                                                             <div class="tab-pane fade show active" th:id="'nav-commandes'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-commandes-tab'+${c.id}">
                                                                 <div th:each="cf:${c.commandeFilles}">
                                                                     <p class="d-flex justify-content-between">
-                                                                        <span>
-                                                                            <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
-                                                                            <span th:text="${cf.quantite}+' '+${cf.produit.nom}"></span>
-                                                                        </span>
-                                                                        <span th:if="${cf.etat==0}" th:id="'boutons-actions-commandefille'+${cf.id}">
-                                                                            <button th:data-idcommandefille="${cf.id}" th:data-action="${offert}" th:data-idcommande="${c.id}" class="btn btn-success action-superviseur">Offert</button>
-                                                                            <button th:data-idcommandefille="${cf.id}" th:data-action="${annulee}" th:data-idcommande="${c.id}" class="btn btn-danger action-superviseur">Annuler</button>
-                                                                            <img th:id="'loading'+${cf.id}" th:src="@{img/loading.gif}" width="50" alt="loading" style="display: none;">
-                                                                        </span>
-                                                                        <span th:unless="${cf.etat==0}">
-                                                                            <span th:style="'color:'+${cf.recupererEtatCouleur()}" th:text="${cf.recupererEtatString()}"></span>
-                                                                        </span>
+                                                                        <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
+                                                                        <span th:text="${cf.quantite}+' '+${cf.produit.nom}"></span>
+                                                                        <span th:text="'('+${cf.recupererPUString()}+')'"></span>
                                                                     </p>
                                                                     <p style="font-style: italic;font-weight: lighter;font-size: small;" th:text="${cf.notes}"></p>
                                                                     <p><ul>
@@ -84,6 +75,7 @@
                                             </div>
                                         </div>
                                         <td th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
+                                        <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i>Intéragir</button></a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -363,68 +355,10 @@
             receiveModificationCommande();
         };
 
-        const actionButtons=document.getElementsByClassName("action-superviseur");
         const api="http://"+ip+":8080/action-superviseur";
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
         const alerteEnvoye=document.getElementById("alerte-envoye");
-
-        function actionButtonTrigger(idcommandefille, action, idcommande, loading){
-            const envoiAction={
-                utilisateur:utilisateur,
-                sessionid:sessionid,
-                actionSuperviseur:{
-                    commandeFille:{id:idcommandefille},
-                    action:action
-                }
-            }
-            loading.style.display="block";
-            fetch(api, {
-                method:"post",
-                headers:{
-                    "Content-type":"application/json"
-                },
-                body:JSON.stringify({restdata:JSON.stringify(envoiAction)})
-            }).then((response)=>{return response.json()})
-            .then((data)=>{
-                loading.style.display="none";
-                if(data.code==0){
-                    const alert=document.createElement("div");
-                    alert.className="alert alert-danger alert-dismissible show w-100";
-                    alert.setAttribute("role", "alert");
-                    alert.innerHTML=data.message;
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'btn-close';
-                    button.setAttribute('data-bs-dismiss', 'alert');
-                    button.setAttribute('aria-label', 'Close');
-                    alert.appendChild(button);
-                    alerteEnvoye.appendChild(alert);
-                    return;
-                }
-                const boutonsActions=document.getElementById("boutons-actions-commandefille"+idcommandefille);
-                const actionSpan=document.createElement("span");
-                actionSpan.style.color=data.donnees.couleur;
-                actionSpan.style.fontWeight="bold";
-                actionSpan.textContent=data.donnees.etat;
-                boutonsActions.innerHTML="";
-                boutonsActions.appendChild(actionSpan);
-                const montantTotalCmd=document.getElementsByClassName("montant-total-commande"+idcommande);
-                for(let j=0;j<montantTotalCmd.length;j++){
-                    montantTotalCmd[j].textContent=new Intl.NumberFormat("de-DE").format(data.donnees.nouveauMontant).replace(".", " ")+" Ar";
-                }
-            });
-        }
-        
-        for(let i=0;i<actionButtons.length;i++){
-            const idcommandefille=actionButtons[i].dataset.idcommandefille;
-            const action=actionButtons[i].dataset.action;
-            const idcommande=actionButtons[i].dataset.idcommande;
-            const loading=document.getElementById("loading"+idcommandefille);
-            actionButtons[i].onclick=()=>{
-                actionButtonTrigger(idcommandefille, action, idcommande, loading);
-            }
-        }
         /*]]*/
     </script>
 </div>

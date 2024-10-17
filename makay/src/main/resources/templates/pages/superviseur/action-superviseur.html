@@ -1,0 +1,38 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Offert/Suppression</h1>
+                <ul>
+                   <li style="font-weight: bold;" th:text="${commande.recupererPlaceLabel()}"></li> 
+                   <li style="font-weight: bold;" th:text="'Serveur : '+${commande.utilisateur.nom}"></li>
+                   <li style="font-weight: bold;" th:text="${commande.recupererHeure()}"></li>
+                </ul>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>Quantite initiale</th>
+                            <th>Qte à offrir/annuler</th>
+                            <th>Commande</th>
+                            <th>Accomp.</th>
+                            <th>Prix unitaire</th>
+                            <th>Montant</th>
+                        </tr>
+                        <tr th:each="cf:${commande.commandeFilles}">
+                            <td th:text="${cf.quantite}"></td>
+                            <td><input type="number" min="1" th:max="${cf.quantite}" name="quantite" th:value="${cf.quantite}"></td>
+                            <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
+                            <td><ul>
+                                <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>        
+                            </ul></td>
+                            <td th:text="${cf.recupererPUString()}"></td>
+                            <td th:text="${cf.recupererMontantString()}"></td>
+                            <td><button class="btn btn-success">Offert</button></td>
+                            <td><button class="btn btn-danger">Suppression</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

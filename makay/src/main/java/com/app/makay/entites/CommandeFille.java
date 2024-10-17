@@ -115,7 +115,7 @@ public class CommandeFille {
             <td style="padding: 10px; border: 1px solid;">%s</td>
             <td style="padding: 10px; border: 1px solid;">%s</td>
             <td style="padding: 10px; border: 1px solid;">%s</td>
-            <td style="padding: 10px; border: 1px solid;list-decoration:none">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
             <td style="padding: 10px; border: 1px solid;text-align: right;">%s</td>
             <td style="padding: 10px; border: 1px solid;text-align: right;font-weight:bold">%s</td>
         </tr>

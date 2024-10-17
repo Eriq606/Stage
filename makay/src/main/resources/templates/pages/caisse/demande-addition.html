@@ -41,7 +41,7 @@
                                         </div>
                                         <div class="modal-body table-responsive">
                                             <div th:each="cf:${c.commandeFilles}">
-                                                <p th:text="${cf.recupererMontantString()}+' : '+${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}"></p>
+                                                <p th:text="${cf.recupererMontantString()}+' : '+${cf.quantite}+' '+${cf.produit.nom}+' '+${cf.notes}+' ('+${cf.recupererPUString()}+')'"></p>
                                                 <p><ul>
                                                     <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
                                                 </ul></p>

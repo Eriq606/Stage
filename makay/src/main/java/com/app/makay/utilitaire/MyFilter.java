@@ -29,7 +29,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(Arrays.asList(targetRole).contains(irisUser.getIrisRole())==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
@@ -46,7 +46,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(Arrays.asList(targetRole).contains(irisUser.getIrisRole())==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         return null;
     }
@@ -71,7 +71,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisAuthorization()<minimumAuth==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisRole().equals(targetRole)==false&&irisUser.getIrisRole().equals(Constantes.ROLE_SUPERVISEUR)==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisRole().equals(targetRole)==false&&irisUser.getIrisRole().equals(Constantes.ROLE_SUPERVISEUR)==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
@@ -135,7 +135,7 @@ public class MyFilter implements IrisFilter{
             return new RedirectView("/logout?message="+message);
         }
         if(irisUser.getIrisAuthorization()<minimumAuth==false){
-            return new RedirectView("/403");
+            return new RedirectView("/error?code=403");
         }
         model.addAttribute(Constantes.VAR_BRAND, Constantes.BRAND);
         model.addAttribute(Constantes.VAR_TITLE, title);
