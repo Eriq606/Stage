@@ -319,11 +319,6 @@ public class SuperviseurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            Object[] nouvelEtat=modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
-            connect.commit();
-            response.addItem("etat", ((CommandeFille)nouvelEtat[0]).recupererEtatString());
-            response.addItem("couleur", ((CommandeFille)nouvelEtat[0]).recupererEtatCouleur());
-            response.addItem("nouveauMontant", nouvelEtat[1]);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
@@ -352,6 +347,8 @@ public class SuperviseurController {
             commande[0].recupereUtilisateur(connect, dao);
             model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
         }
+        model.addAttribute(Constantes.VAR_COMMANDEFILLE_OFFERT, Constantes.COMMANDEFILLE_OFFERT);
+        model.addAttribute(Constantes.VAR_COMMANDEFILLE_ANNULEE, Constantes.COMMANDEFILLE_ANNULEE);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
         String[] urls=utilisateur.recupererResetCacheAndNotify();

@@ -22,6 +22,8 @@ public class Constantes {
     public static final String MSG_COMMANDEFILLE_INTOUCHABLE="Cette commande-fille ne peut plus être altérée.";
     public static final String MSG_ACTION_INVALIDE="Action invalide";
     public static final String MSG_COMMANDE_NON_TERMINEE="Commande pas encore terminée.";
+    public static final String MSG_QUANTITE_INVALIDE="Quantité invalide.";
+    public static final String MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE="La valeur à offrir/annuler ne peut pas être supérieur au reste à payer de la commande.";
 
     public static final String ROLE_SERVEUR="1";
     public static final String ROLE_BAR="2";

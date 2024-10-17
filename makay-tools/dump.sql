@@ -674,3 +674,14 @@ drop table action_superviseurs;
 delete from mode_paiements where nom='V.A.T';
 
 insert into mode_paiements values(-1, 'V.A.T', 0);
+
+create table action_superviseurs(
+  id serial primary key,
+  idcommandefille int not null references commande_filles(id),
+  quantite quantity not null,
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  "action" int not null,
+  etat int default 0
+);
+
+alter table action_superviseurs add montant price not null;

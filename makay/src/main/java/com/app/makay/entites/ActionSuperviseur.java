@@ -15,9 +15,8 @@ public class ActionSuperviseur {
     @ForeignKey(recursive = true)
     @Column("idcommandefille")
     private CommandeFille commandeFille;
-    @ForeignKey(recursive = false)
-    @Column("idutilisateur")
-    private Utilisateur utilisateur;
+    @Column("quantite")
+    private Double quantite;
     @Column("dateheure")
     private LocalDateTime dateheure;
     @Column("action")
@@ -36,11 +35,11 @@ public class ActionSuperviseur {
     public void setCommandeFille(CommandeFille commandeFille) {
         this.commandeFille = commandeFille;
     }
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public Double getQuantite() {
+        return quantite;
     }
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setQuantite(Double quantite) {
+        this.quantite = quantite;
     }
     public LocalDateTime getDateheure() {
         return dateheure;

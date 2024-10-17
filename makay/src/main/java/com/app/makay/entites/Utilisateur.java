@@ -3,6 +3,7 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -510,7 +511,6 @@ public class Utilisateur extends IrisUser{
         try{
             String query="select * from v_commandefille_produits where etat=%s and id=%s and est_termine=-1 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0)";
             query=String.format(query, Constantes.COMMANDEFILLE_CREEE, commandeFille.getId(), getRole().getId());
-            System.out.println(query);
             CommandeFille commandeFilleBase=dao.select(connect, query, CommandeFille.class)[0];
             Commande where=new Commande();
             where.setId(commandeFilleBase.getCommande().getId());
@@ -879,34 +879,22 @@ public class Utilisateur extends IrisUser{
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
     }
-    public Object[] actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur action) throws Exception{
+    public void actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur actionSuperviseur) throws Exception{
         try{
             CommandeFille where=new CommandeFille();
-            where.setId(action.getCommandeFille().getId());
-            where.setEtat(Constantes.COMMANDEFILLE_CREEE);
-            CommandeFille[] commandeFille=dao.select(connect, CommandeFille.class, where);
-            if(commandeFille.length!=1){
-                throw new Exception(Constantes.MSG_COMMANDEFILLE_INTOUCHABLE);
+            where.setId(actionSuperviseur.getCommandeFille().getId());
+            where.setId(Constantes.COMMANDEFILLE_CREEE);
+            CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            if(actionSuperviseur.getQuantite()>commandeFille.getQuantite()){
+                throw new Exception(Constantes.MSG_QUANTITE_INVALIDE);
             }
-            if(Arrays.asList(new Integer[]{Constantes.COMMANDEFILLE_OFFERT, Constantes.COMMANDEFILLE_ANNULEE}).contains(action.getAction())==false){
-                throw new Exception(Constantes.MSG_ACTION_INVALIDE);
+            double montantAction=actionSuperviseur.getQuantite()*commandeFille.getPu();
+            if(montantAction>commandeFille.getCommande().getResteAPayer()){
+                throw new Exception(Constantes.MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE);
             }
-            action.setUtilisateur(this);
-            dao.insertWithoutPrimaryKey(connect, action);
-            where.setEtat(null);
-            CommandeFille change=new CommandeFille();
-            change.setEtat(action.getAction());
-            dao.update(connect, change, where);
-            Commande whereCommande=new Commande();
-            whereCommande.setId(commandeFille[0].getCommande().getId());
-            Commande commande=dao.select(connect, Commande.class, whereCommande)[0];
-            Commande changeCommande=new Commande();
-            changeCommande.setMontant(commande.getMontant()-commandeFille[0].getMontant());
-            dao.update(connect, changeCommande, whereCommande);
-            return new Object[]{change, changeCommande.getMontant()};
+            dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
         }catch(Exception e){
             connect.rollback();
-            e.printStackTrace();
             throw e;
         }
     }

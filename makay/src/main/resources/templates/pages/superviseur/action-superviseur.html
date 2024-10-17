@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
+                <div id="alerte-envoye"></div>
                 <h1>Offert/Suppression</h1>
                 <ul>
                    <li style="font-weight: bold;" th:text="${commande.recupererPlaceLabel()}"></li> 
@@ -17,22 +18,96 @@
                             <th>Accomp.</th>
                             <th>Prix unitaire</th>
                             <th>Montant</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         <tr th:each="cf:${commande.commandeFilles}">
                             <td th:text="${cf.quantite}"></td>
-                            <td><input type="number" min="1" th:max="${cf.quantite}" name="quantite" th:value="${cf.quantite}"></td>
+                            <td><input type="number" min="1" th:max="${cf.quantite}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantite}"></td>
                             <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
                             <td><ul>
                                 <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>        
                             </ul></td>
                             <td th:text="${cf.recupererPUString()}"></td>
                             <td th:text="${cf.recupererMontantString()}"></td>
-                            <td><button class="btn btn-success">Offert</button></td>
-                            <td><button class="btn btn-danger">Suppression</button></td>
+                            <td><button class="btn btn-success action-button" th:data-idcommandefille="${cf.id}" th:data-action="${offert}">Offert</button></td>
+                            <td><button class="btn btn-danger action-button" th:data-idcommandefille="${cf.id}" th:data-action="${annulee}">Suppression</button></td>
+                            <td><img th:id="'loading-commandefille'+${cf.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;"></td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Actions effectuées</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>Quantité</th>
+                            <th>Commande</th>
+                            <th>Montant</th>
+                            <th>Action</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+        const api="http://"+ip+":8080/action-superviseur";
+
+        const actionButtons=document.getElementsByClassName("action-button");
+        const alerteEnvoye=document.getElementById("alerte-envoye");
+        for(let i=0;i<actionButtons.length;i++){
+            const idcommandefille=actionButtons[i].dataset.idcommandefille;
+            const action=actionButtons[i].dataset.action;
+            actionButtons[i].onclick=()=>{
+                const loading=document.getElementById("loading-commandefille"+idcommandefille);
+                loading.style.display="block";
+                const quantite=document.getElementById("quantite-commandefille"+idcommandefille).value;
+                const envoiAction={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    actionSuperviseur:{
+                        commandeFille:{id:idcommandefille},
+                        quantite:quantite,
+                        action:action
+                    }
+                }
+                fetch(api, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiAction)})
+                }).then((response)=>{return response.json()})
+                .then((data)=>{
+                    loading.style.display="none";
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                });
+            }
+        }
+        /*]]*/
+    </script>
 </div>
