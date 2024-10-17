@@ -685,3 +685,15 @@ create table action_superviseurs(
 );
 
 alter table action_superviseurs add montant price not null;
+
+alter table commandes add montant_offert price default 0;
+alter table commandes add montant_annulee price default 0;
+
+alter table commande_filles add quantite_restante quantity;
+
+delete from paiements;
+delete from action_superviseurs;
+delete from accompagnement_commandes;
+delete from commande_filles_terminees;
+delete from commande_filles;
+delete from commandes;

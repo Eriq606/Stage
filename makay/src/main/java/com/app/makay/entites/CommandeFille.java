@@ -34,7 +34,15 @@ public class CommandeFille {
     @Column("etat")
     private Integer etat;
     private Accompagnement[] accompagnements;
+    @Column("quantite_restante")
+    private Double quantiteRestante;
     
+    public Double getQuantiteRestante() {
+        return quantiteRestante;
+    }
+    public void setQuantiteRestante(Double quantiteRestante) {
+        this.quantiteRestante = quantiteRestante;
+    }
     public Integer getId() {
         return id;
     }

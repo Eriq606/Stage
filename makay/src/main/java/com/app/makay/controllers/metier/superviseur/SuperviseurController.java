@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.app.makay.entites.ActionSuperviseur;
 import com.app.makay.entites.Commande;
-import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
@@ -319,6 +319,8 @@ public class SuperviseurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
+            modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
+            connect.commit();
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
@@ -346,6 +348,8 @@ public class SuperviseurController {
             commande[0].recupererCommandeFilles(connect, dao);
             commande[0].recupereUtilisateur(connect, dao);
             model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
+            ActionSuperviseur[] actions=commande[0].recupererActionsSuperviseurs(connect, dao);
+            model.addAttribute(Constantes.VAR_ACTION_SUPERVISEUR, actions);
         }
         model.addAttribute(Constantes.VAR_COMMANDEFILLE_OFFERT, Constantes.COMMANDEFILLE_OFFERT);
         model.addAttribute(Constantes.VAR_COMMANDEFILLE_ANNULEE, Constantes.COMMANDEFILLE_ANNULEE);

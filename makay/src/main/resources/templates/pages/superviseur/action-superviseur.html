@@ -8,6 +8,8 @@
                    <li style="font-weight: bold;" th:text="${commande.recupererPlaceLabel()}"></li> 
                    <li style="font-weight: bold;" th:text="'Serveur : '+${commande.utilisateur.nom}"></li>
                    <li style="font-weight: bold;" th:text="${commande.recupererHeure()}"></li>
+                   <li style="font-weight: bold;" th:text="'Montant : '+${commande.recupererMontantString()}"></li>
+                   <li style="font-weight: bold;" th:text="'Reste à payer : '+${commande.recupererResteAPayerString()}"></li>
                 </ul>
                 <div class="table-responsive">
                     <table class="table">
@@ -51,6 +53,12 @@
                             <th>Commande</th>
                             <th>Montant</th>
                             <th>Action</th>
+                        </tr>
+                        <tr th:each="a:${actions}">
+                            <td th:text="${a.quantite}"></td>
+                            <td th:text="${a.recupererCommandeLabel()}"></td>
+                            <td th:text="${a.recupererMontantString()}"></td>
+                            <td th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></td>
                         </tr>
                     </table>
                 </div>
@@ -105,6 +113,7 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    location.reload();
                 });
             }
         }

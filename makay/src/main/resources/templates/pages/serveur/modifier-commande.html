@@ -126,6 +126,8 @@
                             const colonneNom=document.createElement("th");
                             colonneNom.setAttribute("scope", "row");
                             colonneNom.textContent=product.nom;
+                            const colonneStock=document.createElement("td");
+                            colonneStock.textContent=product.dernierStock;
                             const bouton=document.createElement("td");
                             bouton.innerHTML="<button class=\"btn btn-primary w-100\" data-bs-toggle=\"modal\" data-bs-target=\"#productModal"+product.id+"\"><i class=\"fa fa-plus\"></i></button>";
 
@@ -315,8 +317,13 @@
                                 submitCommandes.value=toSubmit;
                                 // orderList.innerHTML="";
                                 // add row to order list
+                                const olderOrders=document.getElementsByClassName("new-order");
+                                for(const o of olderOrders){
+                                    orderList.removeChild(o);
+                                }
                                 const orderRow=document.createElement("tr");
                                 orderRow.setAttribute("id", "orderCmd"+product.id);
+                                orderRow.className="new-order";
                                 const orderQte=document.createElement("th");
                                 orderQte.setAttribute("scope", "row");
                                 orderQte.textContent=commandes[commandes.length-1].quantite;
@@ -397,6 +404,7 @@
                             modal.appendChild(modalDialog);
 
                             row.appendChild(colonneNom);
+                            row.appendChild(colonneStock);
                             row.appendChild(bouton);
                             row.appendChild(modal);
                             table.appendChild(row);

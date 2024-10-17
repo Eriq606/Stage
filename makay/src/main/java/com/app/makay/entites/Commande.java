@@ -39,6 +39,26 @@ public class Commande {
     @Column("reste_a_payer")
     private Double resteAPayer;
     private Paiement[] paiements;
+    @Column("montant_offert")
+    private Double montantOffert;
+    @Column("montant_annulee")
+    private Double montantAnnulee;
+    public Double getMontantAnnulee() {
+        return montantAnnulee;
+    }
+
+    public void setMontantAnnulee(Double montantAnnulee) {
+        this.montantAnnulee = montantAnnulee;
+    }
+
+    public Double getMontantOffert() {
+        return montantOffert;
+    }
+
+    public void setMontantOffert(Double montantOffert) {
+        this.montantOffert = montantOffert;
+    }
+
     public Paiement[] getPaiements() {
         return paiements;
     }
@@ -212,5 +232,14 @@ public class Commande {
         utilisateur.setMotdepasse("null");
         setUtilisateur(utilisateur);
         return utilisateur;
+    }
+    public ActionSuperviseur[] recupererActionsSuperviseurs(Connection connect, MyDAO dao) throws Exception{
+        String addon="where idcommandefille in (select id from commande_filles where idcommande=%s) and etat=0";
+        addon=String.format(addon, getId());
+        ActionSuperviseur[] actions=dao.select(connect, ActionSuperviseur.class, addon);
+        for(ActionSuperviseur a:actions){
+            a.getCommandeFille().recupererAccompagnements(connect, dao);
+        }
+        return actions;
     }
 }

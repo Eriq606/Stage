@@ -2,6 +2,9 @@ package com.app.makay.entites;
 
 import java.time.LocalDateTime;
 
+import com.app.makay.utilitaire.Constantes;
+
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -23,6 +26,14 @@ public class ActionSuperviseur {
     private Integer action;
     @Column("etat")
     private Integer etat;
+    @Column("montant")
+    private Double montant;
+    public Double getMontant() {
+        return montant;
+    }
+    public void setMontant(Double montant) {
+        this.montant = montant;
+    }
     public Integer getId() {
         return id;
     }
@@ -59,5 +70,45 @@ public class ActionSuperviseur {
     public void setEtat(Integer etat) {
         this.etat = etat;
     }
-    
+    public String recupererDateHeureString(){
+        String date=getDateheure().toLocalDate().toString();
+        int heure=getDateheure().toLocalTime().getHour();
+        int minute=getDateheure().toLocalTime().getMinute();
+        int secondes=getDateheure().toLocalTime().getSecond();
+        return date+" "+heure+":"+minute+":"+secondes;
+    }
+    public String recupererCommandeLabel(){
+        if(getCommandeFille().getAccompagnements().length==0){
+            return getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes();
+        }
+        String accompagnements="(";
+        for(Accompagnement a:getCommandeFille().getAccompagnements()){
+            accompagnements+=a.getNom()+",";
+        }
+        accompagnements=accompagnements.substring(0, accompagnements.length()-1)+")";
+        return getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes()+accompagnements;
+    }
+    public String recupererMontantString(){
+        double montant=getQuantite()*getCommandeFille().getPu();
+        String montantString=HandyManUtils.number_format(montant, ' ', ',', 2)+" Ar";
+        return montantString;
+    }
+    public String recupererActionString(){
+        switch(getAction()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return Constantes.COMMANDEFILLE_OFFERT_LABEL;
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return Constantes.COMMANDEFILLE_ANNULEE_LABEL;
+        }
+        return null;
+    }
+    public String recupererCouleurString(){
+        switch(getAction()){
+            case Constantes.COMMANDEFILLE_OFFERT:
+                return Constantes.COULEUR_SUCCES;
+            case Constantes.COMMANDEFILLE_ANNULEE:
+                return Constantes.COULEUR_CANCELED;
+        }
+        return null;
+    }
 }

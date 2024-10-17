@@ -3,7 +3,6 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -346,6 +345,7 @@ public class Utilisateur extends IrisUser{
             AccompagnementCommande accompCommande;
             for(int i=0;i<commandeFilles.length;i++){
                 commandeFilles[i].setCommande(commande);
+                commandeFilles[i].setQuantiteRestante(commandeFilles[i].getQuantite());
                 idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
                 commandeFilles[i].setId(idcommandeFille);
                 for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
@@ -414,6 +414,7 @@ public class Utilisateur extends IrisUser{
             AccompagnementCommande accompCommande;
             for(int i=0;i<commandeFilles.length;i++){
                 commandeFilles[i].setCommande(where);
+                commandeFilles[i].setQuantiteRestante(commandeFilles[i].getQuantite());
                 idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
                 commandeFilles[i].setId(idcommandeFille);
                 for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
@@ -883,18 +884,44 @@ public class Utilisateur extends IrisUser{
         try{
             CommandeFille where=new CommandeFille();
             where.setId(actionSuperviseur.getCommandeFille().getId());
-            where.setId(Constantes.COMMANDEFILLE_CREEE);
+            where.setEtat(Constantes.COMMANDEFILLE_CREEE);
             CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
-            if(actionSuperviseur.getQuantite()>commandeFille.getQuantite()){
+            if(actionSuperviseur.getQuantite()>commandeFille.getQuantiteRestante()){
                 throw new Exception(Constantes.MSG_QUANTITE_INVALIDE);
             }
             double montantAction=actionSuperviseur.getQuantite()*commandeFille.getPu();
             if(montantAction>commandeFille.getCommande().getResteAPayer()){
                 throw new Exception(Constantes.MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE);
             }
+            actionSuperviseur.setMontant(montantAction);
+            ModePaiement vat=new ModePaiement();
+            vat.setId(Constantes.IDMODEPAIEMENT_VAT);
+            Paiement paiementVAT=new Paiement();
+            paiementVAT.setCommande(commandeFille.getCommande());
+            paiementVAT.setModePaiement(vat);
+            paiementVAT.setUtilisateur(this);
+            paiementVAT.setMontant(montantAction);
+            Commande whereCommande=new Commande();
+            whereCommande.setId(commandeFille.getCommande().getId());
+            Commande changeCommande=new Commande();
+            changeCommande.setResteAPayer(commandeFille.getCommande().getResteAPayer()-montantAction);
+            switch(actionSuperviseur.getAction()){
+                case Constantes.COMMANDEFILLE_OFFERT:
+                    changeCommande.setMontantOffert(commandeFille.getCommande().getMontantOffert()+montantAction);
+                    dao.insertWithoutPrimaryKey(connect, paiementVAT);
+                    break;
+                case Constantes.COMMANDEFILLE_ANNULEE:
+                    changeCommande.setMontantAnnulee(commandeFille.getCommande().getMontantAnnulee()+montantAction);
+                    break;
+            }
+            CommandeFille changeCommandeFille=new CommandeFille();
+            changeCommandeFille.setQuantiteRestante(commandeFille.getQuantite()-actionSuperviseur.getQuantite());
             dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
+            dao.update(connect, changeCommandeFille, where);
+            dao.update(connect, changeCommande, whereCommande);
         }catch(Exception e){
             connect.rollback();
+            e.printStackTrace();
             throw e;
         }
     }
