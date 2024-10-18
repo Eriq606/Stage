@@ -40,6 +40,15 @@ public class CommandeEnCours{
     @Column("reste_a_payer")
     private Double resteAPayer;
     private Paiement[] paiements;
+    private ActionSuperviseur[] actions;
+    public ActionSuperviseur[] getActions() {
+        return actions;
+    }
+
+    public void setActions(ActionSuperviseur[] actions) {
+        this.actions = actions;
+    }
+
     public Paiement[] getPaiements() {
         return paiements;
     }
@@ -275,5 +284,15 @@ public class CommandeEnCours{
             return "#9cff9c";
         }
         return "";
+    }
+    public ActionSuperviseur[] recupererActionsSuperviseurs(Connection connect, MyDAO dao) throws Exception{
+        String addon="where idcommandefille in (select id from commande_filles where idcommande=%s) and etat=0";
+        addon=String.format(addon, getId());
+        ActionSuperviseur[] actions=dao.select(connect, ActionSuperviseur.class, addon);
+        for(ActionSuperviseur a:actions){
+            a.getCommandeFille().recupererAccompagnements(connect, dao);
+        }
+        setActions(actions);
+        return actions;
     }
 }

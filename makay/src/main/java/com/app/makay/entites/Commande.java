@@ -43,6 +43,15 @@ public class Commande {
     private Double montantOffert;
     @Column("montant_annulee")
     private Double montantAnnulee;
+    private ActionSuperviseur[] actions;
+    public ActionSuperviseur[] getActions() {
+        return actions;
+    }
+
+    public void setActions(ActionSuperviseur[] actions) {
+        this.actions = actions;
+    }
+
     public Double getMontantAnnulee() {
         return montantAnnulee;
     }
@@ -240,6 +249,7 @@ public class Commande {
         for(ActionSuperviseur a:actions){
             a.getCommandeFille().recupererAccompagnements(connect, dao);
         }
+        setActions(actions);
         return actions;
     }
 }

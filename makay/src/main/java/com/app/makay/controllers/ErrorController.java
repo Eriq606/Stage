@@ -19,14 +19,14 @@ public class ErrorController {
         filter=new MyFilter();
     }
 
-    @GetMapping("/error")
-    public Object errorerror(HttpServletRequest req, Model model, String code){
+    @GetMapping("/erreur")
+    public Object errorerror(HttpServletRequest req, Model model, Integer code){
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkIfLoggedIn(utilisateur, "Makay - "+Constantes.ERREURS.get(code), "errors/error", "layout/layout", model);
+        Object iris=filter.checkIfLoggedIn(utilisateur, "Makay - "+Constantes.ERREURS.get(code.toString()), "errors/erreur", "layout/layout", model);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_CODE_ERREUR, code);
-        model.addAttribute(Constantes.VAR_MSG_ERREUR, Constantes.ERREURS.get(code));
+        model.addAttribute(Constantes.VAR_MSG_ERREUR, Constantes.ERREURS.get(code.toString()));
         return iris;
     }
 }

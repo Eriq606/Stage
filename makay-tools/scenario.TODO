@@ -1,0 +1,32 @@
+Superviseur:
+    ☐ plan de table
+    ☐ roles
+        ☐ superviseur obligatoire
+    ☐ dispatch du staff aux tables
+    ☐ vérification du stock
+
+Serveur:
+    ☐ passer une commande
+        ☐ stock doit être suffisant
+        ☐ commande ne doit pas être vide
+    ☐ modifier commande
+        ☐ commandes ajoutées ne doivent pas être vide
+        ☐ stock doit être suffisant
+    ☐ demander l'addition
+        ☐ les commandes filles doivent toutes êtres terminées
+
+Barman/Cuisinier:
+    ☐ checker les commandes terminées
+        ☐ ils n'ont accès qu'à leurs produits respectifs
+
+Serveur:
+    ☐ demande d'addition
+
+Caissier:
+    ☐ payer une commande
+        ☐ le montant ne doit pas dépasser le reste à payer
+        ☐ le mode de paiement n'inclut pas le VAT
+
+Autres:
+    ☐ historique de commande
+        ☐ le formulaire de recherche préserve les options sélectionnées antérieurement

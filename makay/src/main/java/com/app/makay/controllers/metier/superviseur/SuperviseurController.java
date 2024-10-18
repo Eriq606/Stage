@@ -342,7 +342,7 @@ public class SuperviseurController {
             where.setEtat(Constantes.COMMANDE_ADDITION);
             Commande[] commande=dao.select(connect, Commande.class, where);
             if(commande.length!=1){
-                iris=new RedirectView("/error?code=423");
+                iris=new RedirectView("/erreur?code=423");
                 return iris;
             }
             commande[0].recupererCommandeFilles(connect, dao);

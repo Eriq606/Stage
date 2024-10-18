@@ -479,6 +479,7 @@ public class Utilisateur extends IrisUser{
         for(int i=0;i<commandes.length;i++){
             commandes[i].recupererPaiements(connect, dao);
             commandes[i].recupererCommandeFilles(connect, dao);
+            commandes[i].recupererActionsSuperviseurs(connect, dao);
         }
         return commandes;
     }

@@ -35,10 +35,19 @@
                                                                 <button class="nav-link" th:id="'nav-paiements-tab'+${c.id}" data-bs-toggle="tab"
                                                                     th:data-bs-target="'#nav-paiements'+${c.id}" type="button" role="tab"
                                                                     th:aria-controls="'nav-paiements'+${c.id}" aria-selected="false">Paiements</button>
+                                                                <button class="nav-link" th:id="'nav-actions-tab'+${c.id}" data-bs-toggle="tab"
+                                                                    th:data-bs-target="'#nav-actions'+${c.id}" type="button" role="tab"
+                                                                    th:aria-controls="'nav-actions'+${c.id}" aria-selected="false">Actions</button>
                                                             </div>
                                                         </nav>
                                                         <div class="tab-content pt-3" id="nav-tabContent">
                                                             <div class="tab-pane fade show active" th:id="'nav-commandes'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-commandes-tab'+${c.id}">
+                                                                <div class="d-flex justify-content-between border-bottom border-primary pb-4" style="font-weight: bold;">
+                                                                    <span>Montant</span>
+                                                                    <span>Commande</span>
+                                                                    <span>Prix unitaire</span>
+                                                                </div>
+                                                                <br>
                                                                 <div th:each="cf:${c.commandeFilles}">
                                                                     <p class="d-flex justify-content-between">
                                                                         <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
@@ -58,13 +67,20 @@
                                                             </div>
                                                             <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
                                                                 <p>Paiements:</p>
-                                                                <div th:each="cp:${c.paiements}">
-                                                                    <p>
-                                                                        <span th:text="${cp.recupererHeure()}+' : '"></span>
-                                                                        <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
-                                                                        <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
-                                                                    </p>
-                                                                </div>
+                                                                <p th:each="cp:${c.paiements}">
+                                                                    <span th:text="${cp.recupererHeure()}+' : '"></span>
+                                                                    <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
+                                                                    <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
+                                                                </p>
+                                                            </div>
+                                                            <div class="tab-pane fade" th:id="'nav-actions'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-actions-tab'+${c.id}">
+                                                                <p>Actions de superviseurs:</p>
+                                                                <p th:each="a:${c.actions}">
+                                                                    <span th:text="${a.quantite}"></span>
+                                                                    <span th:text="${a.recupererCommandeLabel()}"></span>
+                                                                    <span th:text="${a.recupererMontantString()}"></span>
+                                                                    <span th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -75,7 +91,7 @@
                                             </div>
                                         </div>
                                         <td th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
-                                        <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i>Intéragir</button></a></td>
+                                        <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i><span th:text="' '"></span>Intéragir</button></a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -95,224 +111,396 @@
         window.onbeforeunload=()=>{
             stompclient.deactivate();
         }
-        function createCommandeFilleRow(commande, cf, commandesTabPane){
-            const p = document.createElement("p");
-            p.className = "d-flex justify-content-between";
+        function numberFormat(number){
+            return new Intl.NumberFormat("de-DE").format(number).replace(".", " ")+" Ar";
+        }
+        function createCommandeFille(cf){
+            const montantString=numberFormat(cf.montant);
+            // Create a container div for each commandeFille
+            const cfDiv = document.createElement("div");
 
-            const spanLeft = document.createElement("span");
-            const boldText = document.createElement("span");
-            boldText.style.fontWeight = "bold";
-            boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
-            spanLeft.appendChild(boldText);
+            // Create first paragraph with the montant, quantity, and product name
+            const p1 = document.createElement("p");
+            p1.className = "d-flex justify-content-between";
 
-            const productInfo = document.createElement("span");
-            productInfo.textContent = cf.quantite + " " + cf.produit.nom;
-            spanLeft.appendChild(productInfo);
+            const spanMontant = document.createElement("span");
+            spanMontant.style.fontWeight = "bold";
+            spanMontant.textContent = `${montantString} :`;
 
-            p.appendChild(spanLeft);
+            const spanQuantite = document.createElement("span");
+            spanQuantite.textContent = `${cf.quantite} ${cf.produit.nom}`;
 
-            const spanRight = document.createElement("span");
-            spanRight.id="boutons-actions-commandefille"+cf.id;
+            const spanPU = document.createElement("span");
+            spanPU.textContent = `(${numberFormat(cf.pu)})`;
 
-            const loading=document.createElement("img");
-            loading.id="loading"+cf.id;
-            loading.src="img/loading.gif";
-            loading.width="50";
-            loading.alt="loading";
-            loading.style.display="none";
+            p1.appendChild(spanMontant);
+            p1.appendChild(spanQuantite);
+            p1.appendChild(spanPU);
 
-            const offertButton = document.createElement("button");
-            offertButton.className = "btn btn-success action-superviseur";
-            offertButton.textContent = "Offert";
-            offertButton.dataset.idcommandefille = cf.id;
-            offertButton.dataset.action = /*[[${offert}]]*/0;
-            offertButton.dataset.idcommande = commande.id;
-            offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
+            cfDiv.appendChild(p1);
 
-            const annulerButton = document.createElement("button");
-            annulerButton.className = "btn btn-danger action-superviseur";
-            annulerButton.textContent = "Annuler";
-            annulerButton.dataset.idcommandefille = cf.id;
-            annulerButton.dataset.action = /*[[${annulee}]]*/0;
-            annulerButton.dataset.idcommande = commande.id;
-            annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
+            // Create second paragraph for notes
+            if (cf.notes) {
+                const p2 = document.createElement("p");
+                p2.style.fontStyle = "italic";
+                p2.style.fontWeight = "lighter";
+                p2.style.fontSize = "small";
+                p2.textContent = cf.notes;
+                cfDiv.appendChild(p2);
+            }
 
-
-            spanRight.appendChild(offertButton);
-            spanRight.appendChild(annulerButton);
-            spanRight.appendChild(loading);
-
-            p.appendChild(spanRight);
-            commandesTabPane.appendChild(p);
-
-            const notesP = document.createElement("p");
-            notesP.style.fontStyle = "italic";
-            notesP.style.fontWeight = "lighter";
-            notesP.style.fontSize = "small";
-            notesP.textContent = cf.notes;
-            commandesTabPane.appendChild(notesP);
-
+            // Create third paragraph with a list of accompagnements
+            const p3 = document.createElement("p");
             const ul = document.createElement("ul");
+
             cf.accompagnements.forEach(cfa => {
                 const li = document.createElement("li");
                 li.textContent = cfa.nom;
                 ul.appendChild(li);
             });
-            commandesTabPane.appendChild(ul);
+
+            p3.appendChild(ul);
+            cfDiv.appendChild(p3);
+
+            return cfDiv;
         }
+        function createPaiement(cp){
+            // Create a paragraph for each paiement
+            const p = document.createElement("p");
 
-        function createCommandeRow(commande) {
-            // Create table row
-            const tr = document.createElement("tr");
+            // Create a span for the payment time (recupererHeure)
+            const spanHeure = document.createElement("span");
+            spanHeure.textContent = `${cp.dateheure.replace("T", " ")} : `;
 
-            // Create the first table cell with the link
-            const tdLink = document.createElement("td");
-            const link = document.createElement("a");
-            link.textContent = "Place : "+commande.place.nom;
-            link.href = "#";
-            link.dataset.bsToggle = "modal";
-            link.dataset.bsTarget = `#detailCommandeModal${commande.id}`;
-            tdLink.appendChild(link);
-            tr.appendChild(tdLink);
+            // Create a span for the payment amount (recupererMontantString)
+            const spanMontant = document.createElement("span");
+            spanMontant.style.fontWeight = "bold";
+            spanMontant.textContent = numberFormat(cp.montant);
 
-            // Create the second table cell with the hour
-            const tdHeure = document.createElement("td");
-            tdHeure.textContent = new Date(commande.ouverture).getHours()+":"+new Date(commande.ouverture).getMinutes()+":"+new Date(commande.ouverture).getSeconds();
-            tr.appendChild(tdHeure);
+            // Create a span for the payment method (modePaiement.nom)
+            const spanModePaiement = document.createElement("span");
+            spanModePaiement.textContent = ` (${cp.modePaiement.nom})`;
 
-            // Create the modal structure
-            const modalDiv = document.createElement("div");
-            modalDiv.className = "modal fade";
-            modalDiv.id = `detailCommandeModal${commande.id}`;
-            modalDiv.tabIndex = "-2";
-            modalDiv.setAttribute("aria-labelledby", `detailCommandeModalLabel${commande.id}`);
-            modalDiv.setAttribute("aria-hidden", "true");
+            // Append the spans to the paragraph
+            p.appendChild(spanHeure);
+            p.appendChild(spanMontant);
+            p.appendChild(spanModePaiement);
 
-            const modalDialog = document.createElement("div");
-            modalDialog.className = "modal-dialog modal-dialog-centered";
-            modalDiv.appendChild(modalDialog);
-
-            const modalContent = document.createElement("div");
-            modalContent.className = "modal-content";
-            modalDialog.appendChild(modalContent);
-
-            const modalHeader = document.createElement("div");
-            modalHeader.className = "modal-header";
-            modalContent.appendChild(modalHeader);
-
-            const modalTitle = document.createElement("h1");
-            modalTitle.className = "modal-title fs-5";
-            modalTitle.id = `detailCommandeModalLabel${commande.id}`;
-            modalTitle.textContent = "Place : "+commande.place.nom;
-            modalHeader.appendChild(modalTitle);
-
-            const closeButton = document.createElement("button");
-            closeButton.type = "button";
-            closeButton.className = "btn-close";
-            closeButton.dataset.bsDismiss = "modal";
-            closeButton.setAttribute("aria-label", "Close");
-            modalHeader.appendChild(closeButton);
-
-            const modalBody = document.createElement("div");
-            modalBody.className = "modal-body table-responsive";
-            modalBody.id = `detailCommandeServeur${commande.id}Commande${commande.id}`;
-            modalContent.appendChild(modalBody);
-
-            // Tab structure
-            const nav = document.createElement("nav");
-            modalBody.appendChild(nav);
-
-            const navTabs = document.createElement("div");
-            navTabs.className = "nav nav-tabs";
-            navTabs.id = "nav-tab";
-            navTabs.setAttribute("role", "tablist");
-            nav.appendChild(navTabs);
-
-            // Commandes tab
-            const commandesTab = document.createElement("button");
-            commandesTab.className = "nav-link active";
-            commandesTab.id = `nav-commandes-tab${commande.id}`;
-            commandesTab.dataset.bsToggle = "tab";
-            commandesTab.dataset.bsTarget = `#nav-commandes${commande.id}`;
-            commandesTab.type = "button";
-            commandesTab.setAttribute("role", "tab");
-            commandesTab.setAttribute("aria-controls", `nav-commandes${commande.id}`);
-            commandesTab.ariaSelected = "true";
-            commandesTab.textContent = "Commandes";
-            navTabs.appendChild(commandesTab);
-
-            // Paiements tab
-            const paiementsTab = document.createElement("button");
-            paiementsTab.className = "nav-link";
-            paiementsTab.id = `nav-paiements-tab${commande.id}`;
-            paiementsTab.dataset.bsToggle = "tab";
-            paiementsTab.dataset.bsTarget = `#nav-paiements${commande.id}`;
-            paiementsTab.type = "button";
-            paiementsTab.setAttribute("role", "tab");
-            paiementsTab.setAttribute("aria-controls", `nav-paiements${commande.id}`);
-            paiementsTab.ariaSelected = "false";
-            paiementsTab.textContent = "Paiements";
-            navTabs.appendChild(paiementsTab);
-
-            const tabContent = document.createElement("div");
-            tabContent.className = "tab-content pt-3";
-            tabContent.id = "nav-tabContent";
-            modalBody.appendChild(tabContent);
-
-            // Commandes tab-pane
-            const commandesTabPane = document.createElement("div");
-            commandesTabPane.className = "tab-pane fade show active";
-            commandesTabPane.id = `nav-commandes${commande.id}`;
-            commandesTabPane.setAttribute("role", "tabpanel");
-            commandesTabPane.setAttribute("aria-labelledby", `nav-commandes-tab${commande.id}`);
-            tabContent.appendChild(commandesTabPane);
-
-            // Loop through commandeFilles to generate each entry in Commandes tab
-            commande.commandeFilles.forEach(cf => {
-                createCommandeFilleRow(commande, cf, commandesTabPane);
-            });
-
-            const hr = document.createElement("hr");
-            commandesTabPane.appendChild(hr);
-
-            const totalP = document.createElement("p");
-            const montantString=new Intl.NumberFormat("de-DE").format(commande.montant).replace(".", " ")+" Ar";
-            totalP.innerHTML = `<span>Montant total : </span>
-                                <span class="montant-total-commande${commande.id}" style="font-weight: bold;">${montantString}</span>`;
-            commandesTabPane.appendChild(totalP);
-
-            // Paiements tab-pane
-            const paiementsTabPane = document.createElement("div");
-            paiementsTabPane.className = "tab-pane fade";
-            paiementsTabPane.id = `nav-paiements${commande.id}`;
-            paiementsTabPane.setAttribute("role", "tabpanel");
-            paiementsTabPane.setAttribute("aria-labelledby", `nav-paiements-tab${commande.id}`);
-            tabContent.appendChild(paiementsTabPane);
-
-            paiementsTabPane.innerHTML = `<p>Paiements:</p>`;
-
-            // Add modal footer
-            const modalFooter = document.createElement("div");
-            modalFooter.className = "modal-footer";
-            const retourButton = document.createElement("button");
-            retourButton.className = "btn btn-secondary";
-            retourButton.dataset.bsDismiss = "modal";
-            retourButton.textContent = "Retour";
-            modalFooter.appendChild(retourButton);
-            modalContent.appendChild(modalFooter);
-
-            // Add modal to the table row
-            tr.appendChild(modalDiv);
-
-            // Final cell for montant-total
-            const tdMontantTotal = document.createElement("td");
-            tdMontantTotal.className = `montant-total-commande${commande.id}`;
-            tdMontantTotal.style.fontWeight = "bold";
-            tdMontantTotal.textContent = montantString;
-            tr.appendChild(tdMontantTotal);
-
-            return tr;
+            return p;
         }
+        function createAction(a){
+            // Create a paragraph for each action
+            const p = document.createElement("p");
+
+            // Create a span for the quantity (quantite)
+            const spanQuantite = document.createElement("span");
+            spanQuantite.textContent = a.quantite;
+
+            // Create a span for the commande label (recupererCommandeLabel)
+            const spanCommandeLabel = document.createElement("span");
+            spanCommandeLabel.textContent = `${a.produit.nom} (${a.produit.notes})`;
+
+            // Create a span for the montant (recupererMontantString)
+            const spanMontant = document.createElement("span");
+            spanMontant.textContent = numberFormat(a.montant);
+
+            // Create a span for the action (recupererActionString) with dynamic background color
+            const spanAction = document.createElement("span");
+            spanAction.textContent = a.action;
+            spanAction.style.backgroundColor = a.action==10?"#70ff9b":"#ff7171";
+
+            // Append all spans to the paragraph
+            p.appendChild(spanQuantite);
+            p.appendChild(spanCommandeLabel);
+            p.appendChild(spanMontant);
+            p.appendChild(spanAction);
+
+            return p;
+        }
+        function createCommande(c, s){
+            let commandesFilles=``;
+            for(const cf of c.commandeFilles){
+                commandesFilles+=createCommandeFille(cf).outerHTML;
+            }
+            const montantString=new Intl.NumberFormat("de-DE").format(c.montant).replace(".", " ")+" Ar";
+            const commandeHTML=`
+                <tr>
+                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#detailCommandeModal${c.id}">Table : ${c.place.nom}</a></td>
+                    <td>${c.ouverture.replace("T", " ")}</td>
+                    <div class="modal fade" id="detailCommandeModal${c.id}" tabindex="-2" aria-labelledby="detailCommandeModalLabel${c.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="detailCommandeModalLabel${c.id}">Table : ${c.place.nom}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body table-responsive" id="detailCommandeServeur${s.id}+'Commande${c.id}">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-commandes-tab${c.id}" data-bs-toggle="tab"
+                                                data-bs-target="#nav-commandes${c.id}" type="button" role="tab" aria-controls="nav-commandes${c.id}"
+                                                aria-selected="true">Commandes</button>
+                                            <button class="nav-link" id="nav-paiements-tab${c.id}" data-bs-toggle="tab"
+                                                data-bs-target="#nav-paiements${c.id}" type="button" role="tab"
+                                                aria-controls="nav-paiements${c.id}" aria-selected="false">Paiements</button>
+                                            <button class="nav-link" id="nav-actions-tab${c.id}" data-bs-toggle="tab"
+                                                data-bs-target="#nav-actions${c.id}" type="button" role="tab"
+                                                aria-controls="nav-actions${c.id}" aria-selected="false">Actions</button>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content pt-3" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-commandes${c.id}" role="tabpanel" aria-labelledby="nav-commandes-tab${c.id}">
+                                            <div class="d-flex justify-content-between border-bottom border-primary pb-4" style="font-weight: bold;">
+                                                <span>Montant</span>
+                                                <span>Commande</span>
+                                                <span>Prix unitaire</span>
+                                            </div>
+                                            <br>
+                                            `+commandesFilles+`
+                                            <hr>
+                                            <p>
+                                                <span>Montant total : </span>
+                                                <span class="montant-total-commande${c.id}" style="font-weight: bold;">${montantString}</span>
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-paiements${c.id}" role="tabpanel" aria-labelledby="nav-paiements-tab${c.id}">
+                                            <p>Paiements:</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-actions${c.id}" role="tabpanel" aria-labelledby="nav-actions-tab${c.id}">
+                                            <p>Actions de superviseurs:</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <td class="montant-total-commande${c.id}" style="font-weight: bold;">${montantString}</td>
+                    <td><a href="/action-superviseur?idcommande=${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i>Intéragir</button></a></td>
+                </tr>
+            `;
+            return commandeHTML;
+        }
+        // function createCommandeFilleRow(commande, cf, commandesTabPane){
+        //     const p = document.createElement("p");
+        //     p.className = "d-flex justify-content-between";
+
+        //     const spanLeft = document.createElement("span");
+        //     const boldText = document.createElement("span");
+        //     boldText.style.fontWeight = "bold";
+        //     boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
+        //     spanLeft.appendChild(boldText);
+
+        //     const productInfo = document.createElement("span");
+        //     productInfo.textContent = cf.quantite + " " + cf.produit.nom;
+        //     spanLeft.appendChild(productInfo);
+
+        //     p.appendChild(spanLeft);
+
+        //     const spanRight = document.createElement("span");
+        //     spanRight.id="boutons-actions-commandefille"+cf.id;
+
+        //     const loading=document.createElement("img");
+        //     loading.id="loading"+cf.id;
+        //     loading.src="img/loading.gif";
+        //     loading.width="50";
+        //     loading.alt="loading";
+        //     loading.style.display="none";
+
+        //     const offertButton = document.createElement("button");
+        //     offertButton.className = "btn btn-success action-superviseur";
+        //     offertButton.textContent = "Offert";
+        //     offertButton.dataset.idcommandefille = cf.id;
+        //     offertButton.dataset.action = /*[[${offert}]]*/0;
+        //     offertButton.dataset.idcommande = commande.id;
+        //     offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
+
+        //     const annulerButton = document.createElement("button");
+        //     annulerButton.className = "btn btn-danger action-superviseur";
+        //     annulerButton.textContent = "Annuler";
+        //     annulerButton.dataset.idcommandefille = cf.id;
+        //     annulerButton.dataset.action = /*[[${annulee}]]*/0;
+        //     annulerButton.dataset.idcommande = commande.id;
+        //     annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
+
+
+        //     spanRight.appendChild(offertButton);
+        //     spanRight.appendChild(annulerButton);
+        //     spanRight.appendChild(loading);
+
+        //     p.appendChild(spanRight);
+        //     commandesTabPane.appendChild(p);
+
+        //     const notesP = document.createElement("p");
+        //     notesP.style.fontStyle = "italic";
+        //     notesP.style.fontWeight = "lighter";
+        //     notesP.style.fontSize = "small";
+        //     notesP.textContent = cf.notes;
+        //     commandesTabPane.appendChild(notesP);
+
+        //     const ul = document.createElement("ul");
+        //     cf.accompagnements.forEach(cfa => {
+        //         const li = document.createElement("li");
+        //         li.textContent = cfa.nom;
+        //         ul.appendChild(li);
+        //     });
+        //     commandesTabPane.appendChild(ul);
+        // }
+
+        // function createCommandeRow(commande) {
+        //     // Create table row
+        //     const tr = document.createElement("tr");
+
+        //     // Create the first table cell with the link
+        //     const tdLink = document.createElement("td");
+        //     const link = document.createElement("a");
+        //     link.textContent = "Place : "+commande.place.nom;
+        //     link.href = "#";
+        //     link.dataset.bsToggle = "modal";
+        //     link.dataset.bsTarget = `#detailCommandeModal${commande.id}`;
+        //     tdLink.appendChild(link);
+        //     tr.appendChild(tdLink);
+
+        //     // Create the second table cell with the hour
+        //     const tdHeure = document.createElement("td");
+        //     tdHeure.textContent = new Date(commande.ouverture).getHours()+":"+new Date(commande.ouverture).getMinutes()+":"+new Date(commande.ouverture).getSeconds();
+        //     tr.appendChild(tdHeure);
+
+        //     // Create the modal structure
+        //     const modalDiv = document.createElement("div");
+        //     modalDiv.className = "modal fade";
+        //     modalDiv.id = `detailCommandeModal${commande.id}`;
+        //     modalDiv.tabIndex = "-2";
+        //     modalDiv.setAttribute("aria-labelledby", `detailCommandeModalLabel${commande.id}`);
+        //     modalDiv.setAttribute("aria-hidden", "true");
+
+        //     const modalDialog = document.createElement("div");
+        //     modalDialog.className = "modal-dialog modal-dialog-centered";
+        //     modalDiv.appendChild(modalDialog);
+
+        //     const modalContent = document.createElement("div");
+        //     modalContent.className = "modal-content";
+        //     modalDialog.appendChild(modalContent);
+
+        //     const modalHeader = document.createElement("div");
+        //     modalHeader.className = "modal-header";
+        //     modalContent.appendChild(modalHeader);
+
+        //     const modalTitle = document.createElement("h1");
+        //     modalTitle.className = "modal-title fs-5";
+        //     modalTitle.id = `detailCommandeModalLabel${commande.id}`;
+        //     modalTitle.textContent = "Place : "+commande.place.nom;
+        //     modalHeader.appendChild(modalTitle);
+
+        //     const closeButton = document.createElement("button");
+        //     closeButton.type = "button";
+        //     closeButton.className = "btn-close";
+        //     closeButton.dataset.bsDismiss = "modal";
+        //     closeButton.setAttribute("aria-label", "Close");
+        //     modalHeader.appendChild(closeButton);
+
+        //     const modalBody = document.createElement("div");
+        //     modalBody.className = "modal-body table-responsive";
+        //     modalBody.id = `detailCommandeServeur${commande.id}Commande${commande.id}`;
+        //     modalContent.appendChild(modalBody);
+
+        //     // Tab structure
+        //     const nav = document.createElement("nav");
+        //     modalBody.appendChild(nav);
+
+        //     const navTabs = document.createElement("div");
+        //     navTabs.className = "nav nav-tabs";
+        //     navTabs.id = "nav-tab";
+        //     navTabs.setAttribute("role", "tablist");
+        //     nav.appendChild(navTabs);
+
+        //     // Commandes tab
+        //     const commandesTab = document.createElement("button");
+        //     commandesTab.className = "nav-link active";
+        //     commandesTab.id = `nav-commandes-tab${commande.id}`;
+        //     commandesTab.dataset.bsToggle = "tab";
+        //     commandesTab.dataset.bsTarget = `#nav-commandes${commande.id}`;
+        //     commandesTab.type = "button";
+        //     commandesTab.setAttribute("role", "tab");
+        //     commandesTab.setAttribute("aria-controls", `nav-commandes${commande.id}`);
+        //     commandesTab.ariaSelected = "true";
+        //     commandesTab.textContent = "Commandes";
+        //     navTabs.appendChild(commandesTab);
+
+        //     // Paiements tab
+        //     const paiementsTab = document.createElement("button");
+        //     paiementsTab.className = "nav-link";
+        //     paiementsTab.id = `nav-paiements-tab${commande.id}`;
+        //     paiementsTab.dataset.bsToggle = "tab";
+        //     paiementsTab.dataset.bsTarget = `#nav-paiements${commande.id}`;
+        //     paiementsTab.type = "button";
+        //     paiementsTab.setAttribute("role", "tab");
+        //     paiementsTab.setAttribute("aria-controls", `nav-paiements${commande.id}`);
+        //     paiementsTab.ariaSelected = "false";
+        //     paiementsTab.textContent = "Paiements";
+        //     navTabs.appendChild(paiementsTab);
+
+        //     const tabContent = document.createElement("div");
+        //     tabContent.className = "tab-content pt-3";
+        //     tabContent.id = "nav-tabContent";
+        //     modalBody.appendChild(tabContent);
+
+        //     // Commandes tab-pane
+        //     const commandesTabPane = document.createElement("div");
+        //     commandesTabPane.className = "tab-pane fade show active";
+        //     commandesTabPane.id = `nav-commandes${commande.id}`;
+        //     commandesTabPane.setAttribute("role", "tabpanel");
+        //     commandesTabPane.setAttribute("aria-labelledby", `nav-commandes-tab${commande.id}`);
+        //     tabContent.appendChild(commandesTabPane);
+
+        //     // Loop through commandeFilles to generate each entry in Commandes tab
+        //     commande.commandeFilles.forEach(cf => {
+        //         createCommandeFilleRow(commande, cf, commandesTabPane);
+        //     });
+
+        //     const hr = document.createElement("hr");
+        //     commandesTabPane.appendChild(hr);
+
+        //     const totalP = document.createElement("p");
+        //     const montantString=new Intl.NumberFormat("de-DE").format(commande.montant).replace(".", " ")+" Ar";
+        //     totalP.innerHTML = `<span>Montant total : </span>
+        //                         <span class="montant-total-commande${commande.id}" style="font-weight: bold;">${montantString}</span>`;
+        //     commandesTabPane.appendChild(totalP);
+
+        //     // Paiements tab-pane
+        //     const paiementsTabPane = document.createElement("div");
+        //     paiementsTabPane.className = "tab-pane fade";
+        //     paiementsTabPane.id = `nav-paiements${commande.id}`;
+        //     paiementsTabPane.setAttribute("role", "tabpanel");
+        //     paiementsTabPane.setAttribute("aria-labelledby", `nav-paiements-tab${commande.id}`);
+        //     tabContent.appendChild(paiementsTabPane);
+
+        //     paiementsTabPane.innerHTML = `<p>Paiements:</p>`;
+
+        //     // Add modal footer
+        //     const modalFooter = document.createElement("div");
+        //     modalFooter.className = "modal-footer";
+        //     const retourButton = document.createElement("button");
+        //     retourButton.className = "btn btn-secondary";
+        //     retourButton.dataset.bsDismiss = "modal";
+        //     retourButton.textContent = "Retour";
+        //     modalFooter.appendChild(retourButton);
+        //     modalContent.appendChild(modalFooter);
+
+        //     // Add modal to the table row
+        //     tr.appendChild(modalDiv);
+
+        //     // Final cell for montant-total
+        //     const tdMontantTotal = document.createElement("td");
+        //     tdMontantTotal.className = `montant-total-commande${commande.id}`;
+        //     tdMontantTotal.style.fontWeight = "bold";
+        //     tdMontantTotal.textContent = montantString;
+        //     tr.appendChild(tdMontantTotal);
+
+        //     return tr;
+        // }
 
         function modifierCommande(commandeFille, commande, utilisateur){
             // const modalBody=document.getElementById("detailCommandeServeur"+utilisateur.id+"Commande"+commande.id);
@@ -325,10 +513,11 @@
             stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoyee)=>{
                 const envoiCommande=JSON.parse(commandeEnvoyee.body);
                 let commande=envoiCommande.commande;
-                commande.commandeFilles=envoiCommande.commandeFilles;
-                const commandeRow=createCommandeRow(commande);
-                const commandes=document.getElementById("commandes-"+envoiCommande.utilisateur.id);
-                commandes.insertBefore(commandeRow, commandes.firstChild);
+                const commandeRow=createCommande(commande, commande.utilisateur);
+                const div=document.createElement("tr");
+                div.innerHTML=commandeRow;
+                const thbody=document.getElementById("commandes-"+commande.utilisateur.id);
+                thbody.appendChild(div);
             });
         }
         function receiveModificationCommande(){
