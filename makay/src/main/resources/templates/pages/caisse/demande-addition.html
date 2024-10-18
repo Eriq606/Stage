@@ -200,6 +200,7 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierSuperviseurPaiement(envoiPaiement);
                     const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
                     const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
                     resteAPayer-=Number(formData.get("montant"));
@@ -236,6 +237,12 @@
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
+        }
+        function notifierSuperviseurPaiement(envoiPaiement){
+            stompclient.publish({
+                destination:"/makay/payer-commande",
+                body:JSON.stringify(envoiPaiement)
+            });
         }
         /*]]*/
     </script>

@@ -15,7 +15,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.ActionSuperviseur;
 import com.app.makay.entites.Commande;
+import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
+import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
 import com.app.makay.entites.RangeePlace;
@@ -25,6 +27,7 @@ import com.app.makay.entites.UtilisateurSafe;
 import com.app.makay.entites.REST.ActionSuperviseurREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
+import com.app.makay.entites.REST.PayerCommandeREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
@@ -308,6 +311,34 @@ public class SuperviseurController {
     @SendTo("/notify/recevoir-modifier-commande")
     public EnvoiCommandeREST modifierCommande(EnvoiCommandeREST commandes) throws Exception{
         return commandes;
+    }
+    @MessageMapping("/payer-commande")
+    @SendTo("/notify/recevoir-payer-commande")
+    public PayerCommandeREST payerCommande(PayerCommandeREST paiement) throws Exception{
+        paiement.getPaiement().setUtilisateur(paiement.getUtilisateur());
+        LocalDateTime now=LocalDateTime.now();
+        paiement.getPaiement().setDateheure(now.minusNanos(now.getNano()));
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            ModePaiement where=new ModePaiement();
+            where.setId(paiement.getPaiement().getModePaiement().getId());
+            ModePaiement mode=dao.select(connect, ModePaiement.class, where)[0];
+            paiement.getPaiement().setModePaiement(mode);
+        }
+        return paiement;
+    }
+    @MessageMapping("/action-superviseur")
+    @SendTo("/notify/recevoir-action-superviseur")
+    public ActionSuperviseurREST actionSuperviseur(ActionSuperviseurREST action) throws Exception{
+        LocalDateTime now=LocalDateTime.now();
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            CommandeFille where=new CommandeFille();
+            where.setId(action.getActionSuperviseur().getCommandeFille().getId());
+            action.getActionSuperviseur().setDateheure(now.minusNanos(now.getNano()));
+            CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            action.getActionSuperviseur().setCommandeFille(commandeFille);
+            action.getActionSuperviseur().setMontant(commandeFille.getPu()*action.getActionSuperviseur().getQuantite());
+        }
+        return action;
     }
     @PostMapping("/action-superviseur")
     @ResponseBody

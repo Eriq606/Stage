@@ -138,6 +138,7 @@
                     element.checked=false;
                     return;
                 }
+                notifierCheckServeur(commandeCheckee);
                 element.disabled=true;
                 element.onclick=()=>{};
                 element.parentElement.parentElement.style.backgroundColor="#9cff9c";
@@ -178,6 +179,12 @@
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
+        }
+        function notifierCheckServeur(envoiCheck){
+            stompclient.publish({
+                destination:"/makay/check-commandefille",
+                body:JSON.parse(envoiCheck)
+            });
         }
         /*]]*/
     </script>

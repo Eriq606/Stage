@@ -513,6 +513,7 @@ public class Utilisateur extends IrisUser{
         try{
             String query="select * from v_commandefille_produits where etat=%s and id=%s and est_termine=-1 and idcategorie in (select idcategorie from role_categorie_produits_checkings where idrole=%s and etat=0)";
             query=String.format(query, Constantes.COMMANDEFILLE_CREEE, commandeFille.getId(), getRole().getId());
+            System.out.println(query);
             CommandeFille commandeFilleBase=dao.select(connect, query, CommandeFille.class)[0];
             Commande where=new Commande();
             where.setId(commandeFilleBase.getCommande().getId());
@@ -917,6 +918,9 @@ public class Utilisateur extends IrisUser{
             }
             CommandeFille changeCommandeFille=new CommandeFille();
             changeCommandeFille.setQuantiteRestante(commandeFille.getQuantite()-actionSuperviseur.getQuantite());
+            if(changeCommande.getResteAPayer()==0){
+                changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+            }
             dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             dao.update(connect, changeCommandeFille, where);
             dao.update(connect, changeCommande, whereCommande);

@@ -29,6 +29,7 @@ import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.CheckCommandeFilleREST;
 import com.app.makay.entites.REST.DemandeAdditionREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.RechercheProduitREST;
@@ -362,5 +363,10 @@ public class ServeurController {
             reponse.setMessage(e.getMessage());
             return reponse;
         }
+    }
+    @MessageMapping("/check-commandefille")
+    @SendTo("/notify/recevoir-check-commandefille")
+    public CheckCommandeFilleREST notifierCheck(CheckCommandeFilleREST check){
+        return check;
     }
 }

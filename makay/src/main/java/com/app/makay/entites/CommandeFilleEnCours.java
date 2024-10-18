@@ -135,4 +135,12 @@ public class CommandeFilleEnCours {
                 return "";
         }
     }
+    public String recupererEstTermineCouleur(){
+        switch(getEstTermine()){
+            case Constantes.COMMANDEFILLE_ESTTERMINEE:
+                return Constantes.COULEUR_SUCCES;
+            default:
+                return null;
+        }
+    }
 }

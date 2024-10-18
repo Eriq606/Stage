@@ -40,7 +40,7 @@
                             <div th:id="'alerte-envoye-commande'+${c.id}"></div>
                             <table class="table">
                                 <tbody>
-                                    <tr th:each="cf:${c.commandeFilles}">
+                                    <tr th:each="cf:${c.commandeFilles}" th:id="'ligne-commandefille'+${cf.id}" th:style="'background-color:'+${cf.recupererEstTermineCouleur()}">
                                         <td th:text="${cf.quantite}"></td>
                                         <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
                                         <td>
@@ -176,9 +176,17 @@
         }
         stompclient.onConnect=(frame)=>{
             receiveNotificationRedirect();
+            receiveCheckCommandeFille();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
+        }
+        function receiveCheckCommandeFille(){
+            stompclient.subscribe("/notify/recevoir-check-commandefille", (checkEnvoye)=>{
+                const envoiCheck=JSON.parse(checkEnvoye.body);
+                const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
+                ligneCmdFille.style.backgroundColor="#70ff9b";
+            });
         }
         /*]]*/
     </script>

@@ -15,6 +15,7 @@
                     <table class="table">
                         <tr>
                             <th>Quantite initiale</th>
+                            <th>Quantité restante</th>
                             <th>Qte à offrir/annuler</th>
                             <th>Commande</th>
                             <th>Accomp.</th>
@@ -25,6 +26,7 @@
                         </tr>
                         <tr th:each="cf:${commande.commandeFilles}">
                             <td th:text="${cf.quantite}"></td>
+                            <td th:text="${cf.quantiteRestante}"></td>
                             <td><input type="number" min="1" th:max="${cf.quantite}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantite}"></td>
                             <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
                             <td><ul>
@@ -113,9 +115,34 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierActionSuperviseur(envoiAction);
                     location.reload();
                 });
             }
+        }
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/reset-cache-superviseur";
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/receive-notify-redirect-superviseur", (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        function notifierActionSuperviseur(envoiAction){
+            stompclient.publish({
+                destination:"/makay/action-superviseur",
+                body:JSON.stringify(envoiAction)
+            });
         }
         /*]]*/
     </script>

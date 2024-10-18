@@ -48,39 +48,45 @@
                                                                     <span>Prix unitaire</span>
                                                                 </div>
                                                                 <br>
-                                                                <div th:each="cf:${c.commandeFilles}">
-                                                                    <p class="d-flex justify-content-between">
-                                                                        <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
-                                                                        <span th:text="${cf.quantite}+' '+${cf.produit.nom}"></span>
-                                                                        <span th:text="'('+${cf.recupererPUString()}+')'"></span>
-                                                                    </p>
-                                                                    <p style="font-style: italic;font-weight: lighter;font-size: small;" th:text="${cf.notes}"></p>
-                                                                    <p><ul>
-                                                                        <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
-                                                                    </ul></p>
+                                                                <div th:id="'commandefilles-commande'+${c.id}">
+                                                                    <div th:each="cf:${c.commandeFilles}" th:id="'ligne-commandefille'+${cf.id}" th:style="'background-color:'+${cf.recupererEstTermineCouleur()}">
+                                                                        <p class="d-flex justify-content-between">
+                                                                            <span style="font-weight: bold;" th:text="${cf.recupererMontantString()}+' : '"></span>
+                                                                            <span th:text="${cf.quantite}+' '+${cf.produit.nom}"></span>
+                                                                            <span th:text="'('+${cf.recupererPUString()}+')'"></span>
+                                                                        </p>
+                                                                        <p style="font-style: italic;font-weight: lighter;font-size: small;" th:text="${cf.notes}"></p>
+                                                                        <p><ul>
+                                                                            <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
+                                                                        </ul></p>
+                                                                    </div>
                                                                 </div>
                                                                 <hr>
                                                                 <p>
                                                                     <span>Montant total : </span>
-                                                                    <span th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></span>
+                                                                    <span th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-inner-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></span>
                                                                 </p>
                                                             </div>
                                                             <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
                                                                 <p>Paiements:</p>
-                                                                <p th:each="cp:${c.paiements}">
-                                                                    <span th:text="${cp.recupererHeure()}+' : '"></span>
-                                                                    <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
-                                                                    <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
-                                                                </p>
+                                                                <div th:id="'paiements-commande'+${c.id}">
+                                                                    <p th:each="cp:${c.paiements}">
+                                                                        <span th:text="${cp.recupererHeure()}+' : '"></span>
+                                                                        <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
+                                                                        <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                             <div class="tab-pane fade" th:id="'nav-actions'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-actions-tab'+${c.id}">
                                                                 <p>Actions de superviseurs:</p>
-                                                                <p th:each="a:${c.actions}">
-                                                                    <span th:text="${a.quantite}"></span>
-                                                                    <span th:text="${a.recupererCommandeLabel()}"></span>
-                                                                    <span th:text="${a.recupererMontantString()}"></span>
-                                                                    <span th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></span>
-                                                                </p>
+                                                                <div th:id="'actions-commande'+${c.id}">
+                                                                    <p th:each="a:${c.actions}" class="d-flex justify-content-between">
+                                                                        <span th:text="${a.quantite}"></span>
+                                                                        <span th:text="${a.recupererCommandeLabel()}"></span>
+                                                                        <span th:text="${a.recupererMontantString()}"></span>
+                                                                        <span th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></span>
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -90,7 +96,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <td th:class="'montant-total-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
+                                        <td th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
                                         <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i><span th:text="' '"></span>Intéragir</button></a></td>
                                     </tr>
                                 </tbody>
@@ -191,6 +197,8 @@
         function createAction(a){
             // Create a paragraph for each action
             const p = document.createElement("p");
+            p.style.display="flex";
+            p.style.justifyContent="space-between";
 
             // Create a span for the quantity (quantite)
             const spanQuantite = document.createElement("span");
@@ -198,7 +206,7 @@
 
             // Create a span for the commande label (recupererCommandeLabel)
             const spanCommandeLabel = document.createElement("span");
-            spanCommandeLabel.textContent = `${a.produit.nom} (${a.produit.notes})`;
+            spanCommandeLabel.textContent = `${a.commandeFille.produit.nom} (${a.commandeFille.notes})`;
 
             // Create a span for the montant (recupererMontantString)
             const spanMontant = document.createElement("span");
@@ -283,229 +291,7 @@
             `;
             return commandeHTML;
         }
-        // function createCommandeFilleRow(commande, cf, commandesTabPane){
-        //     const p = document.createElement("p");
-        //     p.className = "d-flex justify-content-between";
-
-        //     const spanLeft = document.createElement("span");
-        //     const boldText = document.createElement("span");
-        //     boldText.style.fontWeight = "bold";
-        //     boldText.textContent = new Intl.NumberFormat("de-DE").format(cf.montant).replace(".", " ") + "Ar : ";
-        //     spanLeft.appendChild(boldText);
-
-        //     const productInfo = document.createElement("span");
-        //     productInfo.textContent = cf.quantite + " " + cf.produit.nom;
-        //     spanLeft.appendChild(productInfo);
-
-        //     p.appendChild(spanLeft);
-
-        //     const spanRight = document.createElement("span");
-        //     spanRight.id="boutons-actions-commandefille"+cf.id;
-
-        //     const loading=document.createElement("img");
-        //     loading.id="loading"+cf.id;
-        //     loading.src="img/loading.gif";
-        //     loading.width="50";
-        //     loading.alt="loading";
-        //     loading.style.display="none";
-
-        //     const offertButton = document.createElement("button");
-        //     offertButton.className = "btn btn-success action-superviseur";
-        //     offertButton.textContent = "Offert";
-        //     offertButton.dataset.idcommandefille = cf.id;
-        //     offertButton.dataset.action = /*[[${offert}]]*/0;
-        //     offertButton.dataset.idcommande = commande.id;
-        //     offertButton.onclick=()=>{actionButtonTrigger(cf.id, offertButton.dataset.action, commande.id, loading)};
-
-        //     const annulerButton = document.createElement("button");
-        //     annulerButton.className = "btn btn-danger action-superviseur";
-        //     annulerButton.textContent = "Annuler";
-        //     annulerButton.dataset.idcommandefille = cf.id;
-        //     annulerButton.dataset.action = /*[[${annulee}]]*/0;
-        //     annulerButton.dataset.idcommande = commande.id;
-        //     annulerButton.onclick=()=>{actionButtonTrigger(cf.id, annulerButton.dataset.action, commande.id, loading)};
-
-
-        //     spanRight.appendChild(offertButton);
-        //     spanRight.appendChild(annulerButton);
-        //     spanRight.appendChild(loading);
-
-        //     p.appendChild(spanRight);
-        //     commandesTabPane.appendChild(p);
-
-        //     const notesP = document.createElement("p");
-        //     notesP.style.fontStyle = "italic";
-        //     notesP.style.fontWeight = "lighter";
-        //     notesP.style.fontSize = "small";
-        //     notesP.textContent = cf.notes;
-        //     commandesTabPane.appendChild(notesP);
-
-        //     const ul = document.createElement("ul");
-        //     cf.accompagnements.forEach(cfa => {
-        //         const li = document.createElement("li");
-        //         li.textContent = cfa.nom;
-        //         ul.appendChild(li);
-        //     });
-        //     commandesTabPane.appendChild(ul);
-        // }
-
-        // function createCommandeRow(commande) {
-        //     // Create table row
-        //     const tr = document.createElement("tr");
-
-        //     // Create the first table cell with the link
-        //     const tdLink = document.createElement("td");
-        //     const link = document.createElement("a");
-        //     link.textContent = "Place : "+commande.place.nom;
-        //     link.href = "#";
-        //     link.dataset.bsToggle = "modal";
-        //     link.dataset.bsTarget = `#detailCommandeModal${commande.id}`;
-        //     tdLink.appendChild(link);
-        //     tr.appendChild(tdLink);
-
-        //     // Create the second table cell with the hour
-        //     const tdHeure = document.createElement("td");
-        //     tdHeure.textContent = new Date(commande.ouverture).getHours()+":"+new Date(commande.ouverture).getMinutes()+":"+new Date(commande.ouverture).getSeconds();
-        //     tr.appendChild(tdHeure);
-
-        //     // Create the modal structure
-        //     const modalDiv = document.createElement("div");
-        //     modalDiv.className = "modal fade";
-        //     modalDiv.id = `detailCommandeModal${commande.id}`;
-        //     modalDiv.tabIndex = "-2";
-        //     modalDiv.setAttribute("aria-labelledby", `detailCommandeModalLabel${commande.id}`);
-        //     modalDiv.setAttribute("aria-hidden", "true");
-
-        //     const modalDialog = document.createElement("div");
-        //     modalDialog.className = "modal-dialog modal-dialog-centered";
-        //     modalDiv.appendChild(modalDialog);
-
-        //     const modalContent = document.createElement("div");
-        //     modalContent.className = "modal-content";
-        //     modalDialog.appendChild(modalContent);
-
-        //     const modalHeader = document.createElement("div");
-        //     modalHeader.className = "modal-header";
-        //     modalContent.appendChild(modalHeader);
-
-        //     const modalTitle = document.createElement("h1");
-        //     modalTitle.className = "modal-title fs-5";
-        //     modalTitle.id = `detailCommandeModalLabel${commande.id}`;
-        //     modalTitle.textContent = "Place : "+commande.place.nom;
-        //     modalHeader.appendChild(modalTitle);
-
-        //     const closeButton = document.createElement("button");
-        //     closeButton.type = "button";
-        //     closeButton.className = "btn-close";
-        //     closeButton.dataset.bsDismiss = "modal";
-        //     closeButton.setAttribute("aria-label", "Close");
-        //     modalHeader.appendChild(closeButton);
-
-        //     const modalBody = document.createElement("div");
-        //     modalBody.className = "modal-body table-responsive";
-        //     modalBody.id = `detailCommandeServeur${commande.id}Commande${commande.id}`;
-        //     modalContent.appendChild(modalBody);
-
-        //     // Tab structure
-        //     const nav = document.createElement("nav");
-        //     modalBody.appendChild(nav);
-
-        //     const navTabs = document.createElement("div");
-        //     navTabs.className = "nav nav-tabs";
-        //     navTabs.id = "nav-tab";
-        //     navTabs.setAttribute("role", "tablist");
-        //     nav.appendChild(navTabs);
-
-        //     // Commandes tab
-        //     const commandesTab = document.createElement("button");
-        //     commandesTab.className = "nav-link active";
-        //     commandesTab.id = `nav-commandes-tab${commande.id}`;
-        //     commandesTab.dataset.bsToggle = "tab";
-        //     commandesTab.dataset.bsTarget = `#nav-commandes${commande.id}`;
-        //     commandesTab.type = "button";
-        //     commandesTab.setAttribute("role", "tab");
-        //     commandesTab.setAttribute("aria-controls", `nav-commandes${commande.id}`);
-        //     commandesTab.ariaSelected = "true";
-        //     commandesTab.textContent = "Commandes";
-        //     navTabs.appendChild(commandesTab);
-
-        //     // Paiements tab
-        //     const paiementsTab = document.createElement("button");
-        //     paiementsTab.className = "nav-link";
-        //     paiementsTab.id = `nav-paiements-tab${commande.id}`;
-        //     paiementsTab.dataset.bsToggle = "tab";
-        //     paiementsTab.dataset.bsTarget = `#nav-paiements${commande.id}`;
-        //     paiementsTab.type = "button";
-        //     paiementsTab.setAttribute("role", "tab");
-        //     paiementsTab.setAttribute("aria-controls", `nav-paiements${commande.id}`);
-        //     paiementsTab.ariaSelected = "false";
-        //     paiementsTab.textContent = "Paiements";
-        //     navTabs.appendChild(paiementsTab);
-
-        //     const tabContent = document.createElement("div");
-        //     tabContent.className = "tab-content pt-3";
-        //     tabContent.id = "nav-tabContent";
-        //     modalBody.appendChild(tabContent);
-
-        //     // Commandes tab-pane
-        //     const commandesTabPane = document.createElement("div");
-        //     commandesTabPane.className = "tab-pane fade show active";
-        //     commandesTabPane.id = `nav-commandes${commande.id}`;
-        //     commandesTabPane.setAttribute("role", "tabpanel");
-        //     commandesTabPane.setAttribute("aria-labelledby", `nav-commandes-tab${commande.id}`);
-        //     tabContent.appendChild(commandesTabPane);
-
-        //     // Loop through commandeFilles to generate each entry in Commandes tab
-        //     commande.commandeFilles.forEach(cf => {
-        //         createCommandeFilleRow(commande, cf, commandesTabPane);
-        //     });
-
-        //     const hr = document.createElement("hr");
-        //     commandesTabPane.appendChild(hr);
-
-        //     const totalP = document.createElement("p");
-        //     const montantString=new Intl.NumberFormat("de-DE").format(commande.montant).replace(".", " ")+" Ar";
-        //     totalP.innerHTML = `<span>Montant total : </span>
-        //                         <span class="montant-total-commande${commande.id}" style="font-weight: bold;">${montantString}</span>`;
-        //     commandesTabPane.appendChild(totalP);
-
-        //     // Paiements tab-pane
-        //     const paiementsTabPane = document.createElement("div");
-        //     paiementsTabPane.className = "tab-pane fade";
-        //     paiementsTabPane.id = `nav-paiements${commande.id}`;
-        //     paiementsTabPane.setAttribute("role", "tabpanel");
-        //     paiementsTabPane.setAttribute("aria-labelledby", `nav-paiements-tab${commande.id}`);
-        //     tabContent.appendChild(paiementsTabPane);
-
-        //     paiementsTabPane.innerHTML = `<p>Paiements:</p>`;
-
-        //     // Add modal footer
-        //     const modalFooter = document.createElement("div");
-        //     modalFooter.className = "modal-footer";
-        //     const retourButton = document.createElement("button");
-        //     retourButton.className = "btn btn-secondary";
-        //     retourButton.dataset.bsDismiss = "modal";
-        //     retourButton.textContent = "Retour";
-        //     modalFooter.appendChild(retourButton);
-        //     modalContent.appendChild(modalFooter);
-
-        //     // Add modal to the table row
-        //     tr.appendChild(modalDiv);
-
-        //     // Final cell for montant-total
-        //     const tdMontantTotal = document.createElement("td");
-        //     tdMontantTotal.className = `montant-total-commande${commande.id}`;
-        //     tdMontantTotal.style.fontWeight = "bold";
-        //     tdMontantTotal.textContent = montantString;
-        //     tr.appendChild(tdMontantTotal);
-
-        //     return tr;
-        // }
-
         function modifierCommande(commandeFille, commande, utilisateur){
-            // const modalBody=document.getElementById("detailCommandeServeur"+utilisateur.id+"Commande"+commande.id);
-            // const commandesTabPane=document.getElementById("nav-commandes"+commande.id);
-            // createCommandeFilleRow(commande, commandeFille, commandesTabPane);
             const rafraichir=document.getElementById("rafraichir");
             rafraichir.style.display="block";
         }
@@ -524,10 +310,43 @@
             stompclient.subscribe("/notify/recevoir-modifier-commande", (commandeEnvoyee)=>{
                 const envoiCommande=JSON.parse(commandeEnvoyee.body);
                 let commande=envoiCommande.commande;
-                const utilisateur=envoiCommande.utilisateur;
+                const utilisateur=commande.utilisateur;
+                const divCommandeFilles=document.getElementById("commandefilles-commande"+commande.id);
+                const montantInner=document.getElementById("montant-total-inner-commande"+commande.id);
+                const montantOuter=document.getElementById("montant-total-outer-commande"+commande.id);
+                montantInner.textContent=numberFormat(commande.montant);
+                montantOuter.textContent=numberFormat(commande.montant);
                 for(let i=0;i<envoiCommande.commandeFilles.length;i++){
-                    modifierCommande(envoiCommande.commandeFilles[i], commande, utilisateur);
+                    divCommandeFilles.appendChild(createCommandeFille(envoiCommande.commandeFilles[i]));
                 }
+            });
+        }
+        function receivePaiementCommande(){
+            stompclient.subscribe("/notify/recevoir-payer-commande", (paiementEnvoye)=>{
+                const envoiPaiement=JSON.parse(paiementEnvoye.body);
+                const paiement=envoiPaiement.paiement;
+                const divPaiement=document.getElementById("paiements-commande"+paiement.commande.id);
+                divPaiement.appendChild(createPaiement(paiement));
+            });
+        }
+        function receiveActionSuperviseur(){
+            stompclient.subscribe("/notify/recevoir-action-superviseur", (actionEnvoye)=>{
+                const envoiAction=JSON.parse(actionEnvoye.body);
+                const action=envoiAction.actionSuperviseur;
+                const divAction=document.getElementById("actions-commande"+action.commandeFille.commande.id);
+                divAction.appendChild(createAction(action));
+                if(action.action!=10){
+                    return;
+                }
+                const divPaiement=document.getElementById("paiements-commande"+action.commandeFille.commande.id);
+                const paiement={
+                    dateheure:action.dateheure,
+                    montant:action.montant,
+                    modePaiement:{
+                        nom:"V.A.T"
+                    }
+                }
+                divPaiement.appendChild(createPaiement(paiement));
             });
         }
         function redirigerVersResetCache(){
@@ -538,10 +357,20 @@
                 redirigerVersResetCache();
             });
         }
+        function receiveCheckCommandeFille(){
+            stompclient.subscribe("/notify/recevoir-check-commandefille", (checkEnvoye)=>{
+                const envoiCheck=JSON.parse(checkEnvoye.body);
+                const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
+                ligneCmdFille.style.backgroundColor="#70ff9b";
+            });
+        }
         stompclient.onConnect=(frame)=>{
             receiveNotificationCommande();
             receiveNotificationRedirect();
             receiveModificationCommande();
+            receivePaiementCommande();
+            receiveActionSuperviseur();
+            receiveCheckCommandeFille();
         };
 
         const api="http://"+ip+":8080/action-superviseur";
