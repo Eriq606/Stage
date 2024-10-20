@@ -237,7 +237,7 @@ public class ServeurController {
             }
             Integer[] ids=modifs.getUtilisateur().modifierCommande(connect, dao, modifs.getCommande(), modifs.getCommandeFilles());
             connect.commit();
-            response.addItem("ips", ids);
+            response.addItem("ids", ids);
             return response;
         }catch(StockException se){
             response.setCode(Constantes.CODE_ERROR);

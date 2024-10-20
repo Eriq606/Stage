@@ -574,7 +574,7 @@
                                 return;
                             }
                             console.log(data);
-                            for(let i=0;i<data.donnees.ids;i++){
+                            for(let i=0;i<data.donnees.ids.length;i++){
                                 envoicommande.commandeFilles[i].id=data.donnees.ids[i];
                             }
                             console.log(envoicommande.commandeFilles);
