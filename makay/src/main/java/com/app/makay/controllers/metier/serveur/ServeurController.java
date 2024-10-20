@@ -235,8 +235,9 @@ public class ServeurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            modifs.getUtilisateur().modifierCommande(connect, dao, modifs.getCommande(), modifs.getCommandeFilles());
+            Integer[] ids=modifs.getUtilisateur().modifierCommande(connect, dao, modifs.getCommande(), modifs.getCommandeFilles());
             connect.commit();
+            response.addItem("ips", ids);
             return response;
         }catch(StockException se){
             response.setCode(Constantes.CODE_ERROR);

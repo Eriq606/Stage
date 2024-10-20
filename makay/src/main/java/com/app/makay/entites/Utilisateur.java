@@ -367,7 +367,7 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
-    public void modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
+    public Integer[] modifierCommande(Connection connect, MyDAO dao, Commande commande, CommandeFille[] commandeFilles) throws Exception{
         try{
             boolean estValide=false;
             for(CommandeFille c:commandeFilles){
@@ -411,12 +411,14 @@ public class Utilisateur extends IrisUser{
 
             int idcommandeFille;
             LinkedList<AccompagnementCommande> accompCommandes=new LinkedList<>();
+            LinkedList<Integer> ids=new LinkedList<>();
             AccompagnementCommande accompCommande;
             for(int i=0;i<commandeFilles.length;i++){
                 commandeFilles[i].setCommande(where);
                 commandeFilles[i].setQuantiteRestante(commandeFilles[i].getQuantite());
                 idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
                 commandeFilles[i].setId(idcommandeFille);
+                ids.add(idcommandeFille);
                 for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
                     accompCommande=new AccompagnementCommande();
                     accompCommande.setCommandeFille(commandeFilles[i]);
@@ -425,10 +427,11 @@ public class Utilisateur extends IrisUser{
                 }
             }
             if(accompCommandes.size()==0){
-                return;
+                return ids.toArray(new Integer[ids.size()]);
             }
             AccompagnementCommande[] accomps=accompCommandes.toArray(new AccompagnementCommande[accompCommandes.size()]);
             dao.insertWithoutPrimaryKey(connect, AccompagnementCommande.class, accomps);
+            return ids.toArray(new Integer[ids.size()]);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

@@ -54,6 +54,13 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody id="new-orders">
+                                        <!-- Commandes ajoutées -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" id="envoyer-commande" data-bs-dismiss="modal">Envoyer</button>
@@ -71,7 +78,7 @@
                     let produits=/*[[${produits}]]*/[];
                     let produitInput=document.getElementById("recherche-produit");
                     let resetRecherche=document.getElementById("reset-recherche");
-                    let commandeAjout=document.getElementById("commandes-ajoutees");
+                    let commandeAjout=document.getElementById("new-orders");
                     let submitCommand=document.getElementById("submitCommand");
                     resetRecherche.onclick=()=>{
                         produitInput.value='';
@@ -315,66 +322,124 @@
                                 addCommande(commandes, product, qte, notes, newAccomps, newAccompsID);
                                 let toSubmit=JSON.stringify(commandes);
                                 submitCommandes.value=toSubmit;
+                                orderList.innerHTML="";
+                                // // add row to order list
+                                // const olderOrders=document.getElementsByClassName("new-order");
+                                // for(const o of olderOrders){
+                                //     orderList.removeChild(o);
+                                // }
+                                // const orderRow=document.createElement("tr");
+                                // orderRow.setAttribute("id", "orderCmd"+product.id);
+                                // orderRow.className="new-order";
+                                // const orderQte=document.createElement("th");
+                                // orderQte.setAttribute("scope", "row");
+                                // orderQte.textContent=commandes[commandes.length-1].quantite;
+                                // const orderProd=document.createElement("td");
+                                // orderProd.textContent=commandes[commandes.length-1].produit.nom+" "+commandes[commandes.length-1].notes;
+                                // const orderNote=document.createElement("td");
+                                // const ulElement = document.createElement('ul');
+                                // ulElement.style.listStyle="none";
+                                // // Loop through the accompagnements array
+                                // for (let j = 0; j < commandes[commandes.length-1].accompagnements.length; j++) {
+                                //     // Create a <li> element for each accompagnement
+                                //     const liElement = document.createElement('li');
+                                    
+                                //     // Set the text content of the <li> element
+                                //     liElement.textContent = commandes[commandes.length-1].accompagnements[j].nom;
+                                    
+                                //     // Append the <li> element to the <ul> element
+                                //     ulElement.appendChild(liElement);
+                                // }
+                                // orderNote.appendChild(ulElement);
+
+                                // const orderAddCol=document.createElement("td");
+                                // const orderAdd=document.createElement("button");
+                                // orderAdd.className="btn btn-primary w-100";
+                                // orderAdd.setAttribute("type", "button");
+                                // orderAdd.innerHTML="<i class='fa fa-plus'></i>";
+                                // orderAdd.onclick=()=>{
+                                //     commandes[commandes.length-1].quantite++;
+                                //     toSubmit=JSON.stringify(commandes);
+                                //     submitCommandes.value=toSubmit;
+                                //     orderQte.textContent=commandes[commandes.length-1].quantite;
+                                // }
+                                // const orderRemove=document.createElement("button");
+                                // orderRemove.className="btn btn-danger w-100";
+                                // orderRemove.setAttribute("type", "button");
+                                // orderRemove.innerHTML="<i class='fa fa-minus'></i>";
+                                // orderRemove.onclick=()=>{
+                                //     if(commandes[commandes.length-1].quantite>0){
+                                //         commandes[commandes.length-1].quantite--;
+                                //         toSubmit=JSON.stringify(commandes);
+                                //         submitCommandes.value=toSubmit;
+                                //         orderQte.textContent=commandes[commandes.length-1].quantite;
+                                //     }
+                                // }
                                 // orderList.innerHTML="";
                                 // add row to order list
-                                const olderOrders=document.getElementsByClassName("new-order");
-                                for(const o of olderOrders){
-                                    orderList.removeChild(o);
-                                }
-                                const orderRow=document.createElement("tr");
-                                orderRow.setAttribute("id", "orderCmd"+product.id);
-                                orderRow.className="new-order";
-                                const orderQte=document.createElement("th");
-                                orderQte.setAttribute("scope", "row");
-                                orderQte.textContent=commandes[commandes.length-1].quantite;
-                                const orderProd=document.createElement("td");
-                                orderProd.textContent=commandes[commandes.length-1].produit.nom+" "+commandes[commandes.length-1].notes;
-                                const orderNote=document.createElement("td");
-                                const ulElement = document.createElement('ul');
-                                ulElement.style.listStyle="none";
-                                // Loop through the accompagnements array
-                                for (let j = 0; j < commandes[commandes.length-1].accompagnements.length; j++) {
-                                    // Create a <li> element for each accompagnement
-                                    const liElement = document.createElement('li');
-                                    
-                                    // Set the text content of the <li> element
-                                    liElement.textContent = commandes[commandes.length-1].accompagnements[j].nom;
-                                    
-                                    // Append the <li> element to the <ul> element
-                                    ulElement.appendChild(liElement);
-                                }
-                                orderNote.appendChild(ulElement);
+                                for(let i=0;i<commandes.length;i++){
+                                    const orderRow=document.createElement("tr");
+                                    orderRow.setAttribute("id", "orderCmd"+product.id);
+                                    orderRow.className="new-order";
+                                    const orderQte=document.createElement("th");
+                                    orderQte.setAttribute("scope", "row");
+                                    orderQte.textContent=commandes[i].quantite;
+                                    const orderProd=document.createElement("td");
+                                    orderProd.textContent=commandes[i].produit.nom+" "+commandes[i].notes;
+                                    const orderNote=document.createElement("td");
+                                    const ulElement = document.createElement('ul');
+                                    ulElement.style.listStyle="none";
+                                    // Loop through the accompagnements array
+                                    for (let j = 0; j < commandes[i].accompagnements.length; j++) {
+                                        // Create a <li> element for each accompagnement
+                                        const liElement = document.createElement('li');
+                                        
+                                        // Set the text content of the <li> element
+                                        liElement.textContent = commandes[i].accompagnements[j].nom;
+                                        
+                                        // Append the <li> element to the <ul> element
+                                        ulElement.appendChild(liElement);
+                                    }
+                                    orderNote.appendChild(ulElement);
 
-                                const orderAddCol=document.createElement("td");
-                                const orderAdd=document.createElement("button");
-                                orderAdd.className="btn btn-primary w-100";
-                                orderAdd.setAttribute("type", "button");
-                                orderAdd.innerHTML="<i class='fa fa-plus'></i>";
-                                orderAdd.onclick=()=>{
-                                    commandes[commandes.length-1].quantite++;
-                                    toSubmit=JSON.stringify(commandes);
-                                    submitCommandes.value=toSubmit;
-                                    orderQte.textContent=commandes[commandes.length-1].quantite;
-                                }
-                                const orderRemove=document.createElement("button");
-                                orderRemove.className="btn btn-danger w-100";
-                                orderRemove.setAttribute("type", "button");
-                                orderRemove.innerHTML="<i class='fa fa-minus'></i>";
-                                orderRemove.onclick=()=>{
-                                    if(commandes[commandes.length-1].quantite>0){
-                                        commandes[commandes.length-1].quantite--;
+                                    const orderAddCol=document.createElement("td");
+                                    const orderAdd=document.createElement("button");
+                                    orderAdd.className="btn btn-primary w-100";
+                                    orderAdd.setAttribute("type", "button");
+                                    orderAdd.innerHTML="<i class='fa fa-plus'></i>";
+                                    orderAdd.onclick=()=>{
+                                        commandes[i].quantite++;
                                         toSubmit=JSON.stringify(commandes);
                                         submitCommandes.value=toSubmit;
-                                        orderQte.textContent=commandes[commandes.length-1].quantite;
+                                        orderQte.textContent=commandes[i].quantite;
                                     }
+                                    const orderRemove=document.createElement("button");
+                                    orderRemove.className="btn btn-danger w-100";
+                                    orderRemove.setAttribute("type", "button");
+                                    orderRemove.innerHTML="<i class='fa fa-minus'></i>";
+                                    orderRemove.onclick=()=>{
+                                        if(commandes[i].quantite>0){
+                                            commandes[i].quantite--;
+                                            toSubmit=JSON.stringify(commandes);
+                                            submitCommandes.value=toSubmit;
+                                            orderQte.textContent=commandes[i].quantite;
+                                        }
+                                    }
+                                    orderAddCol.appendChild(orderAdd);
+                                    orderAddCol.appendChild(orderRemove);
+                                    orderRow.appendChild(orderQte);
+                                    orderRow.appendChild(orderProd);
+                                    orderRow.appendChild(orderNote);
+                                    orderRow.appendChild(orderAddCol);
+                                    orderList.appendChild(orderRow);
                                 }
-                                orderAddCol.appendChild(orderAdd);
-                                orderAddCol.appendChild(orderRemove);
-                                orderRow.appendChild(orderQte);
-                                orderRow.appendChild(orderProd);
-                                orderRow.appendChild(orderNote);
-                                orderRow.appendChild(orderAddCol);
-                                orderList.appendChild(orderRow);
+                                // orderAddCol.appendChild(orderAdd);
+                                // orderAddCol.appendChild(orderRemove);
+                                // orderRow.appendChild(orderQte);
+                                // orderRow.appendChild(orderProd);
+                                // orderRow.appendChild(orderNote);
+                                // orderRow.appendChild(orderAddCol);
+                                // orderList.appendChild(orderRow);
                                 // for(let i=0;i<commandes.length;i++){
                                 // }
                                 // alert
@@ -454,6 +519,7 @@
                                 continue;
                             }
                             const newObj={
+                                id:null,
                                 commande:commandeToSend,
                                 produit:commandes[i].produit,
                                 pu:commandes[i].produit.prix,
@@ -493,7 +559,6 @@
                             return response.json();
                         }).then((data)=>{
                             loadingEnvoiCommande.style.display="none";
-                            console.log(data);
                             if(data.code===0){
                                 const alert=document.createElement("div");
                                 alert.className="alert alert-danger alert-dismissible show w-100";
@@ -508,6 +573,11 @@
                                 alerteEnvoye.appendChild(alert);
                                 return;
                             }
+                            console.log(data);
+                            for(let i=0;i<data.donnees.ids;i++){
+                                envoicommande.commandeFilles[i].id=data.donnees.ids[i];
+                            }
+                            console.log(envoicommande.commandeFilles);
                             notifierSuperviseurModification(envoicommande);
                             let urlAddOnIndice="indice_actu="+indicePagination;
                             let urlAddOnTable="table="+table;
@@ -519,7 +589,7 @@
                             }else if(table!=="null"&&indicePagination==="null"){
                                 urlAddOn=urlAddOnTable;
                             }
-                            window.location.href="http://"+ip+":8080/liste-commande?"+urlAddOn;
+                            // window.location.href="http://"+ip+":8080/liste-commande?"+urlAddOn;
                         });
                     }
 

@@ -183,7 +183,7 @@
         function notifierCheckServeur(envoiCheck){
             stompclient.publish({
                 destination:"/makay/check-commandefille",
-                body:JSON.parse(envoiCheck)
+                body:JSON.stringify(envoiCheck)
             });
         }
         /*]]*/
