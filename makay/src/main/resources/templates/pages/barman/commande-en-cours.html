@@ -176,6 +176,7 @@
         }
         stompclient.onConnect=(frame)=>{
             receiveNotificationRedirect();
+            receiveNouvelleCommande();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -185,6 +186,61 @@
                 destination:"/makay/check-commandefille",
                 body:JSON.stringify(envoiCheck)
             });
+        }
+        function generateCommandeFille(c, cf){
+            let accomps=``;
+            for(const cfa of cf.accompagnements){
+                accomps+=`<li>${cfa.nom}</li>`;
+            }
+            const commandeFille=`
+            <tr>
+                <td>
+                    <input class="checkCommandeFilleCommande${c.id} form-check-input" data-termine="${cf.estTermine}" type="checkbox" data-idcommandefille="${cf.id}" data-idcommande="${c.id}" id="checkCommandeFille${cf.id}" onclick="checkCommandeFille(event)">
+                </td>
+                <td>${cf.quantite} ${cf.produit.nom} ${cf.notes}</td>
+                <td><ul>
+                    `+accomps+`
+                </ul></td>
+            </tr>`;
+            return commandeFille;
+        }
+        function generateCommande(c){
+            let commandeFilles=``;
+            for(const cf of c.commandeFilles){
+                commandeFilles+=generateCommandeFille(c, cf);
+            }
+            const commande=`
+            <div>
+                <h2 class="accordion-header" id="headingOne${c.id}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseCommande${c.id}" aria-expanded="true"
+                        aria-controls="collapseCommande${c.id}"
+                        id="buttonCheckCommande${c.id}">
+                    Table ${c.place.nom} - ${c.ouverture.replace("T", " ")}    
+                    </button>
+                </h2>
+                <div id="collapseCommande${c.id}" class="accordion-collapse collapse"
+                    aria-labelledby="headingOne${c.id}" data-bs-parent="#accordionCommande">
+                    <div class="accordion-body table-responsive">
+                        <table class="table">
+                            <tbody>
+                                `+commandeFilles+`
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>`;
+            const divCmd=document.createElement("div");
+            divCmd.className="accordion-item bg-transparent";
+            divCmd.innerHTML=commande;
+            return divCmd;
+        }
+        function receiveNouvelleCommande(){
+            stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoye)=>{
+                const envoiCommande=JSON.parse(commandeEnvoye.body);
+                const accordionCommande=document.getElementById("accordionCommande");
+                accordionCommande.appendChild(generateCommande(envoiCommande.commande));
+            })
         }
         /*]]*/
     </script>
