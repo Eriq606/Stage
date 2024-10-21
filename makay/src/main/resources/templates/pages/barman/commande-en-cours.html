@@ -235,11 +235,14 @@
             divCmd.innerHTML=commande;
             return divCmd;
         }
+        const paginationLimit=/*[[${paginationlimit}]]*/0;
         function receiveNouvelleCommande(){
             stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoye)=>{
                 const envoiCommande=JSON.parse(commandeEnvoye.body);
                 const accordionCommande=document.getElementById("accordionCommande");
-                accordionCommande.appendChild(generateCommande(envoiCommande.commande));
+                if(accordionCommande.children.length<paginationLimit){
+                    accordionCommande.appendChild(generateCommande(envoiCommande.commande));
+                }
             })
         }
         /*]]*/

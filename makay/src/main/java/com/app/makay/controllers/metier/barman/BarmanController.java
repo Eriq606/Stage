@@ -91,6 +91,7 @@ public class BarmanController {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
         }
+        model.addAttribute(Constantes.VAR_PAGINATION_LIMIT, Constantes.PAGINATION_LIMIT);
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());

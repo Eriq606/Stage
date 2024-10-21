@@ -69,6 +69,7 @@ public class Constantes {
     public static final String VAR_CODE_ERREUR="code";
     public static final String VAR_MSG_ERREUR="message";
     public static final String VAR_ACTION_SUPERVISEUR="actions";
+    public static final String VAR_PAGINATION_LIMIT="paginationlimit";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
