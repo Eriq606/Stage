@@ -22,7 +22,7 @@
         <div class="col-12">
             <div class="bg-secondary rounded p-4">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="table-demande-additions">
                         <tr>
                             <th scope="col">Table</th>
                             <th scope="col">Heure</th>
@@ -91,7 +91,6 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
                                             <button type="submit" th:id="'payer-submit-commande'+${c.id}" class="btn btn-primary">Payer</button>
-                                            <img th:id="'loading-commande'+${c.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;">
                                         </div>
                                     </form>
                                     </div>
@@ -157,64 +156,63 @@
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
         const api="http://"+ip+":8080/payer";
+        function payerAction(formulaire, idcommande, alerteEnvoye, resteAPayer){
+            const formData=new FormData(formulaire);
+            const paiement={
+                commande:{ id:idcommande, resteAPayer:resteAPayer },
+                modePaiement:{ id:formData.get("mode-paiement") },
+                montant:formData.get("montant")
+            }
+            const envoiPaiement={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                paiement:paiement
+            }
+            fetch(api, {
+                method:"POST",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
+            }).then((response)=>{return response.json()})
+            .then((data)=>{
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                notifierSuperviseurPaiement(envoiPaiement);
+                const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
+                resteAPayer-=Number(formData.get("montant"));
+                resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                formulaire.setAttribute("data-resteapayer", resteAPayer);
+                if(resteAPayer==0){
+                    const commandeRow=document.getElementById("commande-row"+idcommande);
+                    commandeRow.style.backgroundColor="#9cff9c";
+                    const button=document.getElementById("payer-submit-commande"+idcommande);
+                    button.innerHTML="<i class='fa-solid fa-check'></i>";
+                    button.disabled=true;
+                }
+            });
+        }
         for(let i=0;i<formulaires.length;i++){
             const idcommande=formulaires[i].dataset.idcommande;
             const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
             let resteAPayer=Number(formulaires[i].dataset.resteapayer);
             formulaires[i].onsubmit=(ev)=>{
                 ev.preventDefault();
-                const formData=new FormData(formulaires[i]);
-                const paiement={
-                    commande:{ id:idcommande, resteAPayer:resteAPayer },
-                    modePaiement:{ id:formData.get("mode-paiement") },
-                    montant:formData.get("montant")
-                }
-                console.log(paiement);
-                const envoiPaiement={
-                    utilisateur:utilisateur,
-                    sessionid:sessionid,
-                    paiement:paiement
-                }
-                const loading=document.getElementById("loading-commande"+idcommande);
-                loading.style.display="block";
-                fetch(api, {
-                    method:"POST",
-                    headers:{
-                        "Content-type":"application/json"
-                    },
-                    body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
-                }).then((response)=>{return response.json()})
-                .then((data)=>{
-                    loading.style.display="none";
-                    if(data.code===0){
-                        const alert=document.createElement("div");
-                        alert.className="alert alert-danger alert-dismissible show w-100";
-                        alert.setAttribute("role", "alert");
-                        alert.textContent=data.message;
-                        const button = document.createElement('button');
-                        button.type = 'button';
-                        button.className = 'btn-close';
-                        button.setAttribute('data-bs-dismiss', 'alert');
-                        button.setAttribute('aria-label', 'Close');
-                        alert.appendChild(button);
-                        alerteEnvoye.appendChild(alert);
-                        return;
-                    }
-                    notifierSuperviseurPaiement(envoiPaiement);
-                    const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
-                    const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
-                    resteAPayer-=Number(formData.get("montant"));
-                    resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                    resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                    formulaires[i].setAttribute("data-resteapayer", resteAPayer);
-                    if(resteAPayer==0){
-                        const commandeRow=document.getElementById("commande-row"+idcommande);
-                        commandeRow.style.backgroundColor="#9cff9c";
-                        const button=document.getElementById("payer-submit-commande"+idcommande);
-                        button.innerHTML="<i class='fa-solid fa-check'></i>";
-                        button.disabled=true;
-                    }
-                });
+                payerAction(formulaires[i], idcommande, alerteEnvoye, resteAPayer);
             }
         }
 
@@ -234,6 +232,7 @@
         }
         stompclient.onConnect=(frame)=>{
             receiveNotificationRedirect();
+            receiveDemandeAddition();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -243,6 +242,118 @@
                 destination:"/makay/payer-commande",
                 body:JSON.stringify(envoiPaiement)
             });
+        }
+        function numberFormat(number){
+            return new Intl.NumberFormat("de-DE").format(number)+" Ar";
+        }
+        function generateCommandeFille(cf){
+            let accomps=``;
+            for(const cfa of cf.accompagnements){
+                accomps+=`<li>${cfa.nom}</li>`;
+            }
+            const commandeFille=`
+            <div>
+                <p>${numberFormat(cf.montant)} : ${cf.quantite} ${cf.produit.nom} ${cf.notes} (${numberFormat(cf.pu)})</p>
+                <p><ul>
+                    ${accomps}
+                </ul></p>
+            </div>`;
+            return commandeFille;
+        }
+        const modePaiements=/*[[${modepaiements}]]*/[];
+        function generateCommande(c){
+            let commandeFilles=``;
+            for(const cf of c.commandeFilles){
+                commandeFilles+=generateCommandeFille(cf);
+            }
+            let modepaiements=``;
+            for(const mp of modePaiements){
+                modepaiements+=`
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="mode-paiement"
+                        id="paiement-mode${mp.id}" value="${mp.id}" checked required>
+                    <label class="form-check-label" for="paiement-mode${mp.id}">${mp.nom}</label>
+                </div>`;
+            }
+            const commande=`
+            <tr id="commande-row${c.id}">
+                <td scope="row"><a href="#" data-bs-toggle="modal" data-bs-target="#commandeModal${c.id}">Table ${c.place.nom}</a></td>
+                <div class="modal fade" id="commandeModal${c.id}" tabindex="-1" aria-labelledby="commandeModalLabel${c.id}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="commandeModalLabel${c.id}">Table ${c.place.nom} - ${c.ouverture.replace("T", " ")}"></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body table-responsive">
+                                ${commandeFilles}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <td>${c.ouverture.replace("T", " ")}</td>
+                <td style="font-weight: bold;">${numberFormat(c.montant)}</td>
+                <td style="font-weight: bold;" id="reste-a-payer-colonne${c.id}">${numberFormat(c.resteAPayer)}</td>
+                <td>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#paieModal${c.id}">Payer</button>
+                    <div class="modal fade" id="paieModal${c.id}" tabindex="-1" aria-labelledby="paieModalLabel${c.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                        <form class="formulaire-payer" data-idcommande="${c.id}" data-resteapayer="${c.resteAPayer}" id="formulaire-payer-commande${c.id}">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="paieModalLabel${c.id}">Effectuer un paiement</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alerte-envoye-commande${c.id}"></div>
+                                <p>
+                                    <span>Reste a payer : </span>
+                                    <span id="reste-a-payer-commande${c.id}" style="font-weight: bold;">${numberFormat(c.resteAPayer)}</span>
+                                </p>
+                                <div class="mb-3">
+                                    <label for="montant-commande${c.id}" class="form-label">Montant</label>
+                                    <input type="number" value="${c.resteAPayer}" min="0" step="0.01" name="montant" class="form-control" id="montant-commande${c.id}"
+                                        aria-describedby="emailHelp">
+                                </div>
+                                <fieldset class="row mb-3">
+                                    <legend class="col-form-label col-sm-2 pt-0">Mode de paiement</legend>
+                                    <div class="col-sm-10">
+                                        ${modepaiements}
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                <button type="submit" id="payer-submit-commande${c.id}" class="btn btn-primary">Payer</button>
+                            </div>
+                        </form>
+                        </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+            const tr=document.createElement("tr");
+            tr.id="commande-row"+c.id;
+            tr.innerHTML=commande;
+            return tr;
+        }
+        const paginationLimit=/*[[${paginationlimit}]]*/0;
+        function receiveDemandeAddition(){
+            stompclient.subscribe("/notify/recevoir-demande-addition", (additionEnvoye)=>{
+                const envoiAddition=JSON.parse(additionEnvoye.body);
+                const tableAdditions=document.getElementById("table-demande-additions");
+                if(tableAdditions.children.length<paginationLimit+1){
+                    tableAdditions.appendChild(generateCommande(envoiAddition.commande));
+                    const formulaire=document.getElementById("formulaire-payer-commande"+envoiAddition.commande.id);
+                    formulaire.onsubmit=(ev)=>{
+                        ev.preventDefault();
+                        payerAction(formulaire, envoiAddition.commande.id, document.getElementById("alerte-envoye-commande"+envoiAddition.commande.id), envoiAddition.commande.resteAPayer);
+                    }
+                }
+            })
         }
         /*]]*/
     </script>

@@ -94,6 +94,7 @@ public class CaissierController {
             for(Map.Entry<String, Object> e:pagination.entrySet()){
                 model.addAttribute(e.getKey(), e.getValue());
             }
+            model.addAttribute(Constantes.VAR_PAGINATION_LIMIT, Constantes.PAGINATION_LIMIT);
             return iris;
         }
     }

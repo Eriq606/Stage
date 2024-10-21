@@ -72,7 +72,7 @@ public class BarmanController {
         if(utilisateur==null){
             return iris;
         }
-        String queryCount="select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat<20";
+        String queryCount="select count(*) from v_commandes where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) and est_termine=-1 group by idcommande) and etat=0";
         queryCount=String.format(queryCount, utilisateur.getRole().getId());
         if(table!=null){
             table=table.trim();
@@ -90,6 +90,7 @@ public class BarmanController {
             for (Map.Entry<String, Object> entry : pagination.entrySet()) {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
+            model.addAttribute(Constantes.VAR_CATEGORIES, utilisateur.recupererCategoriesChecking(connect, dao));
         }
         model.addAttribute(Constantes.VAR_PAGINATION_LIMIT, Constantes.PAGINATION_LIMIT);
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);

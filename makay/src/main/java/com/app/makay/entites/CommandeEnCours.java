@@ -279,7 +279,7 @@ public class CommandeEnCours{
         }
         return termine;
     }
-    public String recupererTermineCouleur(){
+    public String recupererEstTermineCouleur(){
         if(estTermine()){
             return "#9cff9c";
         }

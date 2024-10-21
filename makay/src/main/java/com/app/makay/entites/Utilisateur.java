@@ -500,10 +500,10 @@ public class Utilisateur extends IrisUser{
         return commandes;
     }
     public CommandeEnCours[] recupererCommandesChecking(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+        String addOn="where id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat=0 order by dateheure_ouverture limit %s offset %s";
         addOn=String.format(addOn, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         if(table!=null){
-            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat<20 order by dateheure_ouverture limit %s offset %s";
+            addOn="where nom_place='%s' and id in (select idcommande from v_commandefille_produits where idcategorie in (select idcategorie from v_role_categorie_produits_checkings where idrole=%s) group by idcommande) and etat=0 order by dateheure_ouverture limit %s offset %s";
             addOn=String.format(addOn, table, getRole().getId(), Constantes.PAGINATION_LIMIT, offset);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
@@ -846,7 +846,7 @@ public class Utilisateur extends IrisUser{
             paiement.setUtilisateur(this);
             dao.insertWithoutPrimaryKey(connect, paiement);
             Commande change=new Commande();
-            change.setResteAPayer(paiement.getCommande().getResteAPayer()-paiement.getMontant());
+            change.setResteAPayer(commande.getResteAPayer()-paiement.getMontant());
             if(change.getResteAPayer()==0){
                 change.setEtat(Constantes.COMMANDE_PAYEE);
             }
@@ -932,5 +932,15 @@ public class Utilisateur extends IrisUser{
             e.printStackTrace();
             throw e;
         }
+    }
+    public int[] recupererCategoriesChecking(Connection connect, MyDAO dao) throws Exception{
+        String query="where id in (select idcategorie from role_categorie_produits_checkings where idrole=%s) and etat=0";
+        query=String.format(query, getRole().getId());
+        Categorie[] categories=dao.select(connect, Categorie.class, query);
+        int[] ids=new int[categories.length];
+        for(int i=0;i<ids.length;i++){
+            ids[i]=categories[i].getId();
+        }
+        return ids;
     }
 }

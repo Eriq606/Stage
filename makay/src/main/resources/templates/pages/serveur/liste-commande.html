@@ -119,6 +119,12 @@
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
         const api="http://"+ip+":8080/demande-addition";
+        function notifierDemandeAddition(envoiAddition){
+            stompclient.publish({
+                destination:"/makay/demande-addition",
+                body:JSON.stringify(envoiAddition)
+            });
+        }
         for(let i=0;i<demandesAddition.length;i++){
             const idcommande=demandesAddition[i].dataset.idcommande;
             const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
@@ -151,6 +157,7 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierDemandeAddition(demandeAdditionREST);
                     demandesAddition[i].innerHTML="<i class='fa-solid fa-check'></i>";
                     demandesAddition[i].disabled=true;
                     linkModifier.setAttribute("href", "#");

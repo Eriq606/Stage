@@ -20,20 +20,20 @@
     </div>
     <br>
     <div class="accordion" id="accordionCommande">
-        <div th:each="c:${commandes}" class="accordion-item bg-transparent">
+        <div th:each="c:${commandes}" th:id="'accordion-commande'+${c.id}" class="accordion-item bg-transparent">
             <h2 class="accordion-header" th:id="'headingOne'+${c.id}">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     th:data-bs-target="'#collapseCommande'+${c.id}" aria-expanded="true"
                     th:aria-controls="'collapseCommande'+${c.id}" th:text="${c.recupererPlaceLabel()}+' - '+${c.recupererHeure()}"
                     th:id="'buttonCheckCommande'+${c.id}"
-                    th:style="'background-color:'+${c.recupererTermineCouleur()}">
+                    th:style="'background-color:'+${c.recupererEstTermineCouleur()}">
                 </button>
             </h2>
             <div th:id="'collapseCommande'+${c.id}" class="accordion-collapse collapse"
                 th:aria-labelledby="'headingOne'+${c.id}" data-bs-parent="#accordionCommande">
                 <div class="accordion-body table-responsive">
                     <table class="table">
-                        <tbody>
+                        <tbody th:id="'commandefilles-commande'+${c.id}">
                             <tr th:each="cf:${c.commandeFilles}">
                                 <td th:if="${cf.estTermine==-1}">
                                     <input th:class="'checkCommandeFilleCommande'+${c.id}+' form-check-input'" th:data-termine="${cf.estTermine}" type="checkbox" th:data-idcommandefille="${cf.id}" th:data-idcommande="${c.id}" th:id="'checkCommandeFille'+${cf.id}" onclick="checkCommandeFille(event)">
@@ -177,6 +177,8 @@
         stompclient.onConnect=(frame)=>{
             receiveNotificationRedirect();
             receiveNouvelleCommande();
+            recevoirModificationCommande();
+            recevoirDemandeAddition();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -204,9 +206,12 @@
             </tr>`;
             return commandeFille;
         }
-        function generateCommande(c){
+        function generateCommande(c, categories){
             let commandeFilles=``;
             for(const cf of c.commandeFilles){
+                if(categories.includes(cf.produit.categorie.id)==false){
+                    continue;
+                }
                 commandeFilles+=generateCommandeFille(c, cf);
             }
             const commande=`
@@ -223,7 +228,7 @@
                     aria-labelledby="headingOne${c.id}" data-bs-parent="#accordionCommande">
                     <div class="accordion-body table-responsive">
                         <table class="table">
-                            <tbody>
+                            <tbody id="commandefilles-commande${c.id}">
                                 `+commandeFilles+`
                             </tbody>
                         </table>
@@ -232,17 +237,41 @@
             </div>`;
             const divCmd=document.createElement("div");
             divCmd.className="accordion-item bg-transparent";
+            divCmd.id="accordion-commande"+c.id;
             divCmd.innerHTML=commande;
             return divCmd;
         }
         const paginationLimit=/*[[${paginationlimit}]]*/0;
+        const categories=/*[[${categories}]]*/[];
         function receiveNouvelleCommande(){
             stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoye)=>{
                 const envoiCommande=JSON.parse(commandeEnvoye.body);
                 const accordionCommande=document.getElementById("accordionCommande");
                 if(accordionCommande.children.length<paginationLimit){
-                    accordionCommande.appendChild(generateCommande(envoiCommande.commande));
+                    accordionCommande.appendChild(generateCommande(envoiCommande.commande, categories));
                 }
+            })
+        }
+        function recevoirModificationCommande(){
+            stompclient.subscribe("/notify/recevoir-modifier-commande", (commandeEnvoye)=>{
+                const envoiCommande=JSON.parse(commandeEnvoye.body);
+                console.log(envoiCommande);
+                const divCommandeFilles=document.getElementById("commandefilles-commande"+envoiCommande.commande.id);
+                for(const cf of envoiCommande.commandeFilles){
+                    if(categories.includes(cf.produit.categorie.id)==false){
+                        continue;
+                    }
+                    const tr=document.createElement("tr");
+                    tr.innerHTML=generateCommandeFille(envoiCommande.commande, cf);
+                    divCommandeFilles.appendChild(tr);
+                }
+            });
+        }
+        function recevoirDemandeAddition(){
+            stompclient.subscribe("/notify/recevoir-demande-addition", (demandeAdditionEnvoye)=>{
+                const envoiDemandeAddition=JSON.parse(demandeAdditionEnvoye.body);
+                const accordionCommande=document.getElementById("accordion-commande"+envoiDemandeAddition.commande.id);
+                accordionCommande.parentNode.removeChild(accordionCommande);
             })
         }
         /*]]*/

@@ -370,4 +370,13 @@ public class ServeurController {
     public CheckCommandeFilleREST notifierCheck(CheckCommandeFilleREST check){
         return check;
     }
+    @MessageMapping("/demande-addition")
+    @SendTo("/notify/recevoir-demande-addition")
+    public DemandeAdditionREST demandeAddition(DemandeAdditionREST addition) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            addition.setCommande(dao.select(connect, Commande.class, addition.getCommande())[0]);
+            addition.getCommande().recupererCommandeFilles(connect, dao);
+        }
+        return addition;
+    }
 }

@@ -16,7 +16,7 @@
                         <div th:each="s:${serveurs}" class="tab-pane fade" th:id="'v-pills-serveur-'+${s.id}" role="tabpanel" th:aria-labelledby="'v-pills-serveur-tab-'+${s.id}">
                             <table class="table">
                                 <tbody th:id="'commandes-'+${s.id}">
-                                    <tr th:each="c:${s.commandes}">
+                                    <tr th:each="c:${s.commandes}" th:id="'ligne-commande'+${c.id}" th:style="'background-color:'+${c.recupererEstTermineCouleur()}">
                                         <td><a th:text="${c.recupererPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
                                         <td th:text="${c.recupererHeure()}"></td>
                                         <div class="modal fade" th:id="'detailCommandeModal'+${c.id}" tabindex="-2" th:aria-labelledby="'detailCommandeModalLabel'+${c.id}" aria-hidden="true">
@@ -303,6 +303,7 @@
                 const commandeRow=createCommande(commande, commande.utilisateur);
                 const div=document.createElement("tr");
                 div.innerHTML=commandeRow;
+                div.id="ligne-commande"+commande.id;
                 const thbody=document.getElementById("commandes-"+commande.utilisateur.id);
                 thbody.appendChild(div);
             });
@@ -366,6 +367,13 @@
                 ligneCmdFille.style.backgroundColor="#70ff9b";
             });
         }
+        function receiveDemandeAddition(){
+            stompclient.subscribe("/notify/recevoir-demande-addition", (additionEnvoye)=>{
+                const envoiAddition=JSON.parse(additionEnvoye.body);
+                const ligneCommande=document.getElementById("ligne-commande"+envoiAddition.commande.id);
+                ligneCommande.style.backgroundColor="#70ff9b";
+            });
+        }
         stompclient.onConnect=(frame)=>{
             receiveNotificationCommande();
             receiveNotificationRedirect();
@@ -373,6 +381,7 @@
             receivePaiementCommande();
             receiveActionSuperviseur();
             receiveCheckCommandeFille();
+            receiveDemandeAddition();
         };
 
         const api="http://"+ip+":8080/action-superviseur";
