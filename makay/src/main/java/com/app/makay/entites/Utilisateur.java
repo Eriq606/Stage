@@ -487,10 +487,10 @@ public class Utilisateur extends IrisUser{
         return commandes;
     }
     public CommandeEnCours[] recupererCommandesCorrespondantes(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        String addOn="where idutilisateur=%s and etat<20 order by dateheure_ouverture limit %s offset %s";
+        String addOn="where idutilisateur=%s and etat<10 order by dateheure_ouverture limit %s offset %s";
         addOn=String.format(addOn, getId(), Constantes.PAGINATION_LIMIT, offset);
         if(table!=null){
-            addOn="where nom_place='%s' and idutilisateur=%s and etat<20 order by dateheure_ouverture limit %s offset %s";
+            addOn="where nom_place='%s' and idutilisateur=%s and etat<10 order by dateheure_ouverture limit %s offset %s";
             addOn=String.format(addOn, table, getId(), Constantes.PAGINATION_LIMIT, offset);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);

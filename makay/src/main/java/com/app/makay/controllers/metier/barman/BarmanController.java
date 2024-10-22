@@ -92,6 +92,7 @@ public class BarmanController {
             }
             model.addAttribute(Constantes.VAR_CATEGORIES, utilisateur.recupererCategoriesChecking(connect, dao));
         }
+        model.addAttribute(Constantes.VAR_NOTIF_PATH, Constantes.SND_NOTIFICATION);
         model.addAttribute(Constantes.VAR_PAGINATION_LIMIT, Constantes.PAGINATION_LIMIT);
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);

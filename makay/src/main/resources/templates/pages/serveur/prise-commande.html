@@ -92,11 +92,8 @@
                 </div>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                    // const places=/*[[${places}]]*/[];
                     const utilisateur=/*[[${utilisateur}]]*/{};
                     const sessionid=/*[[${sessionid}]]*/"";
-                    // const tableOuter=document.getElementById("tableOuter");
-                    // const tableInner=document.getElementById("tableInner");
                     tableOuter.addEventListener("change", function(){
                         tableInner.innerHTML="";
                         for(let i=0;i<places.length;i++){
@@ -361,7 +358,7 @@
                             saveButton.type = 'button';
                             saveButton.className = 'btn btn-primary';
                             saveButton.textContent = 'Confirmer';
-                            saveButton.setAttribute('data-bs-dismiss', 'modal');
+                            // saveButton.setAttribute('data-bs-dismiss', 'modal');
                             saveButton.onclick=()=>{
                                 const qte=document.getElementById("inputQuantite"+product.id).value;
                                 const notes=document.getElementById("notesArea"+product.id).value;

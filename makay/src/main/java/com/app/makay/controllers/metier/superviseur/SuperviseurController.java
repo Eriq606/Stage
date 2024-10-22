@@ -285,6 +285,7 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_COMMANDEFILLE_ANNULEE, Constantes.COMMANDEFILLE_ANNULEE);
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_NOTIF_PATH, Constantes.SND_NOTIFICATION);
         return iris;
     }
 

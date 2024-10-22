@@ -60,40 +60,40 @@
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#paieModal'+${c.id}">Payer</button>
                                 <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                    <form class="formulaire-payer" th:data-idcommande="${c.id}" th:data-resteapayer="${c.resteAPayer}">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" th:id="'paieModalLabel'+${c.id}">Effectuer un paiement</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div th:id="'alerte-envoye-commande'+${c.id}"></div>
-                                            <p>
-                                                <span th:text="'Reste a payer : '"></span>
-                                                <span th:id="'reste-a-payer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></span>
-                                            </p>
-                                            <div class="mb-3">
-                                                <label th:for="'montant-commande'+${c.id}" class="form-label">Montant</label>
-                                                <input type="number" th:value="${c.resteAPayer}" min="0" step="0.01" name="montant" class="form-control" th:id="'montant-commande'+${c.id}"
-                                                    aria-describedby="emailHelp">
+                                        <div class="modal-content">
+                                        <form class="formulaire-payer" th:data-idcommande="${c.id}" th:data-resteapayer="${c.resteAPayer}">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" th:id="'paieModalLabel'+${c.id}">Effectuer un paiement</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <fieldset class="row mb-3">
-                                                <legend class="col-form-label col-sm-2 pt-0">Mode de paiement</legend>
-                                                <div class="col-sm-10">
-                                                    <div th:each="mp:${modepaiements}" class="form-check">
-                                                        <input class="form-check-input" type="radio" name="mode-paiement"
-                                                            th:id="'paiement-mode'+${mp.id}" th:value="${mp.id}" checked required>
-                                                        <label class="form-check-label" th:for="'paiement-mode'+${mp.id}" th:text="${mp.nom}"></label>
-                                                    </div>
+                                            <div class="modal-body">
+                                                <div th:id="'alerte-envoye-commande'+${c.id}"></div>
+                                                <p>
+                                                    <span th:text="'Reste a payer : '"></span>
+                                                    <span th:id="'reste-a-payer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></span>
+                                                </p>
+                                                <div class="mb-3">
+                                                    <label th:for="'montant-commande'+${c.id}" class="form-label">Montant</label>
+                                                    <input type="number" th:value="${c.resteAPayer}" min="0" step="0.01" name="montant" class="form-control" th:id="'montant-commande'+${c.id}"
+                                                        aria-describedby="emailHelp">
                                                 </div>
-                                            </fieldset>
+                                                <fieldset class="row mb-3">
+                                                    <legend class="col-form-label col-sm-2 pt-0">Mode de paiement</legend>
+                                                    <div class="col-sm-10">
+                                                        <div th:each="mp:${modepaiements}" class="form-check">
+                                                            <input class="form-check-input" type="radio" name="mode-paiement"
+                                                                th:id="'paiement-mode'+${mp.id}" th:value="${mp.id}" checked required>
+                                                            <label class="form-check-label" th:for="'paiement-mode'+${mp.id}" th:text="${mp.nom}"></label>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                                                <button type="submit" th:id="'payer-submit-commande'+${c.id}" class="btn btn-primary">Payer</button>
+                                            </div>
+                                        </form>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-                                            <button type="submit" th:id="'payer-submit-commande'+${c.id}" class="btn btn-primary">Payer</button>
-                                        </div>
-                                    </form>
-                                    </div>
                                     </div>
                                 </div>
                             </td>
@@ -212,7 +212,55 @@
             let resteAPayer=Number(formulaires[i].dataset.resteapayer);
             formulaires[i].onsubmit=(ev)=>{
                 ev.preventDefault();
-                payerAction(formulaires[i], idcommande, alerteEnvoye, resteAPayer);
+                const formData=new FormData(formulaires[i]);
+                const paiement={
+                    commande:{ id:idcommande, resteAPayer:resteAPayer },
+                    modePaiement:{ id:formData.get("mode-paiement") },
+                    montant:formData.get("montant")
+                }
+                const envoiPaiement={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    paiement:paiement
+                }
+                fetch(api, {
+                    method:"POST",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
+                }).then((response)=>{return response.json()})
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    notifierSuperviseurPaiement(envoiPaiement);
+                    const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                    const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
+                    resteAPayer-=Number(formData.get("montant"));
+                    resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    formulaires[i].setAttribute("data-resteapayer", resteAPayer);
+                    if(resteAPayer==0){
+                        // const commandeRow=document.getElementById("commande-row"+idcommande);
+                        // commandeRow.style.backgroundColor="#9cff9c";
+                        // const button=document.getElementById("payer-submit-commande"+idcommande);
+                        // button.innerHTML="<i class='fa-solid fa-check'></i>";
+                        // button.disabled=true;
+                        window.location.href="http://"+ip+":8080/demande-addition";
+                    }
+                });
             }
         }
 
@@ -341,16 +389,71 @@
             return tr;
         }
         const paginationLimit=/*[[${paginationlimit}]]*/0;
+        const notifSndPath=/*[[${notification}]]*/"";
+        const notification=new Audio(notifSndPath);
         function receiveDemandeAddition(){
             stompclient.subscribe("/notify/recevoir-demande-addition", (additionEnvoye)=>{
                 const envoiAddition=JSON.parse(additionEnvoye.body);
                 const tableAdditions=document.getElementById("table-demande-additions");
                 if(tableAdditions.children.length<paginationLimit+1){
+                    notification.play();
+                    navigator.vibrate(500);
                     tableAdditions.appendChild(generateCommande(envoiAddition.commande));
                     const formulaire=document.getElementById("formulaire-payer-commande"+envoiAddition.commande.id);
                     formulaire.onsubmit=(ev)=>{
                         ev.preventDefault();
-                        payerAction(formulaire, envoiAddition.commande.id, document.getElementById("alerte-envoye-commande"+envoiAddition.commande.id), envoiAddition.commande.resteAPayer);
+                        const idcommande=formulaire.dataset.idcommande;
+                        const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
+                        let resteAPayer=Number(formulaire.dataset.resteapayer);
+                        const formData=new FormData(formulaire);
+                        const paiement={
+                            commande:{ id:idcommande, resteAPayer:resteAPayer },
+                            modePaiement:{ id:formData.get("mode-paiement") },
+                            montant:formData.get("montant")
+                        }
+                        const envoiPaiement={
+                            utilisateur:utilisateur,
+                            sessionid:sessionid,
+                            paiement:paiement
+                        }
+                        fetch(api, {
+                            method:"POST",
+                            headers:{
+                                "Content-type":"application/json"
+                            },
+                            body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
+                        }).then((response)=>{return response.json()})
+                        .then((data)=>{
+                            if(data.code===0){
+                                const alert=document.createElement("div");
+                                alert.className="alert alert-danger alert-dismissible show w-100";
+                                alert.setAttribute("role", "alert");
+                                alert.textContent=data.message;
+                                const button = document.createElement('button');
+                                button.type = 'button';
+                                button.className = 'btn-close';
+                                button.setAttribute('data-bs-dismiss', 'alert');
+                                button.setAttribute('aria-label', 'Close');
+                                alert.appendChild(button);
+                                alerteEnvoye.appendChild(alert);
+                                return;
+                            }
+                            notifierSuperviseurPaiement(envoiPaiement);
+                            const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                            const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
+                            resteAPayer-=Number(formData.get("montant"));
+                            resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                            resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                            formulaire.setAttribute("data-resteapayer", resteAPayer);
+                            if(resteAPayer==0){
+                                // const commandeRow=document.getElementById("commande-row"+idcommande);
+                                // commandeRow.style.backgroundColor="#9cff9c";
+                                // const button=document.getElementById("payer-submit-commande"+idcommande);
+                                // button.innerHTML="<i class='fa-solid fa-check'></i>";
+                                // button.disabled=true;
+                                window.location.href="http://"+ip+":8080/demande-addition";
+                            }
+                        });
                     }
                 }
             })

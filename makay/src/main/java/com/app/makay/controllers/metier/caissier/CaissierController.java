@@ -80,6 +80,7 @@ public class CaissierController {
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             CommandeEnCours[] commandes=utilisateur.recupererDemandesAddition(connect, dao, (indiceActu-1)*Constantes.PAGINATION_LIMIT, tableFiltre);
+            model.addAttribute(Constantes.VAR_NOTIF_PATH, Constantes.SND_NOTIFICATION);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
             model.addAttribute(Constantes.VAR_PLACES, places);

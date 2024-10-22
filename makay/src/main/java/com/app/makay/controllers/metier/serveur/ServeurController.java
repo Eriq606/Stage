@@ -126,7 +126,7 @@ public class ServeurController {
         if(utilisateur==null){
             return iris;
         }
-        String queryCount="select count(*) from v_commandes where idutilisateur=%s and etat<20";
+        String queryCount="select count(*) from v_commandes where idutilisateur=%s and etat<10";
         queryCount=String.format(queryCount, utilisateur.getId());
         if(table!=null){
             table=table.trim();
@@ -145,6 +145,7 @@ public class ServeurController {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
         }
+        model.addAttribute(Constantes.VAR_NOTIF_PATH, Constantes.SND_NOTIFICATION);
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());

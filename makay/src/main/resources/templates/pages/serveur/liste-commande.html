@@ -158,11 +158,12 @@
                         return;
                     }
                     notifierDemandeAddition(demandeAdditionREST);
-                    demandesAddition[i].innerHTML="<i class='fa-solid fa-check'></i>";
-                    demandesAddition[i].disabled=true;
-                    linkModifier.setAttribute("href", "#");
-                    modifierCommande.disabled=true;
-                    buttonCommande.style.backgroundColor="#9cff9c";
+                    // demandesAddition[i].innerHTML="<i class='fa-solid fa-check'></i>";
+                    // demandesAddition[i].disabled=true;
+                    // linkModifier.setAttribute("href", "#");
+                    // modifierCommande.disabled=true;
+                    // buttonCommande.style.backgroundColor="#9cff9c";
+                    window.location.href="http://"+ip+":8080/liste-commande";
                 });
             }
         }
@@ -188,11 +189,15 @@
         window.onbeforeunload=()=>{
             stompclient.deactivate();
         }
+        const notifSndPath=/*[[${notification}]]*/"";
+        const notif=new Audio(notifSndPath);
         function receiveCheckCommandeFille(){
             stompclient.subscribe("/notify/recevoir-check-commandefille", (checkEnvoye)=>{
                 const envoiCheck=JSON.parse(checkEnvoye.body);
                 const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
                 ligneCmdFille.style.backgroundColor="#70ff9b";
+                notif.play();
+                navigator.vibrate(500);
             });
         }
         /*]]*/

@@ -292,6 +292,7 @@
             `;
             return commandeHTML;
         }
+        const notifSndPath=/*[[${notification}]]*/"";
         function modifierCommande(commandeFille, commande, utilisateur){
             const rafraichir=document.getElementById("rafraichir");
             rafraichir.style.display="block";
@@ -306,6 +307,7 @@
                 div.id="ligne-commande"+commande.id;
                 const thbody=document.getElementById("commandes-"+commande.utilisateur.id);
                 thbody.appendChild(div);
+                navigator.vibrate(500);
             });
         }
         function receiveModificationCommande(){
@@ -321,6 +323,7 @@
                 for(let i=0;i<envoiCommande.commandeFilles.length;i++){
                     divCommandeFilles.appendChild(createCommandeFille(envoiCommande.commandeFilles[i]));
                 }
+                navigator.vibrate(500);
             });
         }
         function receivePaiementCommande(){
@@ -329,6 +332,7 @@
                 const paiement=envoiPaiement.paiement;
                 const divPaiement=document.getElementById("paiements-commande"+paiement.commande.id);
                 divPaiement.appendChild(createPaiement(paiement));
+                navigator.vibrate(500);
             });
         }
         function receiveActionSuperviseur(){
@@ -349,6 +353,7 @@
                     }
                 }
                 divPaiement.appendChild(createPaiement(paiement));
+                navigator.vibrate(500);
             });
         }
         function redirigerVersResetCache(){
@@ -365,6 +370,7 @@
                 console.log(envoiCheck);
                 const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
                 ligneCmdFille.style.backgroundColor="#70ff9b";
+                navigator.vibrate(500);
             });
         }
         function receiveDemandeAddition(){
@@ -372,6 +378,7 @@
                 const envoiAddition=JSON.parse(additionEnvoye.body);
                 const ligneCommande=document.getElementById("ligne-commande"+envoiAddition.commande.id);
                 ligneCommande.style.backgroundColor="#70ff9b";
+                navigator.vibrate(500);
             });
         }
         stompclient.onConnect=(frame)=>{

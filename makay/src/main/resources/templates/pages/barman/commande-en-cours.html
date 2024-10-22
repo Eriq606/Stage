@@ -207,12 +207,14 @@
             return commandeFille;
         }
         function generateCommande(c, categories){
+            let sousJuridiction=0;
             let commandeFilles=``;
             for(const cf of c.commandeFilles){
                 if(categories.includes(cf.produit.categorie.id)==false){
                     continue;
                 }
                 commandeFilles+=generateCommandeFille(c, cf);
+                sousJuridiction++;
             }
             const commande=`
             <div>
@@ -239,24 +241,31 @@
             divCmd.className="accordion-item bg-transparent";
             divCmd.id="accordion-commande"+c.id;
             divCmd.innerHTML=commande;
-            return divCmd;
+            return [divCmd, sousJuridiction];
         }
         const paginationLimit=/*[[${paginationlimit}]]*/0;
         const categories=/*[[${categories}]]*/[];
+        const notifSndPath=/*[[${notification}]]*/"";
+        const notification=new Audio(notifSndPath);
         function receiveNouvelleCommande(){
             stompclient.subscribe("/notify/recevoir-nouvelle-commande", (commandeEnvoye)=>{
                 const envoiCommande=JSON.parse(commandeEnvoye.body);
                 const accordionCommande=document.getElementById("accordionCommande");
-                if(accordionCommande.children.length<paginationLimit){
-                    accordionCommande.appendChild(generateCommande(envoiCommande.commande, categories));
+                const element=generateCommande(envoiCommande.commande, categories);
+                if(accordionCommande.children.length<paginationLimit&&element[1]>0){
+                    accordionCommande.appendChild(element[0]);
+                    notification.play();
+                    navigator.vibrate(500);
                 }
             })
         }
         function recevoirModificationCommande(){
             stompclient.subscribe("/notify/recevoir-modifier-commande", (commandeEnvoye)=>{
                 const envoiCommande=JSON.parse(commandeEnvoye.body);
-                console.log(envoiCommande);
                 const divCommandeFilles=document.getElementById("commandefilles-commande"+envoiCommande.commande.id);
+                const buttonCheckCommande=document.getElementById("buttonCheckCommande"+envoiCommande.commande.id);
+                buttonCheckCommande.style.backgroundColor="none";
+                let sousJuridiction=0;
                 for(const cf of envoiCommande.commandeFilles){
                     if(categories.includes(cf.produit.categorie.id)==false){
                         continue;
@@ -264,14 +273,20 @@
                     const tr=document.createElement("tr");
                     tr.innerHTML=generateCommandeFille(envoiCommande.commande, cf);
                     divCommandeFilles.appendChild(tr);
+                    sousJuridiction++;
+                }
+                if(sousJuridiction>0){
+                    notification.play();
+                    navigator.vibrate(500);
                 }
             });
         }
         function recevoirDemandeAddition(){
             stompclient.subscribe("/notify/recevoir-demande-addition", (demandeAdditionEnvoye)=>{
-                const envoiDemandeAddition=JSON.parse(demandeAdditionEnvoye.body);
-                const accordionCommande=document.getElementById("accordion-commande"+envoiDemandeAddition.commande.id);
-                accordionCommande.parentNode.removeChild(accordionCommande);
+                // const envoiDemandeAddition=JSON.parse(demandeAdditionEnvoye.body);
+                // const accordionCommande=document.getElementById("accordion-commande"+envoiDemandeAddition.commande.id);
+                // accordionCommande.parentNode.removeChild(accordionCommande);
+                window.location.href="http://"+ip+":8080/commandes-en-cours";
             })
         }
         /*]]*/
