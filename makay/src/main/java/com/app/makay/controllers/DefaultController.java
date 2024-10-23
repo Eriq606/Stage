@@ -1,7 +1,5 @@
 package com.app.makay.controllers;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.view.RedirectView;
@@ -12,7 +10,4 @@ public class DefaultController {
     public RedirectView index(){
         return new RedirectView("/login");
     }
-    // @MessageMapping("/notifications")
-    // @SendTo("/notify/recevoir-notifications")
-    // public 
 }

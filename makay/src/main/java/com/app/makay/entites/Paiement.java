@@ -99,10 +99,11 @@ public class Paiement {
         <tr class="details-travaux">
             <td style="padding: 10px; border: 1px solid;">%s</td>
             <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
             <td style="padding: 10px; border: 1px solid;text-align:right">%s</td>
         </tr>
         """;
-        html=String.format(html, recupererHeureStringDocument(), getModePaiement().getNom(), recupererMontantString());
+        html=String.format(html, recupererHeureStringDocument(), getUtilisateur().getNom(), getModePaiement().getNom(), recupererMontantString());
         return html;
     }
 }

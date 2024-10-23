@@ -116,7 +116,11 @@
                         return;
                     }
                     notifierActionSuperviseur(envoiAction);
-                    location.reload();
+                    if(data.donnees.estTermine==true){
+                        window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
+                    }else{
+                        location.reload();
+                    }
                 });
             }
         }

@@ -697,3 +697,5 @@ delete from accompagnement_commandes;
 delete from commande_filles_terminees;
 delete from commande_filles;
 delete from commandes;
+
+alter table action_superviseurs add idutilisateur int not null references utilisateurs(id);

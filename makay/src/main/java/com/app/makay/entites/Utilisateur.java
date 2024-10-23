@@ -483,6 +483,8 @@ public class Utilisateur extends IrisUser{
             commandes[i].recupererPaiements(connect, dao);
             commandes[i].recupererCommandeFilles(connect, dao);
             commandes[i].recupererActionsSuperviseurs(connect, dao);
+            commandes[i].recupererActionsTotales();
+            commandes[i].recupererPaiementTotal();
         }
         return commandes;
     }
@@ -539,11 +541,14 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
-    public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
+    public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String serveur, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
                                                         String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select * from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
+        if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+            listQuery.add("idutilisateur=?");
+        }
         if(table!=null&&table.isEmpty()==false){
             listQuery.add("nom_place=?");
         }
@@ -598,6 +603,10 @@ public class Utilisateur extends IrisUser{
         query+=" order by dateheure_ouverture desc limit ? offset ?";
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
+            if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+                statement.setInt(indice, Integer.parseInt(serveur));
+                indice++;
+            }
             if(table!=null&&table.isEmpty()==false){
                 statement.setString(indice, table);
                 indice++;
@@ -672,6 +681,9 @@ public class Utilisateur extends IrisUser{
                     commande.setOuverture(result.getTimestamp("dateheure_ouverture").toLocalDateTime());
                     commande.recupererCommandeFilles(connect, dao);
                     commande.recupererPaiements(connect, dao);
+                    commande.recupererActionsSuperviseurs(connect, dao);
+                    commande.recupererActionsTotales();
+                    commande.recupererPaiementTotal();
                     liste.add(commande);
                 }
                 CommandeEnCours[] commandes=liste.toArray(new CommandeEnCours[]{});
@@ -679,11 +691,14 @@ public class Utilisateur extends IrisUser{
             }
         }
     }
-    public int recupererCountHistoriqueCommande(Connection connect, MyDAO dao, int offset, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
+    public int recupererCountHistoriqueCommande(Connection connect, MyDAO dao, int offset, String serveur, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
                                                          String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select count(*) from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
+        if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+            listQuery.add("idutilisateur=?");
+        }
         if(table!=null&&table.isEmpty()==false){
             listQuery.add("nom_place=?");
         }
@@ -737,6 +752,10 @@ public class Utilisateur extends IrisUser{
         query=query.substring(0, query.length()-5);
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
+            if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+                statement.setInt(indice, Integer.parseInt(serveur));
+                indice++;
+            }
             if(table!=null&&table.isEmpty()==false){
                 statement.setString(indice, table);
                 indice++;
@@ -885,7 +904,8 @@ public class Utilisateur extends IrisUser{
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
     }
-    public void actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur actionSuperviseur) throws Exception{
+    public boolean actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur actionSuperviseur) throws Exception{
+        boolean estTermine=false;
         try{
             CommandeFille where=new CommandeFille();
             where.setId(actionSuperviseur.getCommandeFille().getId());
@@ -923,10 +943,13 @@ public class Utilisateur extends IrisUser{
             changeCommandeFille.setQuantiteRestante(commandeFille.getQuantite()-actionSuperviseur.getQuantite());
             if(changeCommande.getResteAPayer()==0){
                 changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+                estTermine=true;
             }
+            actionSuperviseur.setUtilisateur(this);
             dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             dao.update(connect, changeCommandeFille, where);
             dao.update(connect, changeCommande, whereCommande);
+            return estTermine;
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
@@ -942,5 +965,14 @@ public class Utilisateur extends IrisUser{
             ids[i]=categories[i].getId();
         }
         return ids;
+    }
+    public static Utilisateur[] recupererServeursHistorique(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where etat=0 and id in (select idutilisateur from commandes group by idutilisateur)";
+        Utilisateur[] serveurs=dao.select(connect, Utilisateur.class, addOn);
+        for(Utilisateur u:serveurs){
+            u.setMotdepasse(null);
+            u.setEmail(null);
+        }
+        return serveurs;
     }
 }

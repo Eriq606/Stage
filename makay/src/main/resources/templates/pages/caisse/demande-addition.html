@@ -61,7 +61,7 @@
                                 <div class="modal fade" th:id="'paieModal'+${c.id}" tabindex="-1" th:aria-labelledby="'paieModalLabel'+${c.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                        <form class="formulaire-payer" th:data-idcommande="${c.id}" th:data-resteapayer="${c.resteAPayer}">
+                                        <form class="formulaire-payer" th:id="'formulaire-payer-commande'+${c.id}" th:data-idcommande="${c.id}" th:data-resteapayer="${c.resteAPayer}">
                                             <div class="modal-header">
                                                 <h1 class="modal-title fs-5" th:id="'paieModalLabel'+${c.id}">Effectuer un paiement</h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -156,56 +156,6 @@
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
         const api="http://"+ip+":8080/payer";
-        function payerAction(formulaire, idcommande, alerteEnvoye, resteAPayer){
-            const formData=new FormData(formulaire);
-            const paiement={
-                commande:{ id:idcommande, resteAPayer:resteAPayer },
-                modePaiement:{ id:formData.get("mode-paiement") },
-                montant:formData.get("montant")
-            }
-            const envoiPaiement={
-                utilisateur:utilisateur,
-                sessionid:sessionid,
-                paiement:paiement
-            }
-            fetch(api, {
-                method:"POST",
-                headers:{
-                    "Content-type":"application/json"
-                },
-                body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
-            }).then((response)=>{return response.json()})
-            .then((data)=>{
-                if(data.code===0){
-                    const alert=document.createElement("div");
-                    alert.className="alert alert-danger alert-dismissible show w-100";
-                    alert.setAttribute("role", "alert");
-                    alert.textContent=data.message;
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'btn-close';
-                    button.setAttribute('data-bs-dismiss', 'alert');
-                    button.setAttribute('aria-label', 'Close');
-                    alert.appendChild(button);
-                    alerteEnvoye.appendChild(alert);
-                    return;
-                }
-                notifierSuperviseurPaiement(envoiPaiement);
-                const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
-                const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
-                resteAPayer-=Number(formData.get("montant"));
-                resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                formulaire.setAttribute("data-resteapayer", resteAPayer);
-                if(resteAPayer==0){
-                    const commandeRow=document.getElementById("commande-row"+idcommande);
-                    commandeRow.style.backgroundColor="#9cff9c";
-                    const button=document.getElementById("payer-submit-commande"+idcommande);
-                    button.innerHTML="<i class='fa-solid fa-check'></i>";
-                    button.disabled=true;
-                }
-            });
-        }
         for(let i=0;i<formulaires.length;i++){
             const idcommande=formulaires[i].dataset.idcommande;
             const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
@@ -281,6 +231,7 @@
         stompclient.onConnect=(frame)=>{
             receiveNotificationRedirect();
             receiveDemandeAddition();
+            receiveActionSuperviseur();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -457,6 +408,23 @@
                     }
                 }
             })
+        }
+        function receiveActionSuperviseur(){
+            stompclient.subscribe("/notify/recevoir-action-superviseur", (actionEnvoye)=>{
+                const envoiAction=JSON.parse(actionEnvoye.body);
+                const action=envoiAction.actionSuperviseur;
+                const commandeRow=document.getElementById("commande-row"+action.commandeFille.commande.id);
+                if(action.commandeFille.commande.resteAPayer==0){
+                    commandeRow.parentNode.removeChild(commandeRow);
+                    return;
+                }
+                const resteAPayer=document.getElementById("reste-a-payer-colonne"+action.commandeFille.commande.id);
+                resteAPayer.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
+                const resteAPayerCmd=document.getElementById("reste-a-payer-commande"+action.commandeFille.commande.id);
+                resteAPayerCmd.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
+                const formulairePayer=document.getElementById("formulaire-payer-commande"+action.commandeFille.commande.id);
+                formulairePayer.setAttribute("data-resteapayer", action.commandeFille.commande.resteAPayer);
+            });
         }
         /*]]*/
     </script>

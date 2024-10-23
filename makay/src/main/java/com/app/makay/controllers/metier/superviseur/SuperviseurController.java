@@ -351,8 +351,9 @@ public class SuperviseurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
+            boolean estTermine=modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
             connect.commit();
+            response.addItem("estTermine", estTermine);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);

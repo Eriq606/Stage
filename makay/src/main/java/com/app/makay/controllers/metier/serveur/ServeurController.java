@@ -255,7 +255,7 @@ public class ServeurController {
         }
     }
     @GetMapping("/historique-de-commande")
-    public Object historiqueCommandes(HttpServletRequest req, Model model, Integer indice_actu, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut, String clotureFin,
+    public Object historiqueCommandes(HttpServletRequest req, Model model, Integer indice_actu, String serveur, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut, String clotureFin,
                                       String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws SQLException, Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
@@ -270,14 +270,15 @@ public class ServeurController {
             indice_actu_controller=indice_actu;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
-            int countCommandes=utilisateur.recupererCountHistoriqueCommande(connect, dao, indice_actu_controller, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
+            CommandeEnCours[] commandes=utilisateur.recupererHistoriqueCommande(connect, dao, indice_actu_controller, serveur, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
+            int countCommandes=utilisateur.recupererCountHistoriqueCommande(connect, dao, indice_actu_controller, serveur, table!=null?table.trim():table, ouvertureDebut, ouvertureFin, clotureDebut, clotureFin, montantDebut!=null?montantDebut.trim():montantDebut, montantFin!=null?montantFin.trim():montantFin, modepaiement, produit!=null?produit.trim():produit, accompagnement!=null?accompagnement.trim():accompagnement, notes!=null?notes.trim():notes);
             ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class);
+            Utilisateur[] serveurs=Utilisateur.recupererServeursHistorique(connect, dao);
             HashMap<String, Object> pagination=HandyManUtils.paginate(countCommandes, Constantes.PAGINATION_LIMIT, indice_actu_controller);
-            // HandyManUtils.gene
             for(Map.Entry<String, Object> m:pagination.entrySet()){
                 model.addAttribute(m.getKey(), m.getValue());
             }
+            model.addAttribute(Constantes.VAR_UTILISATEURS, serveurs);
             model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
             model.addAttribute(Constantes.VAR_MODEPAIEMENTS_CHOISIS, modepaiement!=null?modepaiement:new String[0]);
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
@@ -338,6 +339,9 @@ public class ServeurController {
             Commande commande=dao.select(connect, Commande.class, where)[0];
             commande.recupererCommandeFilles(connect, dao);
             commande.recupererPaiements(connect, dao);
+            commande.recupererActionsSuperviseurs(connect, dao);
+            commande.recupererActionsTotales();
+            commande.recupererPaiementTotal();
             String newHTML=commande.formatterHTML(connect, dao, html);
             HandyManUtils.overwriteFileContent(faux, newHTML);
             File pdf=HandyManUtils.generatePDF(faux, "commande-"+commande.getOuverture().toString().replace("T", "--").replace(":", "-").replace(".", "-")+".pdf");

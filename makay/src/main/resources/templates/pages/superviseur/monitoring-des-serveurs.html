@@ -367,7 +367,6 @@
         function receiveCheckCommandeFille(){
             stompclient.subscribe("/notify/recevoir-check-commandefille", (checkEnvoye)=>{
                 const envoiCheck=JSON.parse(checkEnvoye.body);
-                console.log(envoiCheck);
                 const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
                 ligneCmdFille.style.backgroundColor="#70ff9b";
                 navigator.vibrate(500);

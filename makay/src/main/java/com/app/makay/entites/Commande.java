@@ -44,6 +44,31 @@ public class Commande {
     @Column("montant_annulee")
     private Double montantAnnulee;
     private ActionSuperviseur[] actions;
+    private double paiementTotal;
+    private double offertTotales;
+    private double annuleTotales;
+    public double getPaiementTotal() {
+        return paiementTotal;
+    }
+
+    public void setPaiementTotal(double paiementTotal) {
+        this.paiementTotal = paiementTotal;
+    }
+    public double getOffertTotales() {
+        return offertTotales;
+    }
+
+    public void setOffertTotales(double offertTotales) {
+        this.offertTotales = offertTotales;
+    }
+    public double getAnnuleTotales() {
+        return annuleTotales;
+    }
+
+    public void setAnnuleTotales(double annuleTotales) {
+        this.annuleTotales = annuleTotales;
+    }
+
     public ActionSuperviseur[] getActions() {
         return actions;
     }
@@ -224,6 +249,7 @@ public class Commande {
             lignesPaiements+=p.toHtml();
         }
         htmlContent=htmlContent.replace("<!-- PAIEMENTS -->", lignesPaiements);
+        htmlContent=htmlContent.replace("<!-- PAIEMENT TOTAL -->", recupererPaiementTotalString());
         htmlContent=htmlContent.replace("<!-- CLOTURE -->", recupererClotureStringDocument());
         return htmlContent;
     }
@@ -251,5 +277,38 @@ public class Commande {
         }
         setActions(actions);
         return actions;
+    }
+    public double recupererPaiementTotal(){
+        double total=0;
+        for(Paiement p:paiements){
+            total+=p.getMontant();
+        }
+        setPaiementTotal(total);
+        return total;
+    }
+    public String recupererPaiementTotalString(){
+        return HandyManUtils.number_format(paiementTotal, ' ', ',', 2)+" Ar";
+    }
+    public String recupererOffertTotalString(){
+        return HandyManUtils.number_format(offertTotales, ' ', ',', 2)+" Ar";
+    }
+    public String recupererAnnulesTotalString(){
+        return HandyManUtils.number_format(annuleTotales, ' ', ',', 2)+" Ar";
+    }
+    public double[] recupererActionsTotales(){
+        double totalOfferts=0;
+        double totalAnnules=0;
+        for(ActionSuperviseur a:actions){
+            switch(a.getAction()){
+                case Constantes.COMMANDEFILLE_OFFERT:
+                    totalOfferts+=a.getMontant();
+                    break;
+                case Constantes.COMMANDEFILLE_ANNULEE:
+                    totalAnnules+=a.getMontant();
+            }
+        }
+        setOffertTotales(totalOfferts);
+        setAnnuleTotales(totalAnnules);
+        return new double[]{totalOfferts, totalAnnules};
     }
 }

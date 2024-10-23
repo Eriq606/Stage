@@ -28,6 +28,15 @@ public class ActionSuperviseur {
     private Integer etat;
     @Column("montant")
     private Double montant;
+    @ForeignKey(recursive = false)
+    @Column("idutilisateur")
+    private Utilisateur utilisateur;
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
     public Double getMontant() {
         return montant;
     }
@@ -110,5 +119,26 @@ public class ActionSuperviseur {
                 return Constantes.COULEUR_CANCELED;
         }
         return null;
+    }
+    public String recupererHeureStringDocument(){
+        String date=getDateheure().toLocalDate().toString();
+        String heure=getDateheure().toLocalTime().minusNanos(getDateheure().toLocalTime().getNano()).toString();
+        return date+" "+heure;
+    }
+    public String recupererCommandeDocument(){
+        return getQuantite()+" "+getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes();
+    }
+    public String toHtml(){
+        String html="""
+        <tr class="details-travaux">
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;text-align:right">%s</td>
+        </tr>
+        """;
+        html=String.format(html, recupererHeureStringDocument(), recupererCommandeDocument(), getUtilisateur().getNom(), recupererActionString(), recupererMontantString());
+        return html;
     }
 }
