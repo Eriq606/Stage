@@ -699,3 +699,5 @@ delete from commande_filles;
 delete from commandes;
 
 alter table action_superviseurs add idutilisateur int not null references utilisateurs(id);
+
+alter table commande_filles add montant_restant price;

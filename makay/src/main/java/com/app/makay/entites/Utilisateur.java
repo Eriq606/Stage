@@ -346,6 +346,7 @@ public class Utilisateur extends IrisUser{
             for(int i=0;i<commandeFilles.length;i++){
                 commandeFilles[i].setCommande(commande);
                 commandeFilles[i].setQuantiteRestante(commandeFilles[i].getQuantite());
+                commandeFilles[i].setNotes(commandeFilles[i].getNotes().trim());
                 idcommandeFille=dao.insertWithoutPrimaryKey(connect, commandeFilles[i]);
                 commandeFilles[i].setId(idcommandeFille);
                 for(int j=0;j<commandeFilles[i].getAccompagnements().length;j++){
@@ -542,7 +543,8 @@ public class Utilisateur extends IrisUser{
         }
     }
     public CommandeEnCours[] recupererHistoriqueCommande(Connection connect, MyDAO dao, int offset, String serveur, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
-                                                        String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+                                                        String clotureFin, String montantDebut, String montantFin, String montantOffertDebut, String montantOffertFin,
+                                                        String montantAnnuleDebut, String montantAnnuleFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select * from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
@@ -573,6 +575,18 @@ public class Utilisateur extends IrisUser{
         }
         if(montantFin!=null&&montantFin.isEmpty()==false){
             listQuery.add("montant<?");
+        }
+        if(montantOffertDebut!=null&&montantOffertDebut.isEmpty()==false){
+            listQuery.add("montant_offert>=?");
+        }
+        if(montantOffertFin!=null&&montantOffertFin.isEmpty()==false){
+            listQuery.add("montant_offert<?");
+        }
+        if(montantAnnuleDebut!=null&&montantAnnuleDebut.isEmpty()==false){
+            listQuery.add("montant_annulee>=?");
+        }
+        if(montantAnnuleFin!=null&&montantAnnuleFin.isEmpty()==false){
+            listQuery.add("montant_annulee<?");
         }
         String[] modes={};
         String modesPaiement="";
@@ -635,6 +649,22 @@ public class Utilisateur extends IrisUser{
                 statement.setDouble(indice, Double.parseDouble(montantFin));
                 indice++;
             }
+            if(montantOffertDebut!=null&&montantOffertDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantOffertDebut));
+                indice++;
+            }
+            if(montantOffertFin!=null&&montantOffertFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantOffertFin));
+                indice++;
+            }
+            if(montantAnnuleDebut!=null&&montantAnnuleDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantAnnuleDebut));
+                indice++;
+            }
+            if(montantAnnuleFin!=null&&montantAnnuleFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantAnnuleFin));
+                indice++;
+            }
             for(String s:modes){
                 statement.setInt(indice, Integer.parseInt(s));
                 indice++;
@@ -692,7 +722,8 @@ public class Utilisateur extends IrisUser{
         }
     }
     public int recupererCountHistoriqueCommande(Connection connect, MyDAO dao, int offset, String serveur, String table, String ouvertureDebut, String ouvertureFin, String clotureDebut,
-                                                         String clotureFin, String montantDebut, String montantFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
+                                                         String clotureFin, String montantDebut, String montantFin, String montantOffertDebut, String montantOffertFin,
+                                                         String montantAnnuleDebut, String montantAnnuleFin, String[] modepaiement, String produit, String accompagnement, String notes) throws Exception{
         String query="select count(*) from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
@@ -723,6 +754,18 @@ public class Utilisateur extends IrisUser{
         }
         if(montantFin!=null&&montantFin.isEmpty()==false){
             listQuery.add("montant<?");
+        }
+        if(montantOffertDebut!=null&&montantOffertDebut.isEmpty()==false){
+            listQuery.add("montant_offert>=?");
+        }
+        if(montantOffertFin!=null&&montantOffertFin.isEmpty()==false){
+            listQuery.add("montant_offert<?");
+        }
+        if(montantAnnuleDebut!=null&&montantAnnuleDebut.isEmpty()==false){
+            listQuery.add("montant_annulee>=?");
+        }
+        if(montantAnnuleFin!=null&&montantAnnuleFin.isEmpty()==false){
+            listQuery.add("montant_annulee<?");
         }
         String[] modes={};
         String modesPaiement="";
@@ -782,6 +825,22 @@ public class Utilisateur extends IrisUser{
             }
             if(montantFin!=null&&montantFin.isEmpty()==false){
                 statement.setDouble(indice, Double.parseDouble(montantFin));
+                indice++;
+            }
+            if(montantOffertDebut!=null&&montantOffertDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantOffertDebut));
+                indice++;
+            }
+            if(montantOffertFin!=null&&montantOffertFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantOffertFin));
+                indice++;
+            }
+            if(montantAnnuleDebut!=null&&montantAnnuleDebut.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantAnnuleDebut));
+                indice++;
+            }
+            if(montantAnnuleFin!=null&&montantAnnuleFin.isEmpty()==false){
+                statement.setDouble(indice, Double.parseDouble(montantAnnuleFin));
                 indice++;
             }
             for(String s:modes){

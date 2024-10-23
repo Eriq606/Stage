@@ -1,0 +1,44 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <div id="alerte-envoye"></div>
+                <h1>Offrir une remise</h1>
+                <ul>
+                   <li style="font-weight: bold;" th:text="${commande.recupererPlaceLabel()}"></li>
+                   <li style="font-weight: bold;" th:text="'Serveur : '+${commande.utilisateur.nom}"></li>
+                   <li style="font-weight: bold;" th:text="${commande.recupererHeure()}"></li>
+                   <li style="font-weight: bold;" th:text="'Montant : '+${commande.recupererMontantString()}"></li>
+                   <li style="font-weight: bold;" th:text="'Reste à payer : '+${commande.recupererResteAPayerString()}"></li>
+                </ul>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>Quantité restante</th>
+                            <th>Commande</th>
+                            <th>Accomp.</th>
+                            <th>Prix unitaire</th>
+                            <th>Montant</th>
+                            <th>Qte pour appliquer la remise</th>
+                            <th>Nouveau prix unitaire</th>
+                            <th></th>
+                        </tr>
+                        <tr th:each="cf:${commande.commandeFilles}">
+                            <td th:text="${cf.quantiteRestante}"></td>
+                            <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
+                            <td><ul>
+                                <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>        
+                            </ul></td>
+                            <td th:text="${cf.recupererPUString()}"></td>
+                            <td th:text="${cf.recupererMontantString()}"></td>
+                            <td><input type="number" min="1" th:max="${cf.quantite}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantite}"></td>
+                            <td><input type="number" min="0" th:max="${cf.montant}" step="0.01" th:id="'montant-commandefille'+${cf.id}" th:value="${cf.montant}"></td>
+                            <td><button class="btn btn-success" th:data-idcommandefille="${cf.id}">Remise</button></td>
+                            <td><img th:id="'loading-commandefille'+${cf.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

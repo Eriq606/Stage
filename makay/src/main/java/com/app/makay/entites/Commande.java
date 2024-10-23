@@ -225,6 +225,14 @@ public class Commande {
         where.setCommande(commande);
         where.setEtat(0);
         Paiement[] paiements=dao.select(connect, Paiement.class, where);
+        Utilisateur whereUser;
+        for(Paiement p:paiements){
+            whereUser=new Utilisateur();
+            whereUser.setId(p.getUtilisateur().getId());
+            p.setUtilisateur(dao.select(connect, Utilisateur.class, whereUser)[0]);
+            p.getUtilisateur().setEmail(null);
+            p.getUtilisateur().setMotdepasse(null);
+        }
         setPaiements(paiements);
         return paiements;
     }
@@ -251,6 +259,14 @@ public class Commande {
         htmlContent=htmlContent.replace("<!-- PAIEMENTS -->", lignesPaiements);
         htmlContent=htmlContent.replace("<!-- PAIEMENT TOTAL -->", recupererPaiementTotalString());
         htmlContent=htmlContent.replace("<!-- CLOTURE -->", recupererClotureStringDocument());
+
+        String lignesActions="";
+        for(ActionSuperviseur a:getActions()){
+            lignesActions+=a.toHtml();
+        }
+        htmlContent=htmlContent.replace("<!-- ACTIONS -->", lignesActions);
+        htmlContent=htmlContent.replace("<!-- OFFERTS TOTAL -->", recupererOffertTotalString());
+        htmlContent=htmlContent.replace("<!-- ANNULEES TOTAL -->", recupererAnnulesTotalString());
         return htmlContent;
     }
     public int recupererIdUtilisateur(Connection connect, MyDAO dao) throws Exception{
@@ -272,8 +288,14 @@ public class Commande {
         String addon="where idcommandefille in (select id from commande_filles where idcommande=%s) and etat=0";
         addon=String.format(addon, getId());
         ActionSuperviseur[] actions=dao.select(connect, ActionSuperviseur.class, addon);
+        Utilisateur where;
         for(ActionSuperviseur a:actions){
             a.getCommandeFille().recupererAccompagnements(connect, dao);
+            where=new Utilisateur();
+            where.setId(a.getUtilisateur().getId());
+            a.setUtilisateur(dao.select(connect, Utilisateur.class, where)[0]);
+            a.getUtilisateur().setEmail(null);
+            a.getUtilisateur().setMotdepasse(null);
         }
         setActions(actions);
         return actions;
