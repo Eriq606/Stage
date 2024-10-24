@@ -35,10 +35,10 @@
                             </ul></td>
                             <td th:text="${cf.recupererPUString()}"></td>
                             <td th:text="${cf.recupererMontantString()}"></td>
-                            <td><input type="number" min="1" th:max="${cf.quantiteRestante}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantiteRestante}"></td>
-                            <td><input type="number" min="0" th:max="${cf.pu}" step="0.01" th:id="'montant-commandefille'+${cf.id}" th:value="${cf.pu}"></td>
-                            <td th:id="'montant-remise-commandefille'+${cf.id}"></td>
-                            <td th:id="'taux-remise-commandefille'+${cf.id}"></td>
+                            <td><input type="number" class="champ-quantite" min="1" th:max="${cf.quantiteRestante}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantiteRestante}"></td>
+                            <td><input type="number" class="champ-montant" min="0" th:max="${cf.pu}" step="0.01" th:data-puinitial="${cf.pu}" th:id="'montant-commandefille'+${cf.id}" th:value="${cf.pu}"></td>
+                            <td th:text="${cf.quantiteRestante*cf.pu}" th:id="'montant-remise-commandefille'+${cf.id}"></td>
+                            <td><input type="number" min="0" max="100" step="0.01" th:id="'taux-remise-commandefille'+${cf.id}" value="0"></td>
                             <td><button class="btn btn-success remise-button" th:data-idcommandefille="${cf.id}">Remise</button></td>
                             <td><img th:id="'loading-commandefille'+${cf.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;"></td>
                         </tr>
@@ -81,9 +81,51 @@
         const sessionid=/*[[${sessionid}]]*/"";
         const ip=/*[[${ip}]]*/"";
         const api="http://"+ip+":8080/remise";
+        const alerteEnvoye=document.getElementById("alerte-envoye");
         const remiseButtons=document.getElementsByClassName("remise-button");
+        const resetCache=/*[[${resetcache}]]*/"";
+        const receiveNotify=/*[[${receivenotify}]]*/"";
+        const stompclient=new StompJs.Client({
+            brokerURL:'ws://'+ip+':8080/messaging'
+        });
+        stompclient.activate();
+        function redirigerVersResetCache(){
+            window.location.href="http://"+ip+":8080/"+resetCache;
+        }
+        function receiveNotificationRedirect(){
+            stompclient.subscribe("/notify/"+receiveNotify, (message)=>{
+                redirigerVersResetCache();
+            });
+        }
+        stompclient.onConnect=(frame)=>{
+            receiveNotificationRedirect();
+        }
+        window.onbeforeunload=()=>{
+            stompclient.deactivate();
+        }
+        function notifierCaisse(envoiRemise){
+            stompclient.publish({
+                destination:"/makay/notify-remise",
+                body:JSON.stringify(envoiRemise)
+            });
+        }
         for(let i=0;i<remiseButtons.length;i++){
             const idcommandefille=remiseButtons[i].dataset.idcommandefille;
+            const quantite=document.getElementById("quantite-commandefille"+idcommandefille);
+            const montantRemise=document.getElementById("montant-remise-commandefille"+idcommandefille);
+            const tauxRemise=document.getElementById("taux-remise-commandefille"+idcommandefille);
+            const montantInputRemise=document.getElementById("montant-commandefille"+idcommandefille);
+            quantite.oninput=()=>{
+                montantRemise.textContent=montantInputRemise.value*quantite.value;
+            }
+            montantInputRemise.oninput=()=>{
+                tauxRemise.value=100-(montantInputRemise.value*100/montantInputRemise.dataset.puinitial);
+                montantRemise.textContent=montantInputRemise.value*quantite.value;
+            }
+            tauxRemise.oninput=()=>{
+                montantInputRemise.value=(100-tauxRemise.value)*montantInputRemise.dataset.puinitial/100;
+                montantRemise.textContent=montantInputRemise.value*quantite.value;
+            }
             remiseButtons[i].onclick=()=>{
                 const loading=document.getElementById("loading-commandefille"+idcommandefille);
                 loading.style.display="block";
@@ -121,6 +163,7 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierCaisse(envoiRemise);
                     if(data.donnees.estTermine==true){
                         window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
                     }else{

@@ -2,6 +2,7 @@ package com.app.makay.controllers.metier.caissier;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
+import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.PayerCommandeREST;
+import com.app.makay.entites.REST.RemiseREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
@@ -130,6 +133,19 @@ public class CaissierController {
     @SendTo("/notify/receive-notify-redirect-caissier")
     public String notifierModifications(){
         return "reset cache";
+    }
+    @MessageMapping("/notify-remise")
+    @SendTo("/notify/recevoir-remise")
+    public RemiseREST notifierRemise(RemiseREST remise) throws Exception{
+        LocalDateTime now=LocalDateTime.now();
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            CommandeFille where=new CommandeFille();
+            where.setId(remise.getRemise().getCommandeFille().getId());
+            remise.getRemise().setDateheure(now.minusNanos(now.getNano()));
+            CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            remise.getRemise().setCommandeFille(commandeFille);
+        }
+        return remise;
     }
 
     @GetMapping("/reset-cache-caissier")
