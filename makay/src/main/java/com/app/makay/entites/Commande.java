@@ -47,6 +47,16 @@ public class Commande {
     private double paiementTotal;
     private double offertTotales;
     private double annuleTotales;
+    @Column("montant_remises")
+    private Double montantRemises;
+    public Double getMontantRemises() {
+        return montantRemises;
+    }
+
+    public void setMontantRemises(Double montantRemises) {
+        this.montantRemises = montantRemises;
+    }
+
     public double getPaiementTotal() {
         return paiementTotal;
     }
@@ -332,5 +342,14 @@ public class Commande {
         setOffertTotales(totalOfferts);
         setAnnuleTotales(totalAnnules);
         return new double[]{totalOfferts, totalAnnules};
+    }
+    public Remise[] recupererRemises(Connection connect, MyDAO dao) throws Exception{
+        String query="select * from v_remise_commandes where etat=0 and idcommande=%s";
+        query=String.format(query, getId());
+        Remise[] remises=dao.select(connect, query, Remise.class);
+        for(Remise r:remises){
+            r.getCommandeFille().recupererAccompagnements(connect, dao);
+        }
+        return remises;
     }
 }

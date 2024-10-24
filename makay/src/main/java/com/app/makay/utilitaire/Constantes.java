@@ -72,6 +72,7 @@ public class Constantes {
     public static final String VAR_PAGINATION_LIMIT="paginationlimit";
     public static final String VAR_CATEGORIES="categories";
     public static final String VAR_NOTIF_PATH="notification";
+    public static final String VAR_REMISE="remises";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -159,6 +160,7 @@ public class Constantes {
     public static final HashMap<String, String> ERREURS=new HashMap<>(){{
         put("403", "Accès non autorisé");
         put("423", "Ressource vérouillée");
+        put("404", "Ressource introuvable");
     }};
 
     public static final String SND_NOTIFICATION="snd/notif.mp3";

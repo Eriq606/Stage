@@ -51,12 +51,14 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tr>
+                            <th>Date et heure</th>
                             <th>Quantité</th>
                             <th>Commande</th>
                             <th>Montant</th>
                             <th>Action</th>
                         </tr>
                         <tr th:each="a:${actions}">
+                            <td th:text="${a.recupererDateHeureString()}"></td>
                             <td th:text="${a.quantite}"></td>
                             <td th:text="${a.recupererCommandeLabel()}"></td>
                             <td th:text="${a.recupererMontantString()}"></td>

@@ -98,6 +98,7 @@
                                         </div>
                                         <td th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
                                         <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i><span th:text="' '"></span>Intéragir</button></a></td>
+                                        <td><a th:href="'/remise?idcommande='+${c.id}"><button class="btn btn-warning"><i class="fa-solid fa-money-bills"></i><span th:text="' '"></span>Remise</button></a></td>
                                     </tr>
                                 </tbody>
                             </table>

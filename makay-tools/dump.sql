@@ -701,3 +701,33 @@ delete from commandes;
 alter table action_superviseurs add idutilisateur int not null references utilisateurs(id);
 
 alter table commande_filles add montant_restant price;
+alter table commande_filles rename column montant_restant to qte_restante_remise;
+
+create table remises(
+  id serial primary key,
+  idutilisateur int not null references utilisateurs(id),
+  idcommandefille int not null references commande_filles(id),
+  quantite quantity not null,
+  nouveau_montant price not null,
+  etat int default 0
+);
+
+create or replace view v_remise_commandes AS
+select remises.*, commandes.id as idcommande
+from remises
+join commande_filles cf on remises.idcommandefille=cf.id
+join commandes on cf.idcommande=commandes.id;
+
+alter table remises add dateheure timestamp default CURRENT_TIMESTAMP;
+
+alter table commandes add montant_remises price default 0;
+
+alter table commande_filles drop qte_restante_remise;
+
+drop view v_remise_commandes;
+
+create or replace view v_remise_commandes AS
+select remises.*, commandes.id as idcommande
+from remises
+join commande_filles cf on remises.idcommandefille=cf.id
+join commandes on cf.idcommande=commandes.id;

@@ -14,6 +14,7 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tr>
+                            <th>Quantite</th>
                             <th>Quantité restante</th>
                             <th>Commande</th>
                             <th>Accomp.</th>
@@ -21,9 +22,12 @@
                             <th>Montant</th>
                             <th>Qte pour appliquer la remise</th>
                             <th>Nouveau prix unitaire</th>
+                            <th>Montant de la remise</th>
+                            <th>Taux</th>
                             <th></th>
                         </tr>
                         <tr th:each="cf:${commande.commandeFilles}">
+                            <td th:text="${cf.quantite}"></td>
                             <td th:text="${cf.quantiteRestante}"></td>
                             <td th:text="${cf.produit.nom}+' '+${cf.notes}"></td>
                             <td><ul>
@@ -31,9 +35,11 @@
                             </ul></td>
                             <td th:text="${cf.recupererPUString()}"></td>
                             <td th:text="${cf.recupererMontantString()}"></td>
-                            <td><input type="number" min="1" th:max="${cf.quantite}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantite}"></td>
-                            <td><input type="number" min="0" th:max="${cf.montant}" step="0.01" th:id="'montant-commandefille'+${cf.id}" th:value="${cf.montant}"></td>
-                            <td><button class="btn btn-success" th:data-idcommandefille="${cf.id}">Remise</button></td>
+                            <td><input type="number" min="1" th:max="${cf.quantiteRestante}" th:id="'quantite-commandefille'+${cf.id}" th:value="${cf.quantiteRestante}"></td>
+                            <td><input type="number" min="0" th:max="${cf.pu}" step="0.01" th:id="'montant-commandefille'+${cf.id}" th:value="${cf.pu}"></td>
+                            <td th:id="'montant-remise-commandefille'+${cf.id}"></td>
+                            <td th:id="'taux-remise-commandefille'+${cf.id}"></td>
+                            <td><button class="btn btn-success remise-button" th:data-idcommandefille="${cf.id}">Remise</button></td>
                             <td><img th:id="'loading-commandefille'+${cf.id}" th:src="@{img/loading.gif}" width="25" alt="loading" style="display: none;"></td>
                         </tr>
                     </table>
@@ -41,4 +47,88 @@
             </div>
         </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h1>Remises</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>Date et heure</th>
+                            <th>Quantité</th>
+                            <th>Commande</th>
+                            <th>Ancien montant</th>
+                            <th>Nouveau montant</th>
+                            <th>Taux</th>
+                        </tr>
+                        <tr th:each="r:${remises}">
+                            <td th:text="${r.recupererDateHeureString()}"></td>
+                            <td th:text="${r.quantite}"></td>
+                            <td th:text="${r.recupererCommandeLabel()}"></td>
+                            <td th:text="${r.recupererAncienMontantString()}"></td>
+                            <td th:text="${r.recupererNouveauMontantString()}"></td>
+                            <td th:text="${r.recupererTaux()}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+        const api="http://"+ip+":8080/remise";
+        const remiseButtons=document.getElementsByClassName("remise-button");
+        for(let i=0;i<remiseButtons.length;i++){
+            const idcommandefille=remiseButtons[i].dataset.idcommandefille;
+            remiseButtons[i].onclick=()=>{
+                const loading=document.getElementById("loading-commandefille"+idcommandefille);
+                loading.style.display="block";
+                const qteCmdFille=document.getElementById("quantite-commandefille"+idcommandefille).value;
+                const montantCmdFille=document.getElementById("montant-commandefille"+idcommandefille).value;
+                const envoiRemise={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    remise:{
+                        commandeFille:{id:idcommandefille},
+                        quantite:qteCmdFille,
+                        nouveauMontant:montantCmdFille
+                    }
+                }
+                fetch(api, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiRemise)})
+                }).then((response)=>{return response.json()})
+                .then((data)=>{
+                    loading.style.display="none";
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    if(data.donnees.estTermine==true){
+                        window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
+                    }else{
+                        location.reload();
+                    }
+                });
+            }
+        }
+        /*]]*/
+    </script>
 </div>

@@ -1034,4 +1034,44 @@ public class Utilisateur extends IrisUser{
         }
         return serveurs;
     }
+    public boolean remise(Connection connect, MyDAO dao, Remise remise) throws Exception{
+        boolean estTermine=false;
+        try{
+            CommandeFille where=new CommandeFille();
+            where.setId(remise.getCommandeFille().getId());
+            where.setEtat(Constantes.COMMANDEFILLE_CREEE);
+            CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            if(commandeFille.getCommande().getEtat()!=Constantes.COMMANDE_ADDITION){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(commandeFille.getEtat()!=Constantes.COMMANDEFILLE_CREEE){
+                throw new Exception(Constantes.MSG_COMMANDEFILLE_INTOUCHABLE);
+            }
+            if(remise.getQuantite()>commandeFille.getQuantiteRestante()){
+                throw new Exception(Constantes.MSG_QUANTITE_INVALIDE);
+            }
+            double diffMontant=(commandeFille.getPu()*remise.getQuantite())-(remise.getNouveauMontant()*remise.getQuantite());
+            Commande whereCommande=new Commande();
+            whereCommande.setId(commandeFille.getCommande().getId());
+            whereCommande.setEtat(Constantes.COMMANDE_ADDITION);
+            Commande changeCommande=new Commande();
+            changeCommande.setResteAPayer(commandeFille.getCommande().getResteAPayer()-diffMontant);
+            changeCommande.setMontantRemises(commandeFille.getCommande().getMontantRemises()+diffMontant);
+            if(changeCommande.getResteAPayer()==0){
+                estTermine=true;
+                changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+            }
+            CommandeFille changeCommandeFille=new CommandeFille();
+            changeCommandeFille.setQuantiteRestante(commandeFille.getQuantiteRestante()-remise.getQuantite());
+            remise.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, remise);
+            dao.update(connect, changeCommande, whereCommande);
+            dao.update(connect, changeCommandeFille, where);
+            return estTermine;
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

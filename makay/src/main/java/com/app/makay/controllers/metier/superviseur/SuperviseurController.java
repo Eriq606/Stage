@@ -21,6 +21,7 @@ import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Rangee;
 import com.app.makay.entites.RangeePlace;
+import com.app.makay.entites.Remise;
 import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
@@ -28,6 +29,7 @@ import com.app.makay.entites.REST.ActionSuperviseurREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.entites.REST.PayerCommandeREST;
+import com.app.makay.entites.REST.RemiseREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
@@ -394,5 +396,55 @@ public class SuperviseurController {
         model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
         model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
         return iris;
+    }
+    @GetMapping("/remise")
+    public Object remise(HttpServletRequest req, Model model, Integer idcommande) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, Constantes.ROLE_SUPERVISEUR, "Makay - Remise", "pages/superviseur/remise", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Commande whereCommande=new Commande();
+            whereCommande.setId(idcommande);
+            Commande[] commande=dao.select(connect, Commande.class, whereCommande);
+            if(commande.length!=1){
+                iris=new RedirectView("/erreur?code=404");
+                return iris;
+            }
+            commande[0].recupererCommandeFilles(connect, dao);
+            Remise[] remises=commande[0].recupererRemises(connect, dao);
+            model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
+            model.addAttribute(Constantes.VAR_REMISE, remises);
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        String[] urls=utilisateur.recupererResetCacheAndNotify();
+        model.addAttribute(Constantes.VAR_RESETCACHE, urls[0]);
+        model.addAttribute(Constantes.VAR_RECEIVENOTIFY, urls[1]);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        return iris;
+    }
+    @PostMapping("/remise")
+    @ResponseBody
+    public ReponseREST remise(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        RemiseREST modifs=HandyManUtils.fromJson(RemiseREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            boolean estTermine=modifs.getUtilisateur().remise(connect, dao, modifs.getRemise());
+            connect.commit();
+            response.addItem("estTermine", estTermine);
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
     }
 }
