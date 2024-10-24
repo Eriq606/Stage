@@ -1051,6 +1051,9 @@ public class Utilisateur extends IrisUser{
                 throw new Exception(Constantes.MSG_QUANTITE_INVALIDE);
             }
             double diffMontant=(commandeFille.getPu()*remise.getQuantite())-(remise.getNouveauMontant()*remise.getQuantite());
+            if(diffMontant>commandeFille.getCommande().getResteAPayer()){
+                throw new Exception(Constantes.MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE);
+            }
             Commande whereCommande=new Commande();
             whereCommande.setId(commandeFille.getCommande().getId());
             whereCommande.setEtat(Constantes.COMMANDE_ADDITION);
