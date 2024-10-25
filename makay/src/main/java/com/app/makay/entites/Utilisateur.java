@@ -3,14 +3,17 @@ package com.app.makay.entites;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.app.makay.entites.annulation.AnnulationAction;
 import com.app.makay.entites.annulation.AnnulationPaiement;
 import com.app.makay.entites.liaison.AccompagnementCommande;
+import com.app.makay.entites.liaison.ActionPaiement;
 import com.app.makay.entites.liaison.RangeePlace;
 import com.app.makay.entites.liaison.RangeeUtilisateur;
 import com.app.makay.entites.temporary.ProduitCommandeStock;
@@ -1000,10 +1003,20 @@ public class Utilisateur extends IrisUser{
             whereCommande.setId(commandeFille.getCommande().getId());
             Commande changeCommande=new Commande();
             changeCommande.setResteAPayer(commandeFille.getCommande().getResteAPayer()-montantAction);
+            actionSuperviseur.setUtilisateur(this);
+            ActionPaiement actionPaiement;
+            int idpaiement;
+            int idaction=dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             switch(actionSuperviseur.getAction()){
                 case Constantes.COMMANDEFILLE_OFFERT:
                     changeCommande.setMontantOffert(commandeFille.getCommande().getMontantOffert()+montantAction);
-                    dao.insertWithoutPrimaryKey(connect, paiementVAT);
+                    idpaiement=dao.insertWithoutPrimaryKey(connect, paiementVAT);
+                    paiementVAT.setId(idpaiement);
+                    actionSuperviseur.setId(idaction);
+                    actionPaiement=new ActionPaiement();
+                    actionPaiement.setPaiement(paiementVAT);
+                    actionPaiement.setAction(actionSuperviseur);
+                    dao.insertWithoutPrimaryKey(connect, actionPaiement);
                     break;
                 case Constantes.COMMANDEFILLE_ANNULEE:
                     changeCommande.setMontantAnnulee(commandeFille.getCommande().getMontantAnnulee()+montantAction);
@@ -1015,8 +1028,6 @@ public class Utilisateur extends IrisUser{
             //     changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
             //     estTermine=true;
             // }
-            actionSuperviseur.setUtilisateur(this);
-            dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             dao.update(connect, changeCommandeFille, where);
             dao.update(connect, changeCommande, whereCommande);
             return estTermine;
@@ -1135,6 +1146,17 @@ public class Utilisateur extends IrisUser{
             dao.insertWithoutPrimaryKey(connect, annulation);
             dao.update(connect, changePaiement, where);
             dao.update(connect, changeCommande, whereCommande);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void annulerAction(Connection connect, MyDAO dao, AnnulationAction annulation) throws SQLException{
+        try{
+            ActionSuperviseur where=new ActionSuperviseur();
+            where.setId(annulation.getAction().getId());
+            
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

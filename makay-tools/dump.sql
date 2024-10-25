@@ -755,3 +755,11 @@ create table action_paiements(
   dateheure timestamp default CURRENT_TIMESTAMP,
   etat int default 0
 );
+
+create table annulation_actions(
+  id serial primary key,
+  idaction int not null references action_superviseurs(id),
+  idutilisateur int not null references utilisateurs(id),
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  etat int default 0
+);

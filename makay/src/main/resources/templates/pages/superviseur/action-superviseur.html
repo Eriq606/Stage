@@ -56,6 +56,7 @@
                             <th>Commande</th>
                             <th>Montant</th>
                             <th>Action</th>
+                            <th></th>
                         </tr>
                         <tr th:each="a:${actions}">
                             <td th:text="${a.recupererDateHeureString()}"></td>
@@ -63,6 +64,7 @@
                             <td th:text="${a.recupererCommandeLabel()}"></td>
                             <td th:text="${a.recupererMontantString()}"></td>
                             <td th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></td>
+                            <td><button class="btn btn-danger annuler-action-commande" th:data-idaction="${a.id}" type="button"><i class="fa-solid fa-ban"></i>Annuler</button></td>
                         </tr>
                     </table>
                 </div>
@@ -149,6 +151,44 @@
                 destination:"/makay/action-superviseur",
                 body:JSON.stringify(envoiAction)
             });
+        }
+        const annulerActionButtons=document.getElementsByClassName("annuler-action-commande");
+        const apiAnnulerAction="http://"+ip+":8080/annuler-action";
+        for(let i=0;i<annulerActionButtons.length;i++){
+            const idaction=annulerActionButtons[i].dataset.idaction;
+            annulerActionButtons[i].onclick=()=>{
+                const envoiAnnulation={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    annulationAction:{
+                        action:{id:idaction}
+                    }
+                }
+                fetch(apiAnnulerAction, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiAnnulation)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
+                });
+            }
         }
         /*]]*/
     </script>

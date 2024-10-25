@@ -25,6 +25,7 @@ import com.app.makay.entites.Role;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
 import com.app.makay.entites.REST.ActionSuperviseurREST;
+import com.app.makay.entites.REST.AnnulerActionREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.entites.REST.PayerCommandeREST;
@@ -440,6 +441,25 @@ public class SuperviseurController {
             boolean estTermine=modifs.getUtilisateur().remise(connect, dao, modifs.getRemise());
             connect.commit();
             response.addItem("estTermine", estTermine);
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+    @PostMapping("/annuler-action")
+    @ResponseBody
+    public ReponseREST annulerAction(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        AnnulerActionREST modifs=HandyManUtils.fromJson(AnnulerActionREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().annulerAction(connect, dao, modifs.getAnnulationAction());
+            connect.commit();
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
