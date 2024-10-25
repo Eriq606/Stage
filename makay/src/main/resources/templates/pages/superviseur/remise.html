@@ -61,6 +61,7 @@
                             <th>Ancien montant</th>
                             <th>Nouveau montant</th>
                             <th>Taux</th>
+                            <th></th>
                         </tr>
                         <tr th:each="r:${remises}">
                             <td th:text="${r.recupererDateHeureString()}"></td>
@@ -69,6 +70,7 @@
                             <td th:text="${r.recupererAncienMontantString()}"></td>
                             <td th:text="${r.recupererNouveauMontantString()}"></td>
                             <td th:text="${r.recupererTaux()}"></td>
+                            <td><button class="btn btn-danger annuler-remise-commande" th:data-idremise="${r.id}" type="button"><i class="fa-solid fa-ban"></i>Annuler</button></td>
                         </tr>
                     </table>
                 </div>
@@ -169,6 +171,44 @@
                     }else{
                         location.reload();
                     }
+                });
+            }
+        }
+        const annulerremiseButtons=document.getElementsByClassName("annuler-remise-commande");
+        const apiAnnulerremise="http://"+ip+":8080/annuler-remise";
+        for(let i=0;i<annulerremiseButtons.length;i++){
+            const idremise=annulerremiseButtons[i].dataset.idremise;
+            annulerremiseButtons[i].onclick=()=>{
+                const envoiAnnulation={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    annulation:{
+                        remise:{id:idremise}
+                    }
+                }
+                fetch(apiAnnulerremise, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiAnnulation)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
                 });
             }
         }

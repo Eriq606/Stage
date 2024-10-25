@@ -98,4 +98,10 @@ public class Remise {
         double taux=100-(getNouveauMontant()*100/getCommandeFille().getPu());
         return taux+" %";
     }
+    @Override
+    public String toString() {
+        return "Remise [id=" + id + ", quantite=" + quantite + ", nouveauMontant=" + nouveauMontant + ", etat=" + etat
+                + ", dateheure=" + dateheure + "]";
+    }
+    
 }

@@ -346,7 +346,7 @@ public class Commande {
     public Remise[] recupererRemises(Connection connect, MyDAO dao) throws Exception{
         String query="select * from v_remise_commandes where etat=0 and idcommande=%s";
         query=String.format(query, getId());
-        Remise[] remises=dao.select(connect, query, Remise.class);
+        Remise[] remises=dao.selectWithPrimary(connect, query, Remise.class);
         for(Remise r:remises){
             r.getCommandeFille().recupererAccompagnements(connect, dao);
         }

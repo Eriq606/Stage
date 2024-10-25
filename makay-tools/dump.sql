@@ -691,7 +691,13 @@ alter table commandes add montant_annulee price default 0;
 
 alter table commande_filles add quantite_restante quantity;
 
+delete from clotures;
+delete from annulation_remises;
+delete from annulation_paiements;
+delete from annulation_actions;
+delete from remises;
 delete from paiements;
+delete from action_paiements;
 delete from action_superviseurs;
 delete from accompagnement_commandes;
 delete from commande_filles_terminees;
@@ -759,6 +765,14 @@ create table action_paiements(
 create table annulation_actions(
   id serial primary key,
   idaction int not null references action_superviseurs(id),
+  idutilisateur int not null references utilisateurs(id),
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  etat int default 0
+);
+
+create table annulation_remises(
+  id serial primary key,
+  idremise int not null references remises(id),
   idutilisateur int not null references utilisateurs(id),
   dateheure timestamp default CURRENT_TIMESTAMP,
   etat int default 0

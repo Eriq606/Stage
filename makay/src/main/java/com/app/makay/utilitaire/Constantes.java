@@ -109,6 +109,12 @@ public class Constantes {
     public static final int PAIEMENT_CREE=0;
     public static final int PAIEMENT_ANNULE=10;
 
+    public static final int ACTION_CREE=0;
+    public static final int ACTION_ANNULE=10;
+
+    public static final int REMISE_CREE=0;
+    public static final int REMISE_ANNULE=10;
+
     public static final ModelLink[] LINK_SERVEUR={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours"),

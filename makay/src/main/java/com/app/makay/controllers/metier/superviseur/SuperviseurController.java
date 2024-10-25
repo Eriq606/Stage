@@ -26,6 +26,7 @@ import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.UtilisateurSafe;
 import com.app.makay.entites.REST.ActionSuperviseurREST;
 import com.app.makay.entites.REST.AnnulerActionREST;
+import com.app.makay.entites.REST.AnnulerRemiseREST;
 import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.entites.REST.PayerCommandeREST;
@@ -375,12 +376,12 @@ public class SuperviseurController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Commande where=new Commande();
             where.setId(idcommande);
-            where.setEtat(Constantes.COMMANDE_ADDITION);
+            // where.setEtat(Constantes.COMMANDE_ADDITION);
             Commande[] commande=dao.select(connect, Commande.class, where);
-            if(commande.length!=1){
-                iris=new RedirectView("/erreur?code=423");
-                return iris;
-            }
+            // if(commande.length!=1){
+            //     iris=new RedirectView("/erreur?code=423");
+            //     return iris;
+            // }
             commande[0].recupererCommandeFilles(connect, dao);
             commande[0].recupereUtilisateur(connect, dao);
             model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
@@ -459,6 +460,25 @@ public class SuperviseurController {
                 return response;
             }
             modifs.getUtilisateur().annulerAction(connect, dao, modifs.getAnnulationAction());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+    @PostMapping("/annuler-remise")
+    @ResponseBody
+    public ReponseREST annulerRemise(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        AnnulerRemiseREST modifs=HandyManUtils.fromJson(AnnulerRemiseREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_SUPERVISEUR});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().annulerRemise(connect, dao, modifs.getAnnulation());
             connect.commit();
             return response;
         }catch(Exception e){
