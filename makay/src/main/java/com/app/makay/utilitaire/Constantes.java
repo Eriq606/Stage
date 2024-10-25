@@ -106,6 +106,9 @@ public class Constantes {
     public static final int COMMANDEFILLE_SUPPRIMEE=20;
     public static final String COMMANDEFILLE_SUPPRIMEE_LABEL="Supprimee";
 
+    public static final int PAIEMENT_CREE=0;
+    public static final int PAIEMENT_ANNULE=10;
+
     public static final ModelLink[] LINK_SERVEUR={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Commandes en cours"),

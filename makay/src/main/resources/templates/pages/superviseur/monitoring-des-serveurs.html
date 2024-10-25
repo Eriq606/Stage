@@ -289,6 +289,7 @@
                     </div>
                     <td class="montant-total-commande${c.id}" style="font-weight: bold;">${montantString}</td>
                     <td><a href="/action-superviseur?idcommande=${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i>Intéragir</button></a></td>
+                    <td><a href="/remise?idcommande=${c.id}"><button class="btn btn-warning"><i class="fa-solid fa-money-bills"></i></span>Remise</button></a></td>
                 </tr>
             `;
             return commandeHTML;

@@ -731,3 +731,27 @@ select remises.*, commandes.id as idcommande
 from remises
 join commande_filles cf on remises.idcommandefille=cf.id
 join commandes on cf.idcommande=commandes.id;
+
+create table clotures(
+  id serial primary key,
+  idcommande int not null references commandes(id),
+  idutilisateur int not null references utilisateurs(id),
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  etat int default 0
+);
+
+create table annulation_paiements(
+  id serial primary key,
+  idpaiement int not null references paiements(id),
+  idutilisateur int not null references utilisateurs(id),
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  etat int default 0
+);
+
+create table action_paiements(
+  id serial primary key,
+  idaction int not null references action_superviseurs(id),
+  idpaiement int not null references paiements(id),
+  dateheure timestamp default CURRENT_TIMESTAMP,
+  etat int default 0
+);

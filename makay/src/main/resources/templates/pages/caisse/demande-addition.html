@@ -29,6 +29,7 @@
                             <th scope="col">Montant</th>
                             <th scope="col">Reste à payer</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                         <tr th:each="c:${commandes}" th:id="'commande-row'+${c.id}">
                             <td scope="row"><a href="#" th:text="${c.recupererPlaceLabel()}" data-bs-toggle="modal" th:data-bs-target="'#commandeModal'+${c.id}"></a></td>
@@ -87,6 +88,21 @@
                                                         </div>
                                                     </div>
                                                 </fieldset>
+                                                <hr>
+                                                <div class="d-flex justify-content-between border-bottom pb-4">
+                                                    <span class="font-weight-bold">Date et heure</span>
+                                                    <span class="font-weight-bold">Utilisateur</span>
+                                                    <span class="font-weight-bold">Mode de paiement</span>
+                                                    <span class="font-weight-bold">Montant</span>
+                                                    <span class="font-weight-bold">Action</span>
+                                                </div>
+                                                <div th:each="p:${c.paiements}">
+                                                    <span th:text="${p.recupererHeure()}"></span>
+                                                    <span th:text="${p.utilisateur.nom}"></span>
+                                                    <span th:text="${p.modePaiement.nom}"></span>
+                                                    <span th:text="${p.recupererMontantString()}"></span>
+                                                    <span><button class="btn btn-danger annuler-paiement-commande" th:data-idpaiement="${p.id}" type="button"><i class="fa-solid fa-ban"></i>Annuler</button></span>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
@@ -94,6 +110,27 @@
                                             </div>
                                         </form>
                                         </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="bn btn-success" data-bs-toggle="modal" th:data-bs-target="'#clotureModal'+${c.id}"><i class="fa-solid fa-lock"></i>Clôturer</button>
+                                <div class="modal fade" th:id="'clotureModal'+${c.id}" tabindex="-1" th:aria-labelledby="'clotureModalLabel'+${c.id}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" th:id="'clotureModalLabel'+${c.id}">Clôture</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div th:id="'alerte-envoye-cloture-commande'+${c.id}"></div>
+                                            <h1>Clôturer la commande ?</h1>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" th:data-idcommande="${c.id}" class="btn btn-success cloturer-commande">Confirmer</button>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </td>
@@ -155,7 +192,7 @@
         const ip=/*[[${ip}]]*/"";
         const utilisateur=/*[[${utilisateur}]]*/{};
         const sessionid=/*[[${sessionid}]]*/"";
-        const api="http://"+ip+":8080/payer";
+        const apiPayer="http://"+ip+":8080/payer";
         for(let i=0;i<formulaires.length;i++){
             const idcommande=formulaires[i].dataset.idcommande;
             const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
@@ -173,7 +210,7 @@
                     sessionid:sessionid,
                     paiement:paiement
                 }
-                fetch(api, {
+                fetch(apiPayer, {
                     method:"POST",
                     headers:{
                         "Content-type":"application/json"
@@ -334,6 +371,27 @@
                         </div>
                     </div>
                 </td>
+                <td>
+                    <button class="bn btn-success" data-bs-toggle="modal" data-bs-target="#clotureModal${c.id}"><i class="fa-solid fa-lock"></i>Clôturer</button>
+                    <div class="modal fade" id="clotureModal${c.id}" tabindex="-1" aria-labelledby="clotureModalLabel${c.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="clotureModalLabel${c.id}">Clôture</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alerte-envoye-cloture-commande${c.id}"></div>
+                                <h1>Clôturer la commande ?</h1>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" data-idcommande="${c.id}" class="btn btn-success cloturer-commande">Confirmer</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </td>
             </tr>`;
             const tr=document.createElement("tr");
             tr.id="commande-row"+c.id;
@@ -368,7 +426,7 @@
                             sessionid:sessionid,
                             paiement:paiement
                         }
-                        fetch(api, {
+                        fetch(apiPayer, {
                             method:"POST",
                             headers:{
                                 "Content-type":"application/json"
@@ -398,12 +456,12 @@
                             resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
                             formulaire.setAttribute("data-resteapayer", resteAPayer);
                             if(resteAPayer==0){
-                                // const commandeRow=document.getElementById("commande-row"+idcommande);
-                                // commandeRow.style.backgroundColor="#9cff9c";
-                                // const button=document.getElementById("payer-submit-commande"+idcommande);
-                                // button.innerHTML="<i class='fa-solid fa-check'></i>";
-                                // button.disabled=true;
-                                window.location.href="http://"+ip+":8080/demande-addition";
+                                const commandeRow=document.getElementById("commande-row"+idcommande);
+                                commandeRow.style.backgroundColor="#9cff9c";
+                                const button=document.getElementById("payer-submit-commande"+idcommande);
+                                button.innerHTML="<i class='fa-solid fa-check'></i>";
+                                button.disabled=true;
+                                // window.location.href="http://"+ip+":8080/demande-addition";
                             }
                         });
                     }
@@ -443,6 +501,83 @@
                 const formulairePayer=document.getElementById("formulaire-payer-commande"+remise.commandeFille.commande.id);
                 formulairePayer.setAttribute("data-resteapayer", remise.commandeFille.commande.resteAPayer);
             });
+        }
+        const cloturerCommande=document.getElementsByClassName("cloturer-commande");
+        const apiCloture="http://"+ip+":8080/cloturer";
+        for(let i=0;i<cloturerCommande.length;i++){
+            const idcommande=cloturerCommande[i].dataset.idcommande;
+            const alerteEnvoye=document.getElementById("alerte-envoye-cloture-commande"+idcommande);
+            cloturerCommande[i].onclick=()=>{
+                const envoiCloture={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    cloture:{
+                        commande:{id:idcommande}
+                    }
+                }
+                fetch(apiCloture, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiCloture)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
+                });
+            }
+        }
+        const annulerPaiement=document.getElementsByClassName("annuler-paiement-commande");
+        const apiAnnulerPaiement="http://"+ip+":8080/annuler-paiement";
+        for(let i=0;i<annulerPaiement.length;i++){
+            const idpaiement=annulerPaiement[i].dataset.idpaiement;
+            annulerPaiement[i].onclick=()=>{
+                const envoiAnnulerPaiement={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    annulation:{
+                        paiement:{id:idpaiement}
+                    }
+                }
+                fetch(apiAnnulerPaiement, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiAnnulerPaiement)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
+                });
+            }
         }
         /*]]*/
     </script>

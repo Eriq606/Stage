@@ -21,6 +21,8 @@ import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.REST.AnnulerPaiementREST;
+import com.app.makay.entites.REST.ClotureREST;
 import com.app.makay.entites.REST.PayerCommandeREST;
 import com.app.makay.entites.REST.RemiseREST;
 import com.app.makay.utilitaire.Constantes;
@@ -157,6 +159,44 @@ public class CaissierController {
             wherePaiement.setEtat(0);
             modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
             return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+        }
+    }
+    @PostMapping("/cloturer")
+    @ResponseBody
+    public ReponseREST cloture(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        ClotureREST modifs=HandyManUtils.fromJson(ClotureREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().cloturer(connect, dao, modifs.getCloture());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+    @PostMapping("/annuler-paiement")
+    @ResponseBody
+    public ReponseREST annulerPaiement(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        AnnulerPaiementREST modifs=HandyManUtils.fromJson(AnnulerPaiementREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().annulerPaiement(connect, dao, modifs.getAnnulation());
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
         }
     }
 }

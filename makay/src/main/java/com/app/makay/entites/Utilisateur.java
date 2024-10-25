@@ -9,6 +9,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.app.makay.entites.annulation.AnnulationPaiement;
+import com.app.makay.entites.liaison.AccompagnementCommande;
+import com.app.makay.entites.liaison.RangeePlace;
+import com.app.makay.entites.liaison.RangeeUtilisateur;
 import com.app.makay.entites.temporary.ProduitCommandeStock;
 import com.app.makay.entites.temporary.ProduitCommandeStockForSelect;
 import com.app.makay.iris.IrisUser;
@@ -883,7 +887,7 @@ public class Utilisateur extends IrisUser{
             }
             Commande change=new Commande();
             change.setEtat(Constantes.COMMANDE_ADDITION);
-            change.setCloture(LocalDateTime.now());
+            // change.setCloture(LocalDateTime.now());
             dao.update(connect, change, commande);
         }catch(ArrayIndexOutOfBoundsException e){
             connect.rollback();
@@ -895,18 +899,19 @@ public class Utilisateur extends IrisUser{
         }
     }
     public CommandeEnCours[] recupererDemandesAddition(Connection connect, MyDAO dao, int offset, String table) throws Exception{
-        String addOn="where etat=10 and reste_a_payer>0 order by dateheure_ouverture limit %s offset %s";
+        String addOn="where etat=10 order by dateheure_ouverture limit %s offset %s";
         // CommandeEnCours where=new CommandeEnCours();
         // where.setEtat(Constantes.COMMANDE_ADDITION);
         addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, offset);
         if(table.isEmpty()==false){
-            addOn="where nom_table='%s' and etat=10 and reste_a_payer>0 order by dateheure_ouverture limit %s offset %s";
+            addOn="where nom_table='%s' and etat=10 order by dateheure_ouverture limit %s offset %s";
             addOn=String.format(addOn, table.replace("'", "''"), Constantes.PAGINATION_LIMIT, offset);
             // where.setNomPlace(table);
         }
         CommandeEnCours[] commandes=dao.select(connect, CommandeEnCours.class, addOn);
         for(CommandeEnCours c:commandes){
             c.recupererCommandeFilles(connect, dao);
+            c.recupererPaiements(connect, dao);
         }
         return commandes;
     }
@@ -925,9 +930,9 @@ public class Utilisateur extends IrisUser{
             dao.insertWithoutPrimaryKey(connect, paiement);
             Commande change=new Commande();
             change.setResteAPayer(commande.getResteAPayer()-paiement.getMontant());
-            if(change.getResteAPayer()==0){
-                change.setEtat(Constantes.COMMANDE_PAYEE);
-            }
+            // if(change.getResteAPayer()==0){
+            //     change.setEtat(Constantes.COMMANDE_PAYEE);
+            // }
             dao.update(connect, change, where);
         }catch(Exception e){
             connect.rollback();
@@ -970,6 +975,12 @@ public class Utilisateur extends IrisUser{
             where.setId(actionSuperviseur.getCommandeFille().getId());
             where.setEtat(Constantes.COMMANDEFILLE_CREEE);
             CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            if(commandeFille.getCommande().getEtat()>Constantes.COMMANDE_ADDITION){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(commandeFille.getEtat()!=Constantes.COMMANDEFILLE_CREEE){
+                throw new Exception(Constantes.MSG_COMMANDEFILLE_INTOUCHABLE);
+            }
             if(actionSuperviseur.getQuantite()>commandeFille.getQuantiteRestante()){
                 throw new Exception(Constantes.MSG_QUANTITE_INVALIDE);
             }
@@ -1000,10 +1011,10 @@ public class Utilisateur extends IrisUser{
             }
             CommandeFille changeCommandeFille=new CommandeFille();
             changeCommandeFille.setQuantiteRestante(commandeFille.getQuantite()-actionSuperviseur.getQuantite());
-            if(changeCommande.getResteAPayer()==0){
-                changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
-                estTermine=true;
-            }
+            // if(changeCommande.getResteAPayer()==0){
+            //     changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+            //     estTermine=true;
+            // }
             actionSuperviseur.setUtilisateur(this);
             dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             dao.update(connect, changeCommandeFille, where);
@@ -1041,7 +1052,7 @@ public class Utilisateur extends IrisUser{
             where.setId(remise.getCommandeFille().getId());
             where.setEtat(Constantes.COMMANDEFILLE_CREEE);
             CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
-            if(commandeFille.getCommande().getEtat()!=Constantes.COMMANDE_ADDITION){
+            if(commandeFille.getCommande().getEtat()>Constantes.COMMANDE_ADDITION){
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
             if(commandeFille.getEtat()!=Constantes.COMMANDEFILLE_CREEE){
@@ -1060,10 +1071,10 @@ public class Utilisateur extends IrisUser{
             Commande changeCommande=new Commande();
             changeCommande.setResteAPayer(commandeFille.getCommande().getResteAPayer()-diffMontant);
             changeCommande.setMontantRemises(commandeFille.getCommande().getMontantRemises()+diffMontant);
-            if(changeCommande.getResteAPayer()==0){
-                estTermine=true;
-                changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
-            }
+            // if(changeCommande.getResteAPayer()==0){
+            //     estTermine=true;
+            //     changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+            // }
             CommandeFille changeCommandeFille=new CommandeFille();
             changeCommandeFille.setQuantiteRestante(commandeFille.getQuantiteRestante()-remise.getQuantite());
             remise.setUtilisateur(this);
@@ -1071,6 +1082,59 @@ public class Utilisateur extends IrisUser{
             dao.update(connect, changeCommande, whereCommande);
             dao.update(connect, changeCommandeFille, where);
             return estTermine;
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void cloturer(Connection connect, MyDAO dao, Cloture cloture) throws Exception{
+        try{
+            Commande where=new Commande();
+            where.setId(cloture.getCommande().getId());
+            Commande commande=dao.select(connect, Commande.class, where)[0];
+            if(commande.getResteAPayer()>0){
+                throw new Exception(Constantes.MSG_COMMANDE_NON_TERMINEE);
+            }
+            Commande changeCommande=new Commande();
+            changeCommande.setEtat(Constantes.COMMANDE_PAYEE);
+            changeCommande.setCloture(LocalDateTime.now());
+            cloture.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, cloture);
+            dao.update(connect, changeCommande, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void annulerPaiement(Connection connect, MyDAO dao, AnnulationPaiement annulation) throws Exception{
+        try{
+            Paiement where=new Paiement();
+            where.setId(annulation.getPaiement().getId());
+            Paiement paiement=dao.select(connect, Paiement.class, where)[0];
+            if(paiement.getEtat()>Constantes.PAIEMENT_CREE){
+                throw new Exception(Constantes.MSG_ACTION_INVALIDE);
+            }
+            if(paiement.getUtilisateur().getId()!=getId()){
+                throw new Exception(Constantes.MSG_NON_AUTHORISE);
+            }
+            if(paiement.getCommande().getEtat()>Constantes.COMMANDE_ADDITION){
+                throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
+            }
+            if(paiement.getModePaiement().getId()==Constantes.IDMODEPAIEMENT_VAT&&getRole().getNumero().equals(Constantes.ROLE_SUPERVISEUR)){
+                throw new Exception(Constantes.MSG_NON_AUTHORISE);
+            }
+            Paiement changePaiement=new Paiement();
+            changePaiement.setEtat(Constantes.PAIEMENT_ANNULE);
+            Commande whereCommande=new Commande();
+            whereCommande.setId(paiement.getCommande().getId());
+            Commande changeCommande=new Commande();
+            changeCommande.setResteAPayer(paiement.getCommande().getResteAPayer()+paiement.getMontant());
+            annulation.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, annulation);
+            dao.update(connect, changePaiement, where);
+            dao.update(connect, changeCommande, whereCommande);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

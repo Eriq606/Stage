@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashMap;
 
+import com.app.makay.entites.liaison.AccompagnementProduit;
 import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;

@@ -1,18 +1,21 @@
-package com.app.makay.entites;
+package com.app.makay.entites.liaison;
+
+import com.app.makay.entites.Accompagnement;
+import com.app.makay.entites.Produit;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
 import veda.godao.annotations.Table;
 
-@Table("accompagnement_commandes")
-public class AccompagnementCommande {
+@Table("accompagnement_produits")
+public class AccompagnementProduit {
     @PrimaryKey
     @Column("id")
     private Integer id;
     @ForeignKey(recursive = true)
-    @Column("idcommandefille")
-    private CommandeFille commandeFille;
+    @Column("idproduit")
+    private Produit produit;
     @ForeignKey(recursive = true)
     @Column("idaccompagnement")
     private Accompagnement accompagnement;
@@ -24,11 +27,11 @@ public class AccompagnementCommande {
     public void setId(Integer id) {
         this.id = id;
     }
-    public CommandeFille getCommandeFille() {
-        return commandeFille;
+    public Produit getProduit() {
+        return produit;
     }
-    public void setCommandeFille(CommandeFille commandeFille) {
-        this.commandeFille = commandeFille;
+    public void setProduit(Produit produit) {
+        this.produit = produit;
     }
     public Accompagnement getAccompagnement() {
         return accompagnement;
@@ -41,11 +44,6 @@ public class AccompagnementCommande {
     }
     public void setEtat(Integer etat) {
         this.etat = etat;
-    }
-    @Override
-    public String toString() {
-        return "AccompagnementCommande [id=" + id + ", commandeFille=" + commandeFille + ", accompagnement="
-                + accompagnement + ", etat=" + etat + "]";
     }
     
 }

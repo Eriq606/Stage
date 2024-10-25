@@ -1,9 +1,13 @@
-package com.app.makay.entites;
+package com.app.makay.entites.liaison;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
+import com.app.makay.entites.Place;
+import com.app.makay.entites.Rangee;
+import com.app.makay.entites.TypePlace;
+import com.app.makay.entites.Utilisateur;
 import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;

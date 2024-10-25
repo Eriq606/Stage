@@ -1,6 +1,9 @@
-package com.app.makay.entites;
+package com.app.makay.entites.liaison;
 
 import java.time.LocalDateTime;
+
+import com.app.makay.entites.Rangee;
+import com.app.makay.entites.Utilisateur;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
