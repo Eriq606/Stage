@@ -28,7 +28,7 @@ public class ActionSuperviseur {
     private Integer etat;
     @Column("montant")
     private Double montant;
-    @ForeignKey(recursive = false)
+    @ForeignKey(recursive = true)
     @Column("idutilisateur")
     private Utilisateur utilisateur;
     public Utilisateur getUtilisateur() {

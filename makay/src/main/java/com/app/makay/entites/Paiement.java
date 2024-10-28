@@ -26,7 +26,7 @@ public class Paiement {
     private Double montant;
     @Column("etat")
     private Integer etat;
-    @ForeignKey(recursive = false)
+    @ForeignKey(recursive = true)
     @Column("idutilisateur")
     private Utilisateur utilisateur;
     public Utilisateur getUtilisateur() {

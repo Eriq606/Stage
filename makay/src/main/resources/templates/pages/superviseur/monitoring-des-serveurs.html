@@ -12,9 +12,19 @@
                             th:data-bs-target="'#v-pills-serveur-'+${s.id}" type="button" role="tab"
                             th:aria-controls="'v-pills-serveur-'+${s.id}" aria-selected="true" th:text="${s.nom}"></button>
                     </div>
-                    <div class="tab-content table-responsive" id="v-pills-tabContent">
+                    <div class="tab-content table-responsive w-100" id="v-pills-tabContent">
                         <div th:each="s:${serveurs}" class="tab-pane fade" th:id="'v-pills-serveur-'+${s.id}" role="tabpanel" th:aria-labelledby="'v-pills-serveur-tab-'+${s.id}">
                             <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Table</th>
+                                        <th scope="col">Date et heure</th>
+                                        <th scope="col">Montant total</th>
+                                        <th scope="col">Reste à payer</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
                                 <tbody th:id="'commandes-'+${s.id}">
                                     <tr th:each="c:${s.commandes}" th:id="'ligne-commande'+${c.id}" th:style="'background-color:'+${c.recupererEstTermineCouleur()}">
                                         <td><a th:text="${c.recupererPlaceLabel()}" href="#" data-bs-toggle="modal" th:data-bs-target="'#detailCommandeModal'+${c.id}"></a></td>
@@ -38,6 +48,9 @@
                                                                 <button class="nav-link" th:id="'nav-actions-tab'+${c.id}" data-bs-toggle="tab"
                                                                     th:data-bs-target="'#nav-actions'+${c.id}" type="button" role="tab"
                                                                     th:aria-controls="'nav-actions'+${c.id}" aria-selected="false">Actions</button>
+                                                                <button class="nav-link" th:id="'nav-remises-tab'+${c.id}" data-bs-toggle="tab"
+                                                                    th:data-bs-target="'#nav-remises'+${c.id}" type="button" role="tab"
+                                                                    th:aria-controls="'nav-remises'+${c.id}" aria-selected="false">Remises</button>
                                                             </div>
                                                         </nav>
                                                         <div class="tab-content pt-3" id="nav-tabContent">
@@ -82,9 +95,27 @@
                                                                 <div th:id="'actions-commande'+${c.id}">
                                                                     <p th:each="a:${c.actions}" class="d-flex justify-content-between">
                                                                         <span th:text="${a.quantite}"></span>
+                                                                        <span th:text="${a.utilisateur.nom}"></span>
                                                                         <span th:text="${a.recupererCommandeLabel()}"></span>
                                                                         <span th:text="${a.recupererMontantString()}"></span>
                                                                         <span th:text="${a.recupererActionString()}" th:style="'background-color:'+${a.recupererCouleurString()}"></span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" th:id="'nav-remises'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-remises-tab'+${c.id}">
+                                                                <p>Remises:</p>
+                                                                <div th:id="'remises-commande'+${c.id}">
+                                                                    <div class="d-flex justify-content-between border-primary border-bottom pb-4" style="font-weight: bold;">
+                                                                        <span>Quantité</span>
+                                                                        <span>Utilisateur</span>
+                                                                        <span>Commande</span>
+                                                                        <span>Taux</span>
+                                                                    </div>
+                                                                    <p th:each="r:${c.remises}" class="d-flex justify-content-between">
+                                                                        <span th:text="${r.quantite}"></span>
+                                                                        <span th:text="${r.utilisateur.nom}"></span>
+                                                                        <span th:text="${r.recupererCommandeLabel()}"></span>
+                                                                        <span th:text="${r.recupererTaux()}"></span>
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -97,6 +128,7 @@
                                             </div>
                                         </div>
                                         <td th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
+                                        <td th:class="'montant-restant-commande'+${c.id}" th:id="'montant-restant-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></td>
                                         <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i><span th:text="' '"></span>Intéragir</button></a></td>
                                         <td><a th:href="'/remise?idcommande='+${c.id}"><button class="btn btn-warning"><i class="fa-solid fa-money-bills"></i><span th:text="' '"></span>Remise</button></a></td>
                                     </tr>

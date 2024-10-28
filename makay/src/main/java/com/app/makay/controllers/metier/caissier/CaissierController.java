@@ -42,7 +42,7 @@ public class CaissierController {
     private MyDAO dao;
     private String ip;
     private Place[] places;
-    private ModePaiement[] modePaiements;
+    // private ModePaiement[] modePaiements;
     public CaissierController() throws SQLException, Exception {
         filter=new MyFilter();
         dao=new MyDAO();
@@ -50,8 +50,8 @@ public class CaissierController {
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Place where=new Place(0);
             places=dao.select(connect, Place.class, where);
-            String addOn="where etat=0 and id<>-1";
-            modePaiements=dao.select(connect, ModePaiement.class, addOn);
+            // String addOn="where etat=0 and id>0";
+            // modePaiements=dao.select(connect, ModePaiement.class, addOn);
         }
     }
 
@@ -65,7 +65,7 @@ public class CaissierController {
     public Object demandeAddition(HttpServletRequest req, Model model, Integer indice_actu, String table)throws Exception{
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
-        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_CAISSE}, "Makay - Demandes d'addition", "pages/caisse/demande-addition", "layout/layout", model);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_CAISSE, Constantes.ROLE_SUPERVISEUR}, "Makay - Demandes d'addition", "pages/caisse/demande-addition", "layout/layout", model);
         if(utilisateur==null){
             return iris;
         }
@@ -89,7 +89,7 @@ public class CaissierController {
             model.addAttribute(Constantes.VAR_COMMANDES, commandes);
             model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
             model.addAttribute(Constantes.VAR_PLACES, places);
-            model.addAttribute(Constantes.VAR_MODEPAIEMENTS, modePaiements);
+            model.addAttribute(Constantes.VAR_MODEPAIEMENTS, utilisateur.recupererModePaiements(connect, dao));
             model.addAttribute(Constantes.VAR_IP, ip);
             model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
             model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
@@ -117,7 +117,7 @@ public class CaissierController {
         ReponseREST response=new ReponseREST();
         PayerCommandeREST modifs=HandyManUtils.fromJson(PayerCommandeREST.class, datas.getRestdata());
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE, Constantes.ROLE_SUPERVISEUR});
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
@@ -157,7 +157,7 @@ public class CaissierController {
             places=dao.select(connect, Place.class, where);
             ModePaiement wherePaiement=new ModePaiement();
             wherePaiement.setEtat(0);
-            modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
+            // modePaiements=dao.select(connect, ModePaiement.class, wherePaiement);
             return filter.resetUserRole(req, connect, dao, new String[]{Constantes.ROLE_CAISSE});
         }
     }
@@ -167,7 +167,7 @@ public class CaissierController {
         ReponseREST response=new ReponseREST();
         ClotureREST modifs=HandyManUtils.fromJson(ClotureREST.class, datas.getRestdata());
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE, Constantes.ROLE_SUPERVISEUR});
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
@@ -186,7 +186,7 @@ public class CaissierController {
         ReponseREST response=new ReponseREST();
         AnnulerPaiementREST modifs=HandyManUtils.fromJson(AnnulerPaiementREST.class, datas.getRestdata());
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE});
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_CAISSE, Constantes.ROLE_SUPERVISEUR});
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }

@@ -13,7 +13,7 @@ public class Remise {
     @PrimaryKey
     @Column("id")
     private Integer id;
-    @ForeignKey(recursive = false)
+    @ForeignKey(recursive = true)
     @Column("idutilisateur")
     private Utilisateur utilisateur;
     @ForeignKey(recursive = true)
@@ -102,6 +102,19 @@ public class Remise {
     public String toString() {
         return "Remise [id=" + id + ", quantite=" + quantite + ", nouveauMontant=" + nouveauMontant + ", etat=" + etat
                 + ", dateheure=" + dateheure + "]";
+    }
+    public String toHtml(){
+        String html="""
+        <tr class="details-travaux">
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;">%s</td>
+            <td style="padding: 10px; border: 1px solid;text-align:right">%s</td>
+        </tr>
+        """;
+        html=String.format(html, recupererDateHeureString(), getUtilisateur().getNom(), getQuantite(), recupererCommandeLabel(), recupererTaux());
+        return html;
     }
     
 }

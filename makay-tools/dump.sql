@@ -777,3 +777,18 @@ create table annulation_remises(
   dateheure timestamp default CURRENT_TIMESTAMP,
   etat int default 0
 );
+
+update mode_paiements set nom='V.A.T cadre' where id=-1;
+insert into mode_paiements values(-2, 'V.A.T client', 0);
+
+drop view v_commandes;
+create or replace view v_commandes as
+select commandes.*, 
+  v_places.nom AS nom_place,
+  v_places.idtypeplace,
+  v_type_places.numero AS numero_type_place
+FROM (((commandes
+    JOIN v_places ON ((commandes.idplace = v_places.id)))
+    JOIN v_type_places ON ((v_places.idtypeplace = v_type_places.id)))
+    JOIN v_utilisateurs vu ON ((commandes.idutilisateur = vu.id)))
+WHERE (commandes.etat < 40);

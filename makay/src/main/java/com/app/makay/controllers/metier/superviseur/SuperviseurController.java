@@ -3,6 +3,9 @@ package com.app.makay.controllers.metier.superviseur;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+// import java.util.HashMap;
+// import java.util.Map;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.ActionSuperviseur;
 import com.app.makay.entites.Commande;
+// import com.app.makay.entites.CommandeEnCours;
 import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.HistoriqueRoleUtilisateur;
 import com.app.makay.entites.ModePaiement;
@@ -53,6 +57,15 @@ public class SuperviseurController {
     private HistoriqueRoleUtilisateur[] attributionRoles;
     private MyDAO dao;
     private String ip;
+    private ModePaiement[] modePaiements;
+    public ModePaiement[] getModePaiements() {
+        return modePaiements;
+    }
+
+    public void setModePaiements(ModePaiement[] modePaiements) {
+        this.modePaiements = modePaiements;
+    }
+
     public MyFilter getFilter() {
         return filter;
     }
@@ -144,6 +157,8 @@ public class SuperviseurController {
             utilisateurs=dao.select(connect, UtilisateurSafe.class);
             roles=dao.select(connect, Role.class, new Role(0));
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            String addOn="where etat=0 and id<0";
+            modePaiements=dao.select(connect, ModePaiement.class, addOn);
         }
     }
 

@@ -46,6 +46,7 @@
                                         </div>
                                     </div>
                                 </fieldset>
+                                <hr>
                                 <fieldset class="row mb-3">
                                     <legend class="col-form-label col-sm-2 pt-0">Cloture</legend>
                                     <div class="col-sm-10">
@@ -80,6 +81,7 @@
                                         </div>
                                     </div>
                                 </fieldset>
+                                <hr>
                                 <fieldset class="row mb-3">
                                     <legend class="col-form-label col-sm-2 pt-0">Montant Offert</legend>
                                     <div class="col-sm-10">
@@ -97,6 +99,7 @@
                                         </div>
                                     </div>
                                 </fieldset>
+                                <hr>
                                 <fieldset class="row mb-3">
                                     <legend class="col-form-label col-sm-2 pt-0">Montant Annulé</legend>
                                     <div class="col-sm-10">
@@ -159,7 +162,6 @@
                             <th>Date et heure de création</th>
                             <th>Clôture</th>
                             <th>Montant</th>
-                            <th>Etat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -190,6 +192,9 @@
                                                     <button class="nav-link" th:id="'nav-actions-tab'+${c.id}" data-bs-toggle="tab"
                                                         th:data-bs-target="'#nav-actions'+${c.id}" type="button" role="tab"
                                                         th:aria-controls="'nav-actions'+${c.id}" aria-selected="false">Actions</button>
+                                                    <button class="nav-link" th:id="'nav-remises-tab'+${c.id}" data-bs-toggle="tab"
+                                                        th:data-bs-target="'#nav-remises'+${c.id}" type="button" role="tab"
+                                                        th:aria-controls="'nav-remises'+${c.id}" aria-selected="false">Remises</button>
                                                 </div>
                                             </nav>
                                             <div class="tab-content pt-3" id="nav-tabContent">
@@ -242,6 +247,28 @@
                                                     <p>
                                                         <span th:text="'Montant annulées : '"></span>
                                                         <span style="font-weight: bold;color:red" th:text="${c.recupererAnnulesTotalString()}"></span>
+                                                    </p>
+                                                </div>
+                                                <div class="tab-pane fade" th:id="'nav-remises'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-remises-tab'+${c.id}">
+                                                    <p>Remises:</p>
+                                                    <div th:id="'remises-commande'+${c.id}">
+                                                        <div class="d-flex justify-content-between border-primary border-bottom pb-4" style="font-weight: bold;">
+                                                            <span>Quantité</span>
+                                                            <span>Utilisateur</span>
+                                                            <span>Commande</span>
+                                                            <span>Taux</span>
+                                                        </div>
+                                                        <p th:each="r:${c.remises}" class="d-flex justify-content-between">
+                                                            <span th:text="${r.quantite}"></span>
+                                                            <span th:text="${r.utilisateur.nom}"></span>
+                                                            <span th:text="${r.recupererCommandeLabel()}"></span>
+                                                            <span th:text="${r.recupererTaux()}"></span>
+                                                        </p>
+                                                    </div>
+                                                    <hr>
+                                                    <p>
+                                                        <span th:text="'Montant remises : '"></span>
+                                                        <span style="font-weight: bold;" th:text="${c.recupererMontantRemiseString()}"></span>
                                                     </p>
                                                 </div>
                                             </div>

@@ -90,4 +90,10 @@ Mise en forme des détails paiements:
 Offert/Suppression:
     ✔ table action_superviseur @done(24-10-11 10:23)
     ✔ mise a jour page monitoring serveur : ajout bouton offert et annuler à chaque commande fille @done(24-10-11 10:41)
-    ☐ méthode offert/annuler
+    ✔ méthode offert/annuler @done(24-10-28 08:18)
+
+☐ alerte erreur paiement
+☐ annulation : websocket paiement
+☐ display flex : paiements
+☐ paiement V.A.T cadre/client
+☐ 

@@ -353,6 +353,7 @@ public class ServeurController {
             commande.recupererActionsSuperviseurs(connect, dao);
             commande.recupererActionsTotales();
             commande.recupererPaiementTotal();
+            commande.recupererRemises(connect, dao);
             String newHTML=commande.formatterHTML(connect, dao, html);
             HandyManUtils.overwriteFileContent(faux, newHTML);
             File pdf=HandyManUtils.generatePDF(faux, "commande-"+commande.getOuverture().toString().replace("T", "--").replace(":", "-").replace(".", "-")+".pdf");

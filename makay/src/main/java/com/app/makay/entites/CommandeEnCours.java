@@ -44,6 +44,24 @@ public class CommandeEnCours{
     private double paiementTotal;
     private double offertTotales;
     private double annuleTotales;
+    private Remise[] remises;
+    private double montantRemises;
+    public double getMontantRemises() {
+        return montantRemises;
+    }
+
+    public void setMontantRemises(double montantRemises) {
+        this.montantRemises = montantRemises;
+    }
+
+    public Remise[] getRemises() {
+        return remises;
+    }
+
+    public void setRemises(Remise[] remises) {
+        this.remises = remises;
+    }
+
     public double getAnnuleTotales() {
         return annuleTotales;
     }
@@ -282,6 +300,10 @@ public class CommandeEnCours{
         where.setCommande(commande);
         where.setEtat(0);
         Paiement[] paiements=dao.select(connect, Paiement.class, where);
+        for(Paiement p:paiements){
+            p.getUtilisateur().setEmail(null);
+            p.getUtilisateur().setMotdepasse(null);
+        }
         setPaiements(paiements);
         return paiements;
     }
@@ -315,6 +337,8 @@ public class CommandeEnCours{
         addon=String.format(addon, getId());
         ActionSuperviseur[] actions=dao.select(connect, ActionSuperviseur.class, addon);
         for(ActionSuperviseur a:actions){
+            a.getUtilisateur().setEmail(null);
+            a.getUtilisateur().setMotdepasse(null);
             a.getCommandeFille().recupererAccompagnements(connect, dao);
         }
         setActions(actions);
@@ -352,5 +376,20 @@ public class CommandeEnCours{
         setOffertTotales(totalOfferts);
         setAnnuleTotales(totalAnnules);
         return new double[]{totalOfferts, totalAnnules};
+    }
+    public Remise[] recupererRemises(Connection connect, MyDAO dao) throws Exception{
+        String query="select * from v_remise_commandes where etat=0 and idcommande=%s";
+        query=String.format(query, getId());
+        Remise[] remises=dao.selectWithPrimary(connect, query, Remise.class);
+        for(Remise r:remises){
+            r.getUtilisateur().setEmail(null);
+            r.getUtilisateur().setMotdepasse(null);
+            r.getCommandeFille().recupererAccompagnements(connect, dao);
+        }
+        setRemises(remises);
+        return remises;
+    }
+    public String recupererMontantRemiseString(){
+        return HandyManUtils.number_format(getMontantRemises(), ' ', ',', 2)+" Ar";
     }
 }

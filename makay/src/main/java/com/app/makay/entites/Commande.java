@@ -49,6 +49,15 @@ public class Commande {
     private double annuleTotales;
     @Column("montant_remises")
     private Double montantRemises;
+    private Remise[] remises;
+    public Remise[] getRemises() {
+        return remises;
+    }
+
+    public void setRemises(Remise[] remises) {
+        this.remises = remises;
+    }
+
     public Double getMontantRemises() {
         return montantRemises;
     }
@@ -277,6 +286,13 @@ public class Commande {
         htmlContent=htmlContent.replace("<!-- ACTIONS -->", lignesActions);
         htmlContent=htmlContent.replace("<!-- OFFERTS TOTAL -->", recupererOffertTotalString());
         htmlContent=htmlContent.replace("<!-- ANNULEES TOTAL -->", recupererAnnulesTotalString());
+
+        String lignesRemises="";
+        for(Remise r:getRemises()){
+            lignesRemises+=r.toHtml();
+        }
+        htmlContent=htmlContent.replace("<!-- REMISES -->", lignesRemises);
+        htmlContent=htmlContent.replace("<!-- REMISES TOTAL -->", HandyManUtils.number_format(getMontantRemises(), ' ', ',', 2)+" Ar");
         return htmlContent;
     }
     public int recupererIdUtilisateur(Connection connect, MyDAO dao) throws Exception{
@@ -348,8 +364,11 @@ public class Commande {
         query=String.format(query, getId());
         Remise[] remises=dao.selectWithPrimary(connect, query, Remise.class);
         for(Remise r:remises){
+            r.getUtilisateur().setEmail(null);
+            r.getUtilisateur().setMotdepasse(null);
             r.getCommandeFille().recupererAccompagnements(connect, dao);
         }
+        setRemises(remises);
         return remises;
     }
 }

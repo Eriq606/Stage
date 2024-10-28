@@ -13,7 +13,7 @@ import com.app.makay.entites.annulation.AnnulationAction;
 import com.app.makay.entites.annulation.AnnulationPaiement;
 import com.app.makay.entites.annulation.AnnulationRemise;
 import com.app.makay.entites.liaison.AccompagnementCommande;
-import com.app.makay.entites.liaison.ActionPaiement;
+// import com.app.makay.entites.liaison.ActionPaiement;
 import com.app.makay.entites.liaison.RangeePlace;
 import com.app.makay.entites.liaison.RangeeUtilisateur;
 import com.app.makay.entites.temporary.ProduitCommandeStock;
@@ -493,6 +493,7 @@ public class Utilisateur extends IrisUser{
             commandes[i].recupererActionsSuperviseurs(connect, dao);
             commandes[i].recupererActionsTotales();
             commandes[i].recupererPaiementTotal();
+            commandes[i].recupererRemises(connect, dao);
         }
         return commandes;
     }
@@ -555,7 +556,7 @@ public class Utilisateur extends IrisUser{
         String query="select * from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
-        if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+        if(serveur!=null&&serveur.isEmpty()==false&&serveur.equals("0")==false){
             listQuery.add("idutilisateur=?");
         }
         if(table!=null&&table.isEmpty()==false){
@@ -624,7 +625,7 @@ public class Utilisateur extends IrisUser{
         query+=" order by dateheure_ouverture desc limit ? offset ?";
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
-            if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+            if(serveur!=null&&serveur.isEmpty()==false&&serveur.equals("0")==false){
                 statement.setInt(indice, Integer.parseInt(serveur));
                 indice++;
             }
@@ -721,6 +722,8 @@ public class Utilisateur extends IrisUser{
                     commande.recupererActionsSuperviseurs(connect, dao);
                     commande.recupererActionsTotales();
                     commande.recupererPaiementTotal();
+                    commande.recupererRemises(connect, dao);
+                    commande.setMontantRemises(result.getDouble("montant_remises"));
                     liste.add(commande);
                 }
                 CommandeEnCours[] commandes=liste.toArray(new CommandeEnCours[]{});
@@ -734,7 +737,7 @@ public class Utilisateur extends IrisUser{
         String query="select count(*) from v_commandes where etat>10 and etat<40 and ";
         LinkedList<String> listQuery=new LinkedList<>();
         LocalDateTime ouvertureDebutTime=null, ouvertureFinTime=null, clotureDebutTime=null, clotureFinTime=null;
-        if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+        if(serveur!=null&&serveur.isEmpty()==false&&serveur.equals("0")==false){
             listQuery.add("idutilisateur=?");
         }
         if(table!=null&&table.isEmpty()==false){
@@ -802,7 +805,7 @@ public class Utilisateur extends IrisUser{
         query=query.substring(0, query.length()-5);
         try(PreparedStatement statement=connect.prepareStatement(query)){
             int indice=1;
-            if(serveur!=null&&serveur.isEmpty()==false&&serveur!="0"){
+            if(serveur!=null&&serveur.isEmpty()==false&&serveur.equals("0")==false){
                 statement.setInt(indice, Integer.parseInt(serveur));
                 indice++;
             }
@@ -992,31 +995,31 @@ public class Utilisateur extends IrisUser{
                 throw new Exception(Constantes.MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE);
             }
             actionSuperviseur.setMontant(montantAction);
-            ModePaiement vat=new ModePaiement();
-            vat.setId(Constantes.IDMODEPAIEMENT_VAT);
-            Paiement paiementVAT=new Paiement();
-            paiementVAT.setCommande(commandeFille.getCommande());
-            paiementVAT.setModePaiement(vat);
-            paiementVAT.setUtilisateur(this);
-            paiementVAT.setMontant(montantAction);
+            // ModePaiement vat=new ModePaiement();
+            // vat.setId(Constantes.IDMODEPAIEMENT_VAT);
+            // Paiement paiementVAT=new Paiement();
+            // paiementVAT.setCommande(commandeFille.getCommande());
+            // paiementVAT.setModePaiement(vat);
+            // paiementVAT.setUtilisateur(this);
+            // paiementVAT.setMontant(montantAction);
             Commande whereCommande=new Commande();
             whereCommande.setId(commandeFille.getCommande().getId());
             Commande changeCommande=new Commande();
             changeCommande.setResteAPayer(commandeFille.getCommande().getResteAPayer()-montantAction);
             actionSuperviseur.setUtilisateur(this);
-            ActionPaiement actionPaiement;
-            int idpaiement;
-            int idaction=dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
+            // ActionPaiement actionPaiement;
+            // int idpaiement;
+            dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             switch(actionSuperviseur.getAction()){
                 case Constantes.COMMANDEFILLE_OFFERT:
                     changeCommande.setMontantOffert(commandeFille.getCommande().getMontantOffert()+montantAction);
-                    idpaiement=dao.insertWithoutPrimaryKey(connect, paiementVAT);
-                    paiementVAT.setId(idpaiement);
-                    actionSuperviseur.setId(idaction);
-                    actionPaiement=new ActionPaiement();
-                    actionPaiement.setPaiement(paiementVAT);
-                    actionPaiement.setAction(actionSuperviseur);
-                    dao.insertWithoutPrimaryKey(connect, actionPaiement);
+                    // idpaiement=dao.insertWithoutPrimaryKey(connect, paiementVAT);
+                    // paiementVAT.setId(idpaiement);
+                    // actionSuperviseur.setId(idaction);
+                    // actionPaiement=new ActionPaiement();
+                    // actionPaiement.setPaiement(paiementVAT);
+                    // actionPaiement.setAction(actionSuperviseur);
+                    // dao.insertWithoutPrimaryKey(connect, actionPaiement);
                     break;
                 case Constantes.COMMANDEFILLE_ANNULEE:
                     changeCommande.setMontantAnnulee(commandeFille.getCommande().getMontantAnnulee()+montantAction);
@@ -1133,7 +1136,7 @@ public class Utilisateur extends IrisUser{
             if(paiement.getCommande().getEtat()>Constantes.COMMANDE_ADDITION){
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
-            if(paiement.getModePaiement().getId()==Constantes.IDMODEPAIEMENT_VAT){
+            if(paiement.getModePaiement().getId()<0&&getRole().getNumero().equals(Constantes.ROLE_SUPERVISEUR)==false){
                 throw new Exception(Constantes.MSG_NON_AUTHORISE);
             }
             Paiement changePaiement=new Paiement();
@@ -1166,8 +1169,8 @@ public class Utilisateur extends IrisUser{
             if(action.getCommandeFille().getCommande().getEtat()>Constantes.COMMANDE_ADDITION){
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
-            String addOn="where id in (select idpaiement from action_paiements where idaction=%s) and etat=%s";
-            addOn=String.format(addOn, action.getId(), Constantes.PAIEMENT_CREE);
+            // String addOn="where id in (select idpaiement from action_paiements where idaction=%s) and etat=%s";
+            // addOn=String.format(addOn, action.getId(), Constantes.PAIEMENT_CREE);
 
             ActionSuperviseur changeAction=new ActionSuperviseur();
             changeAction.setEtat(Constantes.ACTION_ANNULE);
@@ -1178,17 +1181,17 @@ public class Utilisateur extends IrisUser{
             changeCommande.setResteAPayer(action.getCommandeFille().getCommande().getResteAPayer()+action.getMontant());
             switch(action.getAction()){
                 case Constantes.COMMANDEFILLE_OFFERT:
-                    Paiement paiement=dao.select(connect, Paiement.class, addOn)[0];
-                    AnnulationPaiement annulationPaiement=new AnnulationPaiement();
-                    annulationPaiement.setPaiement(paiement);
-                    annulationPaiement.setUtilisateur(this);
-                    Paiement wherePaiement=new Paiement();
-                    wherePaiement.setId(paiement.getId());
-                    Paiement changePaiement=new Paiement();
-                    changePaiement.setEtat(Constantes.PAIEMENT_ANNULE);
+                    // Paiement paiement=dao.select(connect, Paiement.class, addOn)[0];
+                    // AnnulationPaiement annulationPaiement=new AnnulationPaiement();
+                    // annulationPaiement.setPaiement(paiement);
+                    // annulationPaiement.setUtilisateur(this);
+                    // Paiement wherePaiement=new Paiement();
+                    // wherePaiement.setId(paiement.getId());
+                    // Paiement changePaiement=new Paiement();
+                    // changePaiement.setEtat(Constantes.PAIEMENT_ANNULE);
                     changeCommande.setMontantOffert(action.getCommandeFille().getCommande().getMontantOffert()-action.getMontant());
-                    dao.update(connect, changePaiement, wherePaiement);
-                    dao.insertWithoutPrimaryKey(connect, annulationPaiement);
+                    // dao.update(connect, changePaiement, wherePaiement);
+                    // dao.insertWithoutPrimaryKey(connect, annulationPaiement);
                     break;
                 case Constantes.COMMANDEFILLE_ANNULEE:
                     changeCommande.setMontantAnnulee(action.getCommandeFille().getCommande().getMontantAnnulee()-action.getMontant());
@@ -1244,5 +1247,17 @@ public class Utilisateur extends IrisUser{
             e.printStackTrace();
             throw e;
         }
+    }
+    public ModePaiement[] recupererModePaiements(Connection connect, MyDAO dao) throws Exception{
+        String addOn="where etat=0 and id %s 0";
+        switch(getRole().getNumero()){
+            case Constantes.ROLE_SUPERVISEUR:
+                addOn=String.format(addOn, "<");
+                break;
+            default:
+                addOn=String.format(addOn, ">");
+        }
+        ModePaiement[] modes=dao.select(connect, ModePaiement.class, addOn);
+        return modes;
     }
 }

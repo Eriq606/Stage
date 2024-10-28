@@ -96,12 +96,12 @@
                                                     <span class="font-weight-bold">Montant</span>
                                                     <span class="font-weight-bold">Action</span>
                                                 </div>
-                                                <div th:each="p:${c.paiements}">
+                                                <div th:each="p:${c.paiements}" class="d-flex justify-content-between">
                                                     <span th:text="${p.recupererHeure()}"></span>
                                                     <span th:text="${p.utilisateur.nom}"></span>
                                                     <span th:text="${p.modePaiement.nom}"></span>
                                                     <span th:text="${p.recupererMontantString()}"></span>
-                                                    <span><button class="btn btn-danger annuler-paiement-commande" th:data-idpaiement="${p.id}" type="button"><i class="fa-solid fa-ban"></i>Annuler</button></span>
+                                                    <span><button class="btn btn-danger annuler-paiement-commande" th:data-idcommande="${c.id}" th:data-idpaiement="${p.id}" type="button"><i class="fa-solid fa-ban"></i>Annuler</button></span>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -545,6 +545,8 @@
         const apiAnnulerPaiement="http://"+ip+":8080/annuler-paiement";
         for(let i=0;i<annulerPaiement.length;i++){
             const idpaiement=annulerPaiement[i].dataset.idpaiement;
+            const idcommande=annulerPaiement[i].dataset.idcommande;
+            const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
             annulerPaiement[i].onclick=()=>{
                 const envoiAnnulerPaiement={
                     utilisateur:utilisateur,

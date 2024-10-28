@@ -124,13 +124,14 @@ public class Constantes {
         new ModelLink("/plan-de-table", "fa-solid fa-chair", "Plan de table"),
         new ModelLink("/attribution-de-roles", "fa-solid fa-user", "Roles"),
         new ModelLink("/dispatch-tables-staff", "fa-solid fa-list", "Dispatching du staff"),
+        new ModelLink("/demande-addition", "fa-solid fa-clock", "En attente d'addition"),
         new ModelLink("/monitoring-des-serveurs", "fa-solid fa-users", "Monitoring du service"),
         new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_BARMAN={
-        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/commandes-en-cours", "fa-solid fa-clock", "Commandes en cours"),
+        new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
         new ModelLink("/liste-commande", "fa-solid fa-list", "Mes commandes"),
         new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
@@ -164,7 +165,8 @@ public class Constantes {
     public static final int COMMANDEFILLE_ESTTERMINEE=1;
     public static final int COMMANDEFILLE_ESTENCOURS=-1;
 
-    public static final int IDMODEPAIEMENT_VAT=-1;
+    public static final int IDMODEPAIEMENT_VAT_CADRE=-1;
+    public static final int IDMODEPAIEMENT_VAT_CLIENT=-1;
 
     public static final HashMap<String, String> ERREURS=new HashMap<>(){{
         put("403", "Accès non autorisé");
