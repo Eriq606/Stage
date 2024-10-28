@@ -792,3 +792,5 @@ FROM (((commandes
     JOIN v_type_places ON ((v_places.idtypeplace = v_type_places.id)))
     JOIN v_utilisateurs vu ON ((commandes.idutilisateur = vu.id)))
 WHERE (commandes.etat < 40);
+
+drop table action_paiements;

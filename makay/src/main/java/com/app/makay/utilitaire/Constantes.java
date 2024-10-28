@@ -166,7 +166,7 @@ public class Constantes {
     public static final int COMMANDEFILLE_ESTENCOURS=-1;
 
     public static final int IDMODEPAIEMENT_VAT_CADRE=-1;
-    public static final int IDMODEPAIEMENT_VAT_CLIENT=-1;
+    public static final int IDMODEPAIEMENT_VAT_CLIENT=-2;
 
     public static final HashMap<String, String> ERREURS=new HashMap<>(){{
         put("403", "Accès non autorisé");
