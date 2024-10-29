@@ -63,7 +63,7 @@ public class ServeurController {
             Produit whereProduit=new Produit(0);
             produits=dao.select(connect, Produit.class, whereProduit);
             for(Produit p:produits){
-                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+                p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
             }
             Place where=new Place();
             where.setEtat(0);
@@ -178,7 +178,7 @@ public class ServeurController {
             Produit whereProduit=new Produit(0);
             produits=dao.select(connect, Produit.class, whereProduit);
             for(Produit p:produits){
-                p.setAccompagnements(p.getAllAccompagnements(connect, dao));
+                p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
             }
             Place where=new Place();
             where.setEtat(0);

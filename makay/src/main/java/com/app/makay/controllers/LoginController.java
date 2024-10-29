@@ -80,4 +80,37 @@ public class LoginController {
     public String mock(){
         return "woohoo";
     }
+    @GetMapping("/login-admin")
+    public String loginAdmin(HttpServletRequest req, String message, Model model){
+        HttpSession session=req.getSession();
+        session.invalidate();
+        session=req.getSession();
+        String messageDecoded="";
+        if(message!=null){
+            messageDecoded=HandyManUtils.decodeURL_UTF8(message);
+        }
+        model.addAttribute(Constantes.VAR_TITLE, "Makay - Connexion");
+        model.addAttribute(Constantes.VAR_MESSAGE, messageDecoded);
+        return "login/login-admin";
+    }
+    @PostMapping("/login-admin")
+    public RedirectView loginAdmin(HttpServletRequest req, String email, String motDePasse) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Utilisateur utilisateur=Utilisateur.seConnecterAdmin(dao, connect, email, motDePasse);
+            if(utilisateur==null){
+                String message=HandyManUtils.encodeURL_UTF8(Constantes.MSG_UTILISATEUR_NON_IDENTIFIE);
+                return new RedirectView("/login?message="+message);
+            }
+            HttpSession session=req.getSession();
+            SessionUtilisateur sessionUser=new SessionUtilisateur();
+            sessionUser.setSessionId(session.getId());
+            sessionUser.setExpiration(LocalDateTime.now().plusHours(Constantes.SESSION_EXPIRATION.longValue()));
+            sessionUser.setUtilisateur(utilisateur);
+            sessionUser.setEstValide(Constantes.SESSION_ESTVALIDE);
+            sessionUser.enregistrer(connect, dao);
+            connect.commit();
+            session.setAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+            return new RedirectView("/utilisateurs");
+        }
+    }
 }

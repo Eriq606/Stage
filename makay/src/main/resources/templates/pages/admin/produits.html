@@ -1,0 +1,319 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Gestion des produits</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Catégorie</th>
+                                <th scope="col">Prix</th>
+                                <th scope="col">Accompagnements possibles</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p:${produits}">
+                                <td th:text="${p.nom}"></td>
+                                <td th:text="${p.categorie.nom}"></td>
+                                <td th:text="${p.recupererPrixString()}"></td>
+                                <td><ul>
+                                    <li th:each="pa:${p.accompagnements}" th:text="${pa.nom}"></li>
+                                </ul></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#exampleModal'+${p.id}">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'exampleModal'+${p.id}" tabindex="-1" th:aria-labelledby="'exampleModalLabel'+${p.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'exampleModalLabel'+${p.id}">Mettre à jour</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-modifier'+${p.id}"></div>
+                                                    <div class="mb-3">
+                                                        <label for="nomChampModif" class="form-label">Nom</label>
+                                                        <input type="text" class="form-control" id="nomChampModif" disabled>
+                                                    </div>
+                                                    <select class="form-select form-select-sm mb-3" id="categorieChampModif" aria-label=".form-select-sm example" disabled>
+                                                        <option th:text="${p.categorie.nom}"></option>
+                                                    </select>
+                                                    <div class="mb-3">
+                                                        <label for="prixChampModif" class="form-label">Prix</label>
+                                                        <input type="number" step="0.01" min="0" th:value="${p.prix}" class="form-control" id="prixChampModif">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <div class="form-floating">
+                                                            <textarea class="form-control"
+                                                                id="accompagnementChampModif" style="height: 150px;" th:text="${}"></textarea>
+                                                            <label for="floatingTextarea">Accompagnements (séparés par des virgules)</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#supprProduit'+${p.id}">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'supprProduit'+${p.id}" tabindex="-1" th:aria-labelledby="'supprProduitLabel'+${p.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'supprProduitLabel'+${p.id}">Supprimer le produit</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-produit'+${p.id}"></div>
+                                                    Voulez-vous vraiment supprimer le produit ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idproduit="${p.id}" class="btn btn-danger bouton-suppr-produit">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/produits?indiceListe='+${indice_premier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_liste}"><a class="page-link" th:href="'/produits?indiceListe='+${indice_precedent_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_precedent_liste}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_liste}"><a class="page-link" th:href="'/produits?indiceListe='+${indice_suivant_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_suivant_liste}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/produits?indiceListe='+${indice_dernier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="fa-solid fa-plus"></i>Enregistrer un nouveau produit
+                </button>
+                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addModalLabel">Enregistrer un nouveau produit</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alerte-ajout"></div>
+                                <div class="mb-3">
+                                    <label for="nomChamp" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nomChamp">
+                                </div>
+                                <select class="form-select form-select-sm mb-3" id="categorieChamp" aria-label=".form-select-sm example">
+                                    <option th:each="c:${categories}" th:value="${c.id}" th:text="${c.nom}"></option>
+                                </select>
+                                <div class="mb-3">
+                                    <label for="prixChamp" class="form-label">Prix</label>
+                                    <input type="text" class="form-control" id="prixChamp">
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <textarea class="form-control"
+                                            id="accompagnementChamp" style="height: 150px;"></textarea>
+                                        <label for="floatingTextarea">Accompagnements (séparés par des virgules)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="bouton-ajouter-produit" class="btn btn-success">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Produits supprimés</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Catégorie</th>
+                                <th scope="col">Prix</th>
+                                <th scope="col">Accompagnements possibles</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p:${produits_suppr}">
+                                <td th:text="${p.nom}"></td>
+                                <td th:text="${p.categorie.nom}"></td>
+                                <td th:text="${p.recupererPrixString()}"></td>
+                                <td><ul>
+                                    <li th:each="pa:${p.accompagnements}" th:text="${pa.nom}"></li>
+                                </ul></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#restaurerProduit'+${p.id}">
+                                        <i class="fa-solid fa-trash-arrow-up"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'restaurerProduit'+${p.id}" tabindex="-1" th:aria-labelledby="'restaurerProduitLabel'+${p.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'restaurerProduitLabel'+${p.id}">Restaurer le produit</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-restaurer-produit'+${p.id}"></div>
+                                                    Voulez-vous vraiment restaurer le produit ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idproduit="${p.id}" class="btn btn-success bouton-restaurer-produit">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/produits?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_premier_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_suppr}"><a class="page-link" th:href="'/produits?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_precedent_suppr}" th:text="${indice_precedent_suppr}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_suppr}"><a class="page-link" th:href="'/produits?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_suivant_suppr}" th:text="${indice_suivant_suppr}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/produits?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_dernier_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+        const codeSuppr=/*[[${code_suppr}]]*/0;
+        const codeRestaurer=/*[[${code_restaurer}]]*/0;
+        const codeAjout=/*[[${code_ajout}]]*/0;
+
+        function action(api, envoi, alerteEnvoye){
+            fetch(api, {
+                method:"post",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(envoi)})
+            }).then((response)=>response.json())
+            .then((data)=>{
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                window.location.reload();
+            });
+        }
+
+        const boutonSupprProduits=document.getElementsByClassName("bouton-suppr-produit");
+        const apiSupprProduit="http://"+ip+":8080/action-produit";
+        for(let i=0;i<boutonSupprProduits.length;i++){
+            const idproduit=boutonSupprProduits[i].dataset.idproduit;
+            const alerteEnvoye=document.getElementById("alerte-produit"+idproduit);
+            boutonSupprProduits[i].onclick=()=>{
+                const envoiSuppression={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idproduit:idproduit,
+                        action:codeSuppr
+                    }
+                }
+                action(apiSupprProduit, envoiSuppression, alerteEnvoye);
+            }
+        }
+        const boutonRestaurerProduit=document.getElementsByClassName("bouton-restaurer-produit");
+        const apiRestaurerUser="http://"+ip+":8080/action-produit";
+        for(let i=0;i<boutonRestaurerProduit.length;i++){
+            const idproduit=boutonRestaurerProduit[i].dataset.idproduit;
+            const alerteEnvoye=document.getElementById("alerte-restaurer-produit"+idproduit);
+            boutonRestaurerProduit[i].onclick=()=>{
+                const envoiRestaurer={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idproduit:idproduit,
+                        action:codeRestaurer
+                    }
+                }
+                action(apiRestaurerUser, envoiRestaurer, alerteEnvoye);
+            }
+        }
+        const boutonAjouter=document.getElementById("bouton-ajouter-produit");
+        const apiAjouter="http://"+ip+":8080/action-produit";
+        boutonAjouter.onclick=()=>{
+            const nom=document.getElementById("nomChamp").value;
+            const categorie=document.getElementById("categorieChamp").value;
+            const prix=document.getElementById("prixChamp").value;
+            const accompagnement=document.getElementById("accompagnementChamp").value;
+            const alerteEnvoye=document.getElementById("alerte-ajout");
+            const envoiAjout={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                donnees:{
+                    nom:nom,
+                    categorie:categorie,
+                    prix:prix,
+                    accompagnement:accompagnement,
+                    action:codeAjout
+                }
+            }
+            action(apiAjouter, envoiAjout, alerteEnvoye);
+        }
+        /*]]*/
+    </script>
+</div>

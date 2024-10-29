@@ -794,3 +794,49 @@ FROM (((commandes
 WHERE (commandes.etat < 40);
 
 drop table action_paiements;
+
+CREATE or replace VIEW v_commandefille_accompagnements AS SELECT vcf.id,
+    vcf.idcommande,
+    vcf.idproduit,
+    vcf.prix_unitaire,
+    vcf.quantite,
+    vcf.montant,
+    vcf.notes,
+    vcf.etat,
+    accompagnements.nom AS nom_accompagnement
+   FROM ((v_commande_filles vcf
+     JOIN v_accompagnement_commandes vac ON ((vcf.id = vac.idcommandefille)))
+     JOIN accompagnements ON ((vac.idaccompagnement = accompagnements.id)));
+
+CREATE or replace VIEW v_commandefille_produits AS SELECT vcf.id,
+    vcf.idcommande,
+    vcf.idproduit,
+    vcf.prix_unitaire,
+    vcf.quantite,
+    vcf.montant,
+    vcf.notes,
+    vcf.etat,
+    vp.nom,
+    vp.prix,
+    vp.idcategorie,
+    COALESCE(vcft.est_termine, '-1'::integer) AS est_termine
+   FROM ((v_commande_filles vcf
+     JOIN produits vp ON ((vcf.idproduit = vp.id)))
+     LEFT JOIN v_commande_filles_terminees vcft ON ((vcf.id = vcft.idcommandefille)));
+
+CREATE or replace VIEW v_commandes AS SELECT commandes.id,
+    commandes.idutilisateur,
+    commandes.idplace,
+    commandes.dateheure_ouverture,
+    commandes.dateheure_cloture,
+    commandes.montant,
+    commandes.etat,
+    commandes.reste_a_payer,
+    places.nom AS nom_place,
+    places.idtypeplace,
+    v_type_places.numero AS numero_type_place
+   FROM (((commandes
+     JOIN places ON ((commandes.idplace = places.id)))
+     JOIN v_type_places ON ((places.idtypeplace = v_type_places.id)))
+     JOIN utilisateurs vu ON ((commandes.idutilisateur = vu.id)))
+  WHERE (commandes.etat < 40);

@@ -65,7 +65,7 @@ insert into roles values(default, 'Serveur', 0, '1'),
                         (default, 'Admin', 0, '8');
 
 alter domain email drop constraint email_check;
-insert into utilisateurs values(default, 8, 'ADMIN', 'ADMIN', '', 'root', 0, 0),
+insert into utilisateurs values(-1, 8, 'ADMIN', 'ADMIN', '', 'root', 0, 0),
                                (default, 6, 'Responsable_1', 'Resp_1', '', 'root', 0, 0);
 
 insert into rangees values(0, 'Inutilisée', 0),

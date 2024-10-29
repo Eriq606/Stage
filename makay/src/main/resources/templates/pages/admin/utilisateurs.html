@@ -1,0 +1,298 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Gestion des utilisateurs</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Mot de passe</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u:${utilisateurs}">
+                                <td th:text="${u.nom}"></td>
+                                <td><input type="password" class="motdepasse-utilisateur" value="${u.motdepasse}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#modifierUserModal'+${u.id}">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'modifierUserModal'+${u.id}" tabindex="-1" th:aria-labelledby="'modifierUserModalLabel'+${u.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'modifierUserModalLabel'+${u.id}">Supprimer l'utilisateur</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-utilisateur'+${u.id}"></div>
+                                                    Voulez-vous vraiment supprimer l'utilisateur ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idutilisateur="${u.id}" class="btn btn-danger bouton-suppr-utilisateur">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_premier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_liste}"><a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_precedent_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_precedent_liste}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_liste}"><a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_suivant_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_suivant_liste}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_dernier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="fa-solid fa-plus"></i>Enregistrer un nouvel utilisateur
+                </button>
+                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addModalLabel">Enregistrer un nouvel utilisateur</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alerte-ajout"></div>
+                                <div class="mb-3">
+                                    <label for="nomChamp" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nomChamp">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contactChamp" class="form-label">Contact</label>
+                                    <input type="text" class="form-control" id="contactChamp">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="motdepasseChamp" class="form-label">Mot de passe</label>
+                                    <input type="text" class="form-control" id="motdepasseChamp">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="bouton-ajouter-utilisateur" class="btn btn-success">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Utilisateurs supprimés</h2>
+                <div class="table-responsive">
+                    <table class="table"></table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u:${utilisateurs_suppr}">
+                                <td th:text="${u.nom}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#restaurerUserModal'+${u.id}">
+                                        <i class="fa-solid fa-trash-arrow-up"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'restaurerUserModal'+${u.id}" tabindex="-1" th:aria-labelledby="'restaurerUserModalLabel'+${u.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'restaurerUserModalLabel'+${u.id}">Restaurer l'utilisateur</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-restaurer-utilisateur'+${u.id}"></div>
+                                                    Voulez-vous vraiment restaurer l'utilisateur ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idutilisateur="${u.id}" class="btn btn-success bouton-restaurer-utilisateur">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_premier_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_suppr}"><a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_precedent_suppr}" th:text="${indice_precedent_suppr}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_suppr}"><a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_suivant_suppr}" th:text="${indice_suivant_suppr}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/utilisateurs?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_dernier_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+
+        const motdepasses=document.getElementsByClassName("motdepasse-utilisateur");
+        for(let i=0;i<motdepasses.length;i++){
+            motdepasses[i].oninput=(ev)=>{
+                ev.preventDefault();
+            }
+        }
+        const boutonSupprUtilisateurs=document.getElementsByClassName("bouton-suppr-utilisateur");
+        const apiSupprUtilisateur="http://"+ip+":8080/supprimer-utilisateur";
+        for(let i=0;i<boutonSupprUtilisateurs.length;i++){
+            const idutilisateur=boutonSupprUtilisateurs[i].dataset.idutilisateur;
+            const alerteEnvoye=document.getElementById("alerte-utilisateur"+idutilisateur);
+            boutonSupprUtilisateurs[i].onclick=()=>{
+                const envoiSuppression={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idutilisateur:idutilisateur
+                    }
+                }
+                fetch(apiSupprUtilisateur, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiSuppression)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
+                });
+            }
+        }
+        const boutonRestaurerUser=document.getElementsByClassName("bouton-restaurer-utilisateur");
+        const apiRestaurerUser="http://"+ip+":8080/restaurer-utilisateur";
+        for(let i=0;i<boutonRestaurerUser.length;i++){
+            const idutilisateur=boutonRestaurerUser[i].dataset.idutilisateur;
+            const alerteEnvoye=document.getElementById("alerte-restaurer-utilisateur"+idutilisateur);
+            boutonRestaurerUser[i].onclick=()=>{
+                const envoiRestaurer={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idutilisateur:idutilisateur
+                    }
+                }
+                fetch(apiRestaurerUser, {
+                    method:"post",
+                    headers:{
+                        "Content-type":"application/json"
+                    },
+                    body:JSON.stringify({restdata:JSON.stringify(envoiRestaurer)})
+                }).then((response)=>response.json())
+                .then((data)=>{
+                    if(data.code===0){
+                        const alert=document.createElement("div");
+                        alert.className="alert alert-danger alert-dismissible show w-100";
+                        alert.setAttribute("role", "alert");
+                        alert.textContent=data.message;
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'btn-close';
+                        button.setAttribute('data-bs-dismiss', 'alert');
+                        button.setAttribute('aria-label', 'Close');
+                        alert.appendChild(button);
+                        alerteEnvoye.appendChild(alert);
+                        return;
+                    }
+                    window.location.reload();
+                });
+            }
+        }
+        const boutonAjouter=document.getElementById("bouton-ajouter-utilisateur");
+        const apiAjouter="http://"+ip+":8080/ajouter-utilisateur";
+        boutonAjouter.onclick=()=>{
+            const nom=document.getElementById("nomChamp").value;
+            const motdepasse=document.getElementById("motdepasseChamp").value;
+            const contact=document.getElementById("contactChamp").value;
+            const alerteEnvoye=document.getElementById("alerte-ajout");
+            const envoiAjout={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                donnees:{
+                    nom:nom,
+                    motdepasse:motdepasse,
+                    contact:contact
+                }
+            }
+            fetch(apiAjouter, {
+                method:"post",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(envoiAjout)})
+            }).then((response)=>response.json())
+            .then((data)=>{
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                window.location.reload();
+            });
+        }
+        /*]]*/
+    </script>
+</div>

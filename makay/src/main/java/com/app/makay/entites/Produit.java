@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.app.makay.entites.liaison.AccompagnementProduit;
 import com.app.makay.utilitaire.MyDAO;
 
+import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
 import veda.godao.annotations.PrimaryKey;
@@ -80,7 +81,7 @@ public class Produit {
         this.accompagnements = accompagnements;
     }
     
-    public Accompagnement[] getAllAccompagnements(Connection connect, MyDAO dao) throws Exception{
+    public Accompagnement[] recupererAllAccompagnements(Connection connect, MyDAO dao) throws Exception{
         AccompagnementProduit where=new AccompagnementProduit();
         where.setProduit(this);
         AccompagnementProduit[] accompagnementProduits=dao.select(connect, AccompagnementProduit.class, where);
@@ -114,5 +115,8 @@ public class Produit {
         HashMap<String, Object>[] result=dao.select(connect, query);
         double stockRestant=((BigDecimal)result[0].get("dernier_stock")).doubleValue();
         return stockRestant;
+    }
+    public String recupererPrixString(){
+        return HandyManUtils.number_format(getPrix(), ' ', ',', 2)+" Ar";
     }
 }

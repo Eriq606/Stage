@@ -23,6 +23,7 @@ public class Constantes {
     public static final String MSG_ACTION_INVALIDE="Action invalide";
     public static final String MSG_COMMANDE_NON_TERMINEE="Commande pas encore terminée.";
     public static final String MSG_QUANTITE_INVALIDE="Quantité invalide.";
+    public static final String MSG_VALEUR_INVALIDE="Valeur invalide.";
     public static final String MSG_ACTIONSUPERVISEUR_MONTANT_INVALIDE="La valeur à offrir/annuler ne peut pas être supérieur au reste à payer de la commande.";
 
     public static final String ROLE_SERVEUR="1";
@@ -32,6 +33,7 @@ public class Constantes {
     public static final String ROLE_ANALYSTE="5";
     public static final String ROLE_SUPERVISEUR="6";
     public static final String ROLE_OFF="7";
+    public static final String ROLE_ADMIN="8";
 
     public static final String VAR_SESSIONUTILISATEUR="utilisateur";
     public static final String VAR_TITLE="title";
@@ -73,6 +75,11 @@ public class Constantes {
     public static final String VAR_CATEGORIES="categories";
     public static final String VAR_NOTIF_PATH="notification";
     public static final String VAR_REMISE="remises";
+    public static final String VAR_UTILISATEURS_SUPPR="utilisateurs_suppr";
+    public static final String VAR_PRODUITS_SUPPR="produits_suppr";
+    public static final String VAR_CODECRUD_SUPPR="code_suppr";
+    public static final String VAR_CODECRUD_RESTAURER="code_restaurer";
+    public static final String VAR_CODECRUD_AJOUT="code_ajout";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -105,6 +112,15 @@ public class Constantes {
     public static final String COMMANDEFILLE_ANNULEE_LABEL="Annulee";
     public static final int COMMANDEFILLE_SUPPRIMEE=20;
     public static final String COMMANDEFILLE_SUPPRIMEE_LABEL="Supprimee";
+
+    public static final int UTILISATEUR_CREE=0;
+    public static final int UTILISATEUR_SUPPRIME=10;
+
+    public static final int PRODUIT_CREE=0;
+    public static final int PRODUIT_SUPPRIME=10;
+
+    public static final int CATEGORIE_CREE=0;
+    public static final int CATEGORIE_SUPPRIME=10;
 
     public static final int PAIEMENT_CREE=0;
     public static final int PAIEMENT_ANNULE=10;
@@ -145,6 +161,9 @@ public class Constantes {
         new ModelLink("/modifier-stock", "fa-solid fa-pencil", "Mettre le stock a jour"),
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
+    public static final ModelLink[] LINK_ADMIN={
+        new ModelLink("/utilisateurs", "fa-solid fa-users", "Utilisateurs")
+    };
 
     public static final int PAGINATION_LIMIT=5;
 
@@ -175,4 +194,10 @@ public class Constantes {
     }};
 
     public static final String SND_NOTIFICATION="snd/notif.mp3";
+
+    public static final int CRUD_SUPPRESSION=0;
+    public static final int CRUD_RESTAURATION=10;
+    public static final int CRUD_AJOUT=20;
+
+    public static final String ACCOMP_SEPARATOR=",";
 }

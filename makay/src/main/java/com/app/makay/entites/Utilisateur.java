@@ -13,6 +13,7 @@ import com.app.makay.entites.annulation.AnnulationAction;
 import com.app.makay.entites.annulation.AnnulationPaiement;
 import com.app.makay.entites.annulation.AnnulationRemise;
 import com.app.makay.entites.liaison.AccompagnementCommande;
+import com.app.makay.entites.liaison.AccompagnementProduit;
 // import com.app.makay.entites.liaison.ActionPaiement;
 import com.app.makay.entites.liaison.RangeePlace;
 import com.app.makay.entites.liaison.RangeeUtilisateur;
@@ -122,6 +123,8 @@ public class Utilisateur extends IrisUser{
                 break;
             case Constantes.ROLE_CUISINIER:
                 links=Constantes.LINK_CUISINIER;
+            case Constantes.ROLE_ADMIN:
+                links=Constantes.LINK_ADMIN;
                 break;
         }
         return links;
@@ -154,11 +157,31 @@ public class Utilisateur extends IrisUser{
     }
     public static Utilisateur seConnecter(MyDAO dao, Connection connect, String email, String motDePasse) throws Exception{
         Utilisateur utilisateur=null;
-        Utilisateur where=new Utilisateur();
-        where.setEmail(email);
-        where.setMotdepasse(motDePasse);
-        where.setEtat(0);
-        Utilisateur[] target=dao.select(connect, Utilisateur.class, where);
+        String addOn="where etat=0 and email='%s' and motdepasse='%s' and id>0";
+        addOn=String.format(addOn, email.replace("'", "''"), motDePasse.replace("'", "''"));
+        // Utilisateur where=new Utilisateur();
+        // where.setEmail(email);
+        // where.setMotdepasse(motDePasse);
+        // where.setEtat(0);
+        Utilisateur[] target=dao.select(connect, Utilisateur.class, addOn);
+        if(target.length==1){
+            utilisateur=target[0];
+            utilisateur.setMotdepasse("*******");
+            utilisateur.setIrisRole(utilisateur.getRole().getNumero());
+            utilisateur.setIrisAuthorization(utilisateur.getAutorisation());
+            utilisateur.getPlacesActuels(connect, dao);
+        }
+        return utilisateur;
+    }
+    public static Utilisateur seConnecterAdmin(MyDAO dao, Connection connect, String email, String motDePasse) throws Exception{
+        Utilisateur utilisateur=null;
+        String addOn="where etat=0 and email='%s' and motdepasse='%s' and id=-1";
+        addOn=String.format(addOn, email.replace("'", "''"), motDePasse.replace("'", "''"));
+        // Utilisateur where=new Utilisateur();
+        // where.setEmail(email);
+        // where.setMotdepasse(motDePasse);
+        // where.setEtat(0);
+        Utilisateur[] target=dao.select(connect, Utilisateur.class, addOn);
         if(target.length==1){
             utilisateur=target[0];
             utilisateur.setMotdepasse("*******");
@@ -1051,7 +1074,7 @@ public class Utilisateur extends IrisUser{
         return ids;
     }
     public static Utilisateur[] recupererServeursHistorique(Connection connect, MyDAO dao) throws Exception{
-        String addOn="where etat=0 and id in (select idutilisateur from commandes group by idutilisateur)";
+        String addOn="where id in (select idutilisateur from commandes group by idutilisateur)";
         Utilisateur[] serveurs=dao.select(connect, Utilisateur.class, addOn);
         for(Utilisateur u:serveurs){
             u.setMotdepasse(null);
@@ -1259,5 +1282,112 @@ public class Utilisateur extends IrisUser{
         }
         ModePaiement[] modes=dao.select(connect, ModePaiement.class, addOn);
         return modes;
+    }
+    public void supprimerUtilisateur(Connection connect, MyDAO dao, String idutilisateur) throws Exception{
+        try{
+            Utilisateur where=new Utilisateur();
+            where.setId(Integer.parseInt(idutilisateur));
+            Utilisateur change=new Utilisateur();
+            change.setEtat(Constantes.UTILISATEUR_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerUtilisateur(Connection connect, MyDAO dao, String idutilisateur) throws Exception{
+        try{
+            Utilisateur where=new Utilisateur();
+            where.setId(Integer.parseInt(idutilisateur));
+            Utilisateur change=new Utilisateur();
+            change.setEtat(Constantes.UTILISATEUR_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterUtilisateur(Connection connect, MyDAO dao, String nom, String motDePasse, String contact) throws Exception{
+        try{
+            if(nom==null||nom.isEmpty()||nom.isBlank()||motDePasse==null||motDePasse.isEmpty()||motDePasse.isBlank()||contact==null||contact.isEmpty()||contact.isBlank()){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            Utilisateur utilisateur=new Utilisateur();
+            utilisateur.setNom(nom);
+            utilisateur.setEmail(nom);
+            utilisateur.setMotdepasse(motDePasse);
+            utilisateur.setContact(contact);
+            dao.insertWithoutPrimaryKey(connect, utilisateur);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void supprimerProduit(Connection connect, MyDAO dao, String idproduit) throws Exception{
+        try{
+            Produit where=new Produit();
+            where.setId(Integer.parseInt(idproduit));
+            Produit change=new Produit();
+            change.setEtat(Constantes.PRODUIT_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerProduit(Connection connect, MyDAO dao, String idproduit) throws Exception{
+        try{
+            Produit where=new Produit();
+            where.setId(Integer.parseInt(idproduit));
+            Produit change=new Produit();
+            change.setEtat(Constantes.PRODUIT_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterProduit(Connection connect, MyDAO dao, String nom, String idcategorie, String prix, String accompagnements) throws Exception{
+        try{
+            String[] accomps=accompagnements.split(Constantes.ACCOMP_SEPARATOR);
+            Accompagnement[] accompagnements2=new Accompagnement[accomps.length];
+            for(int i=0;i<accompagnements2.length;i++){
+                accompagnements2[i].setNom(accomps[i]);
+            }
+            double prixProduit=Double.parseDouble(prix);
+            int idcategorieProduit=Integer.parseInt(idcategorie);
+            Categorie categorie=new Categorie();
+            categorie.setId(idcategorieProduit);
+            Produit produit=new Produit();
+            produit.setNom(nom);
+            produit.setPrix(prixProduit);
+            produit.setCategorie(categorie);
+            HistoriquePrixProduit histPrix=new HistoriquePrixProduit();
+            histPrix.setPrix(prixProduit);
+            histPrix.setUtilisateur(this);
+            int idproduit=dao.insertWithoutPrimaryKey(connect, produit);
+            produit.setId(idproduit);
+            histPrix.setProduit(produit);
+            dao.insertWithoutPrimaryKey(connect, histPrix);
+            int idaccompagnement;
+            AccompagnementProduit ap;
+            for(Accompagnement a:accompagnements2){
+                idaccompagnement=dao.insertWithoutPrimaryKey(connect, a);
+                a.setId(idaccompagnement);
+                ap=new AccompagnementProduit();
+                ap.setAccompagnement(a);
+                ap.setProduit(produit);
+                dao.insertWithoutPrimaryKey(connect, ap);
+            }
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
