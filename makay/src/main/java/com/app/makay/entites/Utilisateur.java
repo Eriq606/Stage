@@ -1489,4 +1489,130 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public void supprimerRangees(Connection connect, MyDAO dao, String idrangee) throws Exception{
+        try{
+            Rangee where=new Rangee();
+            where.setId(Integer.parseInt(idrangee));
+            Rangee change=new Rangee();
+            change.setEtat(Constantes.RANGEE_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerRangee(Connection connect, MyDAO dao, String idrangee) throws Exception{
+        try{
+            Rangee where=new Rangee();
+            where.setId(Integer.parseInt(idrangee));
+            Rangee change=new Rangee();
+            change.setEtat(Constantes.RANGEE_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterRangee(Connection connect, MyDAO dao, String nom) throws Exception{
+        try{
+            if(nom==null||nom.isEmpty()||nom.isBlank()){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            nom=nom.trim();
+            Rangee rangee=new Rangee();
+            rangee.setNom(nom);
+            dao.insertWithoutPrimaryKey(connect, rangee);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void supprimerPlaces(Connection connect, MyDAO dao, String idplace) throws Exception{
+        try{
+            Place where=new Place();
+            where.setId(Integer.parseInt(idplace));
+            Place change=new Place();
+            change.setEtat(Constantes.PLACE_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerPlace(Connection connect, MyDAO dao, String idplace) throws Exception{
+        try{
+            Place where=new Place();
+            where.setId(Integer.parseInt(idplace));
+            Place change=new Place();
+            change.setEtat(Constantes.PLACE_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterPlace(Connection connect, MyDAO dao, String nom, String idtype) throws Exception{
+        try{
+            if(nom==null||nom.isEmpty()||nom.isBlank()){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            nom=nom.trim();
+            Place place=new Place();
+            place.setNom(nom);
+            TypePlace type=new TypePlace();
+            type.setId(Integer.parseInt(idtype));
+            place.setTypePlace(type);
+            dao.insertWithoutPrimaryKey(connect, place);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void supprimerModes(Connection connect, MyDAO dao, String idmode) throws Exception{
+        try{
+            ModePaiement where=new ModePaiement();
+            where.setId(Integer.parseInt(idmode));
+            ModePaiement change=new ModePaiement();
+            change.setEtat(Constantes.MODEPAIEMENT_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerMode(Connection connect, MyDAO dao, String idmode) throws Exception{
+        try{
+            ModePaiement where=new ModePaiement();
+            where.setId(Integer.parseInt(idmode));
+            ModePaiement change=new ModePaiement();
+            change.setEtat(Constantes.MODEPAIEMENT_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterMode(Connection connect, MyDAO dao, String nom) throws Exception{
+        try{
+            if(nom==null||nom.isEmpty()||nom.isBlank()){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            nom=nom.trim();
+            ModePaiement modePaiement=new ModePaiement();
+            modePaiement.setNom(nom);
+            dao.insertWithoutPrimaryKey(connect, modePaiement);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

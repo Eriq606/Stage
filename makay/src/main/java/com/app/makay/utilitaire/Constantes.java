@@ -86,10 +86,14 @@ public class Constantes {
     public static final String VAR_UTILISATEURS_SUPPR="utilisateurs_suppr";
     public static final String VAR_PRODUITS_SUPPR="produits_suppr";
     public static final String VAR_CATEGORIES_SUPPR="categories_suppr";
+    public static final String VAR_RANGEES_SUPPR="rangees_suppr";
+    public static final String VAR_PLACES_SUPPR="places_suppr";
+    public static final String VAR_MODESPAIEMENT_SUPPR="modespaiement_suppr";
     public static final String VAR_CODECRUD_SUPPR="code_suppr";
     public static final String VAR_CODECRUD_RESTAURER="code_restaurer";
     public static final String VAR_CODECRUD_AJOUT="code_ajout";
     public static final String VAR_CODECRUD_MODIF="code_modif";
+    public static final String VAR_TYPEPLACES="types_places";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -129,6 +133,15 @@ public class Constantes {
     public static final int PRODUIT_CREE=0;
     public static final int PRODUIT_SUPPRIME=10;
 
+    public static final int RANGEE_CREE=0;
+    public static final int RANGEE_SUPPRIME=10;
+
+    public static final int PLACE_CREE=0;
+    public static final int PLACE_SUPPRIME=10;
+
+    public static final int TYPEPLACE_CREE=0;
+    public static final int TYPEPLACE_SUPPRIME=10;
+
     public static final int CATEGORIE_CREE=0;
     public static final int CATEGORIE_SUPPRIME=10;
 
@@ -140,6 +153,9 @@ public class Constantes {
 
     public static final int REMISE_CREE=0;
     public static final int REMISE_ANNULE=10;
+
+    public static final int MODEPAIEMENT_CREE=0;
+    public static final int MODEPAIEMENT_SUPPRIME=10;
 
     public static final ModelLink[] LINK_SERVEUR={
         new ModelLink("/serveur-passer-commande", "fa-solid fa-pencil", "Passer une commande"),
