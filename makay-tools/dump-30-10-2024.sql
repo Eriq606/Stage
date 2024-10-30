@@ -747,3 +747,32 @@ CREATE VIEW v_serveurs_encours AS SELECT vu.id,
      LEFT JOIN v_serveurs_encours_1 v1 ON ((vu.id = v1.idutilisateur)))
   WHERE ((v1.idutilisateur IS NULL) AND ((roles.numero)::text = ANY (ARRAY[('1'::character varying)::text, ('2'::character varying)::text, ('6'::character varying)::text])));
 
+insert into roles values(default, 'serveur', 0, '1'),
+                        (default, 'bar', 0, '2'),
+                        (default, 'cuisinier', 0, '3'),
+                        (default, 'caisse', 0, '4'),
+                        (default, 'analyste', 0, '5'),
+                        (default, 'superviseur', 0, '6'),
+                        (default, 'off', 0, '7');
+
+insert into utilisateurs values(-1, 8, 'ADMIN', 'ADMIN', '', 'root', 0, 0),
+                               (default, 6, 'Responsable_1', 'Resp_1', '', 'root', 0, 0);
+
+insert into rangees values(0, 'Inutilisée', 0),
+                          (-1, 'Off', 0);
+
+insert into mode_paiements values(-1, 'V.A.T cadre', 0),
+                                 (-2, 'V.A.T client', 0);
+
+insert into categories values(default, 'Boisson', 0);
+
+drop table historique_prix_produits;
+CREATE  TABLE historique_prix_produits ( 
+	id                   serial  ,
+	idutilisateur        integer  NOT NULL  ,
+	idproduit            integer  NOT NULL  ,
+	prix                 price  NOT NULL  ,
+	dateheure            timestamp  default CURRENT_TIMESTAMP  ,
+	etat                 integer DEFAULT 0   ,
+	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
+ );

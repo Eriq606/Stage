@@ -24,40 +24,47 @@
                                     <li th:each="pa:${p.accompagnements}" th:text="${pa.nom}"></li>
                                 </ul></td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#exampleModal'+${p.id}">
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#modifierModal'+${p.id}">
                                         <i class="fa-solid fa-pencil"></i>
                                     </button>
-                                    <div class="modal fade" th:id="'exampleModal'+${p.id}" tabindex="-1" th:aria-labelledby="'exampleModalLabel'+${p.id}" aria-hidden="true">
+                                    <div class="modal fade" th:id="'modifierModal'+${p.id}" tabindex="-1" th:aria-labelledby="'modifierModalLabel'+${p.id}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" th:id="'exampleModalLabel'+${p.id}">Mettre à jour</h1>
+                                                    <h1 class="modal-title fs-5" th:id="'modifierModalLabel'+${p.id}">Mettre à jour</h1>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div th:id="'alerte-modifier'+${p.id}"></div>
                                                     <div class="mb-3">
-                                                        <label for="nomChampModif" class="form-label">Nom</label>
-                                                        <input type="text" class="form-control" id="nomChampModif" disabled>
+                                                        <label th:for="'nomChampModif'+${p.id}" class="form-label">Nom</label>
+                                                        <input type="text" class="form-control" th:id="'nomChampModif'+${p.id}" th:value="${p.nom}" disabled>
                                                     </div>
-                                                    <select class="form-select form-select-sm mb-3" id="categorieChampModif" aria-label=".form-select-sm example" disabled>
+                                                    <select class="form-select form-select-sm mb-3" aria-label=".form-select-sm example" disabled>
                                                         <option th:text="${p.categorie.nom}"></option>
                                                     </select>
                                                     <div class="mb-3">
-                                                        <label for="prixChampModif" class="form-label">Prix</label>
-                                                        <input type="number" step="0.01" min="0" th:value="${p.prix}" class="form-control" id="prixChampModif">
+                                                        <label th:for="'prixChampModif'+${p.id}" class="form-label">Prix</label>
+                                                        <input type="number" step="0.01" min="0" th:value="${p.prix}" class="form-control" th:id="'prixChampModif'+${p.id}">
                                                     </div>
                                                     <div class="mb-3">
                                                         <div class="form-floating">
                                                             <textarea class="form-control"
-                                                                id="accompagnementChampModif" style="height: 150px;" th:text="${}"></textarea>
-                                                            <label for="floatingTextarea">Accompagnements (séparés par des virgules)</label>
+                                                                th:id="'accompagnementChampPresent'+${p.id}" style="height: 150px;" th:text="${p.recupererAccompagnementsString()}" disabled></textarea>
+                                                            <label th:for="'accompagnementChampPresent'+${p.id}">Accompagnements déjà présents</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <div class="form-floating">
+                                                            <textarea class="form-control"
+                                                                th:id="'accompagnementChampModif'+${p.id}" style="height: 150px;"></textarea>
+                                                            <label th:for="'accompagnementChampModif'+${p.id}">Accompagnements (séparés par des virgules)</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                    <button type="button" th:data-idproduit="${p.id}" class="btn btn-warning modifier-produit">Modifier</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -136,7 +143,7 @@
                                     <div class="form-floating">
                                         <textarea class="form-control"
                                             id="accompagnementChamp" style="height: 150px;"></textarea>
-                                        <label for="floatingTextarea">Accompagnements (séparés par des virgules)</label>
+                                        <label for="accompagnementChamp">Accompagnements (séparés par des virgules)</label>
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +182,7 @@
                                     <li th:each="pa:${p.accompagnements}" th:text="${pa.nom}"></li>
                                 </ul></td>
                                 <td>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#restaurerProduit'+${p.id}">
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#restaurerProduit'+${p.id}">
                                         <i class="fa-solid fa-trash-arrow-up"></i>
                                     </button>
                                     <div class="modal fade" th:id="'restaurerProduit'+${p.id}" tabindex="-1" th:aria-labelledby="'restaurerProduitLabel'+${p.id}" aria-hidden="true">
@@ -231,6 +238,7 @@
         const codeSuppr=/*[[${code_suppr}]]*/0;
         const codeRestaurer=/*[[${code_restaurer}]]*/0;
         const codeAjout=/*[[${code_ajout}]]*/0;
+        const codeModif=/*[[${code_modif}]]*/0;
 
         function action(api, envoi, alerteEnvoye){
             fetch(api, {
@@ -313,6 +321,27 @@
                 }
             }
             action(apiAjouter, envoiAjout, alerteEnvoye);
+        }
+        const boutonsModifier=document.getElementsByClassName("modifier-produit");
+        const apiModifier="http://"+ip+":8080/action-produit";
+        for(let i=0;i<boutonsModifier.length;i++){
+            const idproduit=boutonsModifier[i].dataset.idproduit;
+            const alerteEnvoye=document.getElementById("alerte-modifier"+idproduit);
+            boutonsModifier[i].onclick=()=>{
+                const prix=document.getElementById("prixChampModif"+idproduit).value;
+                const accomps=document.getElementById("accompagnementChampModif"+idproduit).value;
+                const envoiModif={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idproduit:idproduit,
+                        prix:prix,
+                        accomps:accomps,
+                        action:codeModif
+                    }
+                }
+                action(apiModifier, envoiModif, alerteEnvoye);
+            }
         }
         /*]]*/
     </script>

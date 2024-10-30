@@ -1314,8 +1314,14 @@ public class Utilisateur extends IrisUser{
             if(nom==null||nom.isEmpty()||nom.isBlank()||motDePasse==null||motDePasse.isEmpty()||motDePasse.isBlank()||contact==null||contact.isEmpty()||contact.isBlank()){
                 throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
             }
+            nom=nom.trim();
+            motDePasse=motDePasse.trim();
+            contact=contact.trim();
             Utilisateur utilisateur=new Utilisateur();
             utilisateur.setNom(nom);
+            Role role=new Role();
+            role.setId(Constantes.IDROLE_OFF);
+            utilisateur.setRole(role);
             utilisateur.setEmail(nom);
             utilisateur.setMotdepasse(motDePasse);
             utilisateur.setContact(contact);
@@ -1354,10 +1360,18 @@ public class Utilisateur extends IrisUser{
     }
     public void ajouterProduit(Connection connect, MyDAO dao, String nom, String idcategorie, String prix, String accompagnements) throws Exception{
         try{
-            String[] accomps=accompagnements.split(Constantes.ACCOMP_SEPARATOR);
+            if(nom==null||idcategorie==null||prix==null){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            nom=nom.trim();
+            prix=prix.trim();
+            idcategorie=idcategorie.trim();
+            accompagnements=accompagnements.trim();
+            String[] accomps=accompagnements.trim().split(Constantes.ACCOMP_SEPARATOR);
             Accompagnement[] accompagnements2=new Accompagnement[accomps.length];
-            for(int i=0;i<accompagnements2.length;i++){
-                accompagnements2[i].setNom(accomps[i]);
+            for(int i=0;i<accompagnements2.length&&accompagnements.isEmpty()==false;i++){
+                accompagnements2[i]=new Accompagnement();
+                accompagnements2[i].setNom(accomps[i].trim());
             }
             double prixProduit=Double.parseDouble(prix);
             int idcategorieProduit=Integer.parseInt(idcategorie);
@@ -1384,6 +1398,50 @@ public class Utilisateur extends IrisUser{
                 ap.setProduit(produit);
                 dao.insertWithoutPrimaryKey(connect, ap);
             }
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void modifierProduit(Connection connect, MyDAO dao, String idproduit, String prix, String accomps) throws Exception{
+        try{
+            if(idproduit==null||prix==null){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            idproduit=idproduit.trim();
+            prix=prix.trim();
+            accomps=accomps.trim();
+            String[] accompagnements=accomps.trim().split(Constantes.ACCOMP_SEPARATOR);
+            Accompagnement[] accompagnements2=new Accompagnement[accompagnements.length];
+            Accompagnement where;
+            Produit whereProduit=new Produit();
+            whereProduit.setId(Integer.parseInt(idproduit));
+            AccompagnementProduit accompProduit;
+            int idaccompagnement;
+            for(int i=0;i<accompagnements2.length&&accomps.isEmpty()==false;i++){
+                where=new Accompagnement();
+                where.setNom(accompagnements[i]);
+                boolean exists=dao.exists(connect, Accompagnement.class, where);
+                if(exists){
+                    continue;
+                }
+                idaccompagnement=dao.insertWithoutPrimaryKey(connect, where);
+                where.setId(idaccompagnement);
+                accompProduit=new AccompagnementProduit();
+                accompProduit.setProduit(whereProduit);
+                accompProduit.setAccompagnement(where);
+                dao.insertWithoutPrimaryKey(connect, accompProduit);
+            }
+            double prixProduit=Double.parseDouble(prix);
+            Produit changeProduit=new Produit();
+            changeProduit.setPrix(prixProduit);
+            HistoriquePrixProduit histPrix=new HistoriquePrixProduit();
+            histPrix.setUtilisateur(this);
+            histPrix.setProduit(whereProduit);
+            histPrix.setPrix(prixProduit);
+            dao.update(connect, changeProduit, whereProduit);
+            dao.insertWithoutPrimaryKey(connect, histPrix);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

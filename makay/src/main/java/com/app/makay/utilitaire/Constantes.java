@@ -34,6 +34,14 @@ public class Constantes {
     public static final String ROLE_SUPERVISEUR="6";
     public static final String ROLE_OFF="7";
     public static final String ROLE_ADMIN="8";
+    public static final int IDROLE_SERVEUR=1;
+    public static final int IDROLE_BAR=2;
+    public static final int IDROLE_CUISINIER=3;
+    public static final int IDROLE_CAISSE=4;
+    public static final int IDROLE_ANALYSTE=5;
+    public static final int IDROLE_SUPERVISEUR=6;
+    public static final int IDROLE_OFF=7;
+    public static final int IDROLE_ADMIN=8;
 
     public static final String VAR_SESSIONUTILISATEUR="utilisateur";
     public static final String VAR_TITLE="title";
@@ -80,6 +88,7 @@ public class Constantes {
     public static final String VAR_CODECRUD_SUPPR="code_suppr";
     public static final String VAR_CODECRUD_RESTAURER="code_restaurer";
     public static final String VAR_CODECRUD_AJOUT="code_ajout";
+    public static final String VAR_CODECRUD_MODIF="code_modif";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -162,7 +171,8 @@ public class Constantes {
         new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
     };
     public static final ModelLink[] LINK_ADMIN={
-        new ModelLink("/utilisateurs", "fa-solid fa-users", "Utilisateurs")
+        new ModelLink("/utilisateurs", "fa-solid fa-users", "Utilisateurs"),
+        new ModelLink("/produits", "fa-solid fa-utensils", "Produits")
     };
 
     public static final int PAGINATION_LIMIT=5;
@@ -198,6 +208,7 @@ public class Constantes {
     public static final int CRUD_SUPPRESSION=0;
     public static final int CRUD_RESTAURATION=10;
     public static final int CRUD_AJOUT=20;
+    public static final int CRUD_MODIFICATION=30;
 
     public static final String ACCOMP_SEPARATOR=",";
 }

@@ -58,7 +58,7 @@ public class AdminController {
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             String addOn="where etat=0 and id>0 limit %s offset %s";
-            addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, (indiceListe-1)*Constantes.PAGINATION_LIMIT);
+            addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
             Utilisateur[] utilisateurs=dao.select(connect, Utilisateur.class, addOn);
             model.addAttribute(Constantes.VAR_UTILISATEURS, utilisateurs);
             Utilisateur where=new Utilisateur();
@@ -189,6 +189,7 @@ public class AdminController {
         model.addAttribute(Constantes.VAR_CODECRUD_SUPPR, Constantes.CRUD_SUPPRESSION);
         model.addAttribute(Constantes.VAR_CODECRUD_RESTAURER, Constantes.CRUD_RESTAURATION);
         model.addAttribute(Constantes.VAR_CODECRUD_AJOUT, Constantes.CRUD_AJOUT);
+        model.addAttribute(Constantes.VAR_CODECRUD_MODIF, Constantes.CRUD_MODIFICATION);
         return iris;
     }
     @PostMapping("/action-produit")
@@ -210,7 +211,10 @@ public class AdminController {
                     modifs.getUtilisateur().restaurerProduit(connect, dao, modifs.getDonnees().get("idproduit"));
                     break;
                 case Constantes.CRUD_AJOUT:
-                    modifs.getUtilisateur().ajouterProduit(connect, dao, modifs.getDonnees().get("nom"), modifs.getDonnees().get("idcategorie"), modifs.getDonnees().get("prix"), modifs.getDonnees().get("accompagnements"));
+                    modifs.getUtilisateur().ajouterProduit(connect, dao, modifs.getDonnees().get("nom"), modifs.getDonnees().get("categorie"), modifs.getDonnees().get("prix"), modifs.getDonnees().get("accompagnement"));
+                    break;
+                case Constantes.CRUD_MODIFICATION:
+                    modifs.getUtilisateur().modifierProduit(connect, dao, modifs.getDonnees().get("idproduit"), modifs.getDonnees().get("prix"), modifs.getDonnees().get("accomps"));
                     break;
             }
             connect.commit();

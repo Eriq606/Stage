@@ -119,4 +119,12 @@ public class Produit {
     public String recupererPrixString(){
         return HandyManUtils.number_format(getPrix(), ' ', ',', 2)+" Ar";
     }
+    public String recupererAccompagnementsString(){
+        String accomps="";
+        for(Accompagnement a:getAccompagnements()){
+            accomps+=a.getNom()+",";
+        }
+        accomps=accomps.substring(0, accomps.length()-1);
+        return accomps;
+    }
 }
