@@ -1448,4 +1448,45 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
+    public void supprimerCategories(Connection connect, MyDAO dao, String idcategorie) throws Exception{
+        try{
+            Categorie where=new Categorie();
+            where.setId(Integer.parseInt(idcategorie));
+            Categorie change=new Categorie();
+            change.setEtat(Constantes.CATEGORIE_SUPPRIME);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void restaurerCategorie(Connection connect, MyDAO dao, String idCategorie) throws Exception{
+        try{
+            Categorie where=new Categorie();
+            where.setId(Integer.parseInt(idCategorie));
+            Categorie change=new Categorie();
+            change.setEtat(Constantes.CATEGORIE_CREE);
+            dao.update(connect, change, where);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void ajouterCategorie(Connection connect, MyDAO dao, String nom) throws Exception{
+        try{
+            if(nom==null||nom.isEmpty()||nom.isBlank()){
+                throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
+            }
+            nom=nom.trim();
+            Categorie categorie=new Categorie();
+            categorie.setNom(nom);
+            dao.insertWithoutPrimaryKey(connect, categorie);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

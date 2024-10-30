@@ -225,4 +225,77 @@ public class AdminController {
             return response;
         }
     }
+    @GetMapping("/categories")
+    public Object categories(HttpServletRequest req, Model model, Integer indiceListe, Integer indiceSuppr) throws SQLException, Exception{
+        HttpSession session=req.getSession();
+        Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
+        Object iris=filter.checkByRole(utilisateur, new String[]{Constantes.ROLE_ADMIN}, "Makay - Gestion des categories", "pages/admin/categories", "layout/layout", model);
+        if(utilisateur==null){
+            return iris;
+        }
+        int indiceListe_controller=1;
+        int indiceSuppr_controller=1;
+        if(indiceListe!=null){
+            indiceListe_controller=indiceListe;
+        }
+        if(indiceSuppr!=null){
+            indiceSuppr_controller=indiceSuppr;
+        }
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Categorie where=new Categorie();
+            where.setEtat(Constantes.CATEGORIE_CREE);
+            Categorie[] categories=dao.select(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
+            HashMap<String, Object> paginationListe=dao.paginate(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, indiceListe_controller);
+            for(Map.Entry<String, Object> e:paginationListe.entrySet()){
+                model.addAttribute(e.getKey()+"_liste", e.getValue());
+            }
+            where.setEtat(Constantes.CATEGORIE_SUPPRIME);
+            Categorie[] categorieSuppr=dao.select(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, (indiceSuppr_controller-1)*Constantes.PAGINATION_LIMIT);
+            HashMap<String, Object> paginationSuppr=dao.paginate(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, indiceSuppr_controller);
+            for(Map.Entry<String, Object> e:paginationSuppr.entrySet()){
+                model.addAttribute(e.getKey()+"_suppr", e.getValue());
+            }
+            model.addAttribute(Constantes.VAR_CATEGORIES, categories);
+            model.addAttribute(Constantes.VAR_CATEGORIES_SUPPR, categorieSuppr);
+        }
+        model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
+        model.addAttribute(Constantes.VAR_IP, ip);
+        model.addAttribute(Constantes.VAR_SESSIONUTILISATEUR, utilisateur);
+        model.addAttribute(Constantes.VAR_SESSIONID, session.getId());
+        model.addAttribute(Constantes.VAR_CODECRUD_SUPPR, Constantes.CRUD_SUPPRESSION);
+        model.addAttribute(Constantes.VAR_CODECRUD_RESTAURER, Constantes.CRUD_RESTAURATION);
+        model.addAttribute(Constantes.VAR_CODECRUD_AJOUT, Constantes.CRUD_AJOUT);
+        model.addAttribute(Constantes.VAR_CODECRUD_MODIF, Constantes.CRUD_MODIFICATION);
+        return iris;
+    }
+    @PostMapping("/action-categorie")
+    @ResponseBody
+    public ReponseREST actionCategorie(@RequestBody RestData datas){
+        ReponseREST response=new ReponseREST();
+        EnvoiREST modifs=HandyManUtils.fromJson(EnvoiREST.class, datas.getRestdata());
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_ADMIN});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            int action=Integer.parseInt(modifs.getDonnees().get("action"));
+            switch(action){
+                case Constantes.CRUD_SUPPRESSION:
+                    modifs.getUtilisateur().supprimerCategories(connect, dao, modifs.getDonnees().get("idcategorie"));
+                    break;
+                case Constantes.CRUD_RESTAURATION:
+                    modifs.getUtilisateur().supprimerCategories(connect, dao, modifs.getDonnees().get("idcategorie"));
+                    break;
+                case Constantes.CRUD_AJOUT:
+                    modifs.getUtilisateur().ajouterCategorie(connect, dao, modifs.getDonnees().get("nom"));
+                    break;
+            }
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
 }

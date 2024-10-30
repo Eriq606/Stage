@@ -1,0 +1,243 @@
+<div class="container-fluid pt-4 px-4" th:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Gestion des catégories</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c:${categories}">
+                                <td th:text="${c.nom}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#supprCategorie'+${c.id}">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'supprCategorie'+${c.id}" tabindex="-1" th:aria-labelledby="'supprCategorieLabel'+${c.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'supprCategorieLabel'+${c.id}">Supprimer la categorie</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-categorie'+${c.id}"></div>
+                                                    Voulez-vous vraiment supprimer la categorie ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idcategorie="${c.id}" class="btn btn-danger bouton-suppr-categorie">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/categories?indiceListe='+${indice_premier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_liste}"><a class="page-link" th:href="'/categories?indiceListe='+${indice_precedent_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_precedent_liste}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_liste}"><a class="page-link" th:href="'/categories?indiceListe='+${indice_suivant_liste}+'&indiceSuppr='+${indice_actu_suppr}" th:text="${indice_suivant_liste}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/categories?indiceListe='+${indice_dernier_liste}+'&indiceSuppr='+${indice_actu_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="fa-solid fa-plus"></i>Enregistrer une nouvelle categorie
+                </button>
+                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addModalLabel">Enregistrer une nouvelle categorie</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alerte-ajout"></div>
+                                <div class="mb-3">
+                                    <label for="nomChamp" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nomChamp">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="bouton-ajouter-categorie" class="btn btn-success">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h2>Categories supprimées</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c:${categories_suppr}">
+                                <td th:text="${c.nom}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#restaurerCategorie'+${c.id}">
+                                        <i class="fa-solid fa-trash-arrow-up"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'restaurerCategorie'+${c.id}" tabindex="-1" th:aria-labelledby="'restaurerCategorieLabel'+${c.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'restaurerCategorieLabel'+${c.id}">Restaurer la categorie</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-restaurer-categorie'+${c.id}"></div>
+                                                    Voulez-vous vraiment restaurer le categorie ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" th:data-idcategorie="${c.id}" class="btn btn-success bouton-restaurer-categorie">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/categories?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_premier_suppr}" aria-label="Precedent">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li th:class="'page-item '+${bouton_precedent_suppr}"><a class="page-link" th:href="'/categories?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_precedent_suppr}" th:text="${indice_precedent_suppr}"></a></li>
+                            <li class="page-item disabled page-active"><a class="page-link" th:text="${indice_actu_liste}"></a></li>
+                            <li th:class="'page-item '+${bouton_suivant_suppr}"><a class="page-link" th:href="'/categories?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_suivant_suppr}" th:text="${indice_suivant_suppr}"></a></li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/categories?indiceListe='+${indice_actu_liste}+'&indiceSuppr='+${indice_dernier_suppr}" aria-label="Suivant">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const utilisateur=/*[[${utilisateur}]]*/{};
+        const sessionid=/*[[${sessionid}]]*/"";
+        const ip=/*[[${ip}]]*/"";
+        const codeSuppr=/*[[${code_suppr}]]*/0;
+        const codeRestaurer=/*[[${code_restaurer}]]*/0;
+        const codeAjout=/*[[${code_ajout}]]*/0;
+        const codeModif=/*[[${code_modif}]]*/0;
+
+        function action(api, envoi, alerteEnvoye){
+            fetch(api, {
+                method:"post",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body:JSON.stringify({restdata:JSON.stringify(envoi)})
+            }).then((response)=>response.json())
+            .then((data)=>{
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                window.location.reload();
+            });
+        }
+
+        const boutonSupprCategories=document.getElementsByClassName("bouton-suppr-categorie");
+        const apiSupprCategorie="http://"+ip+":8080/action-categorie";
+        for(let i=0;i<boutonSupprCategories.length;i++){
+            const idcategorie=boutonSupprCategories[i].dataset.idcategorie;
+            const alerteEnvoye=document.getElementById("alerte-produit"+idcategorie);
+            boutonSupprCategories[i].onclick=()=>{
+                const envoiSuppression={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idcategorie:idcategorie,
+                        action:codeSuppr
+                    }
+                }
+                action(apiSupprCategorie, envoiSuppression, alerteEnvoye);
+            }
+        }
+        const boutonRestaurerCategorie=document.getElementsByClassName("bouton-restaurer-categorie");
+        const apiRestaurerUser="http://"+ip+":8080/action-categorie";
+        for(let i=0;i<boutonRestaurerCategorie.length;i++){
+            const idcategorie=boutonRestaurerCategorie[i].dataset.idcategorie;
+            const alerteEnvoye=document.getElementById("alerte-restaurer-categorie"+idcategorie);
+            boutonRestaurerCategorie[i].onclick=()=>{
+                const envoiRestaurer={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idcategorie:idcategorie,
+                        action:codeRestaurer
+                    }
+                }
+                action(apiRestaurerUser, envoiRestaurer, alerteEnvoye);
+            }
+        }
+        const boutonAjouter=document.getElementById("bouton-ajouter-categorie");
+        const apiAjouter="http://"+ip+":8080/action-categorie";
+        boutonAjouter.onclick=()=>{
+            const nom=document.getElementById("nomChamp").value;
+            const alerteEnvoye=document.getElementById("alerte-ajout");
+            const envoiAjout={
+                utilisateur:utilisateur,
+                sessionid:sessionid,
+                donnees:{
+                    nom:nom,
+                    action:codeAjout
+                }
+            }
+            action(apiAjouter, envoiAjout, alerteEnvoye);
+        }
+        /*]]*/
+    </script>
+</div>

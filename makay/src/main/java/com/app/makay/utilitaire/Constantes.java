@@ -85,6 +85,7 @@ public class Constantes {
     public static final String VAR_REMISE="remises";
     public static final String VAR_UTILISATEURS_SUPPR="utilisateurs_suppr";
     public static final String VAR_PRODUITS_SUPPR="produits_suppr";
+    public static final String VAR_CATEGORIES_SUPPR="categories_suppr";
     public static final String VAR_CODECRUD_SUPPR="code_suppr";
     public static final String VAR_CODECRUD_RESTAURER="code_restaurer";
     public static final String VAR_CODECRUD_AJOUT="code_ajout";
