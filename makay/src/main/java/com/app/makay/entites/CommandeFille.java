@@ -99,7 +99,7 @@ public class CommandeFille {
         this.accompagnements = accompagnements;
     }
     public Accompagnement[] recupererAccompagnements(Connection connect, MyDAO dao) throws Exception{
-        String addOn="where id in(select idaccompagnement from accompagnement_commandes where idcommandefille=%s) and etat=0";
+        String addOn="where id in(select idaccompagnement from accompagnement_commandes where idcommandefille=%s)";
         addOn=String.format(addOn, getId());
         Accompagnement[] accompagnements=dao.select(connect, Accompagnement.class, addOn);
         setAccompagnements(accompagnements);
