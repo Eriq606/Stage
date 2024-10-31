@@ -191,7 +191,11 @@ public class Constantes {
     };
     public static final ModelLink[] LINK_ADMIN={
         new ModelLink("/utilisateurs", "fa-solid fa-users", "Utilisateurs"),
-        new ModelLink("/produits", "fa-solid fa-utensils", "Produits")
+        new ModelLink("/produits", "fa-solid fa-utensils", "Produits"),
+        new ModelLink("/categories", "fa-solid fa-list", "Categories"),
+        new ModelLink("/rangees", "fa-solid fa-list", "Rangées"),
+        new ModelLink("/places", "fa-solid fa-chair", "Places"),
+        new ModelLink("/modes-paiement", "fa-solid fa-wallet", "Modes de paiement"),
     };
 
     public static final int PAGINATION_LIMIT=5;
