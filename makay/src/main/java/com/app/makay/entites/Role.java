@@ -44,5 +44,10 @@ public class Role {
     public Role(Integer etat) {
         this.etat = etat;
     }
+    public Role(Integer id, String numero, String nom) {
+        this.id = id;
+        this.numero = numero;
+        this.nom = nom;
+    }
     
 }

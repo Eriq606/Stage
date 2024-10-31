@@ -1,6 +1,8 @@
 package com.app.makay.utilitaire;
 import java.util.HashMap;
 
+import com.app.makay.entites.Role;
+
 public class Constantes {
     public static final String BRAND="Makay";
 
@@ -228,4 +230,10 @@ public class Constantes {
     public static final int CRUD_MODIFICATION=30;
 
     public static final String ACCOMP_SEPARATOR=",";
+
+    public static final Role[] ROLES_AUTORISES={
+        new Role(2, ROLE_BAR, "Barman"),
+        new Role(3, ROLE_CUISINIER, "Cuisinier"),
+        new Role(6, ROLE_SUPERVISEUR, "Superviseur")
+    };
 }

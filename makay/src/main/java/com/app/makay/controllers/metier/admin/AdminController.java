@@ -249,6 +249,9 @@ public class AdminController {
             Categorie where=new Categorie();
             where.setEtat(Constantes.CATEGORIE_CREE);
             Categorie[] categories=dao.select(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
+            for(Categorie c:categories){
+                c.recupererRoles(connect, dao);
+            }
             HashMap<String, Object> paginationListe=dao.paginate(connect, Categorie.class, where, Constantes.PAGINATION_LIMIT, indiceListe_controller);
             for(Map.Entry<String, Object> e:paginationListe.entrySet()){
                 model.addAttribute(e.getKey()+"_liste", e.getValue());
@@ -261,6 +264,7 @@ public class AdminController {
             }
             model.addAttribute(Constantes.VAR_CATEGORIES, categories);
             model.addAttribute(Constantes.VAR_CATEGORIES_SUPPR, categorieSuppr);
+            model.addAttribute(Constantes.VAR_ROLES, Constantes.ROLES_AUTORISES);
         }
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
         model.addAttribute(Constantes.VAR_IP, ip);
@@ -269,6 +273,7 @@ public class AdminController {
         model.addAttribute(Constantes.VAR_CODECRUD_SUPPR, Constantes.CRUD_SUPPRESSION);
         model.addAttribute(Constantes.VAR_CODECRUD_RESTAURER, Constantes.CRUD_RESTAURATION);
         model.addAttribute(Constantes.VAR_CODECRUD_AJOUT, Constantes.CRUD_AJOUT);
+        model.addAttribute(Constantes.VAR_CODECRUD_MODIF, Constantes.CRUD_MODIFICATION);
         return iris;
     }
     @PostMapping("/action-categorie")
@@ -291,6 +296,9 @@ public class AdminController {
                     break;
                 case Constantes.CRUD_AJOUT:
                     modifs.getUtilisateur().ajouterCategorie(connect, dao, modifs.getDonnees().get("nom"));
+                    break;
+                case Constantes.CRUD_MODIFICATION:
+                    modifs.getUtilisateur().modifierCategorie(connect, dao, modifs.getDonnees().get("idcategorie"), modifs.getDonnees().get("roles"));
                     break;
             }
             connect.commit();
@@ -318,13 +326,15 @@ public class AdminController {
             indiceSuppr_controller=indiceSuppr;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Rangee where=new Rangee();
-            where.setEtat(Constantes.RANGEE_CREE);
-            Rangee[] rangees=dao.select(connect, Rangee.class, where, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
-            HashMap<String, Object> paginationListe=dao.paginate(connect, Rangee.class, where, Constantes.PAGINATION_LIMIT, indiceListe_controller);
+            String addOn="where etat=0 and id>0 limit %s offset %s";
+            addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
+            Rangee[] rangees=dao.select(connect, Rangee.class, addOn);
+            String count="select count(*) from rangees where etat=0 and id>0";
+            HashMap<String, Object> paginationListe=dao.paginate(connect, count, Constantes.PAGINATION_LIMIT, indiceListe_controller);
             for(Map.Entry<String, Object> e:paginationListe.entrySet()){
                 model.addAttribute(e.getKey()+"_liste", e.getValue());
             }
+            Rangee where=new Rangee();
             where.setEtat(Constantes.RANGEE_SUPPRIME);
             Rangee[] rangeeSuppr=dao.select(connect, Rangee.class, where, Constantes.PAGINATION_LIMIT, (indiceSuppr_controller-1)*Constantes.PAGINATION_LIMIT);
             HashMap<String, Object> paginationSuppr=dao.paginate(connect, Rangee.class, where, Constantes.PAGINATION_LIMIT, indiceSuppr_controller);
@@ -466,13 +476,15 @@ public class AdminController {
             indiceSuppr_controller=indiceSuppr;
         }
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            ModePaiement where=new ModePaiement();
-            where.setEtat(Constantes.MODEPAIEMENT_CREE);
-            ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class, where, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
-            HashMap<String, Object> paginationListe=dao.paginate(connect, ModePaiement.class, where, Constantes.PAGINATION_LIMIT, indiceListe_controller);
+            String addOn="where etat=0 and id>0 limit %s offset %s";
+            addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
+            ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class, addOn);
+            String count="select count(*) from rangees where etat=0 and id>0";
+            HashMap<String, Object> paginationListe=dao.paginate(connect, count, Constantes.PAGINATION_LIMIT, indiceListe_controller);
             for(Map.Entry<String, Object> e:paginationListe.entrySet()){
                 model.addAttribute(e.getKey()+"_liste", e.getValue());
             }
+            ModePaiement where=new ModePaiement();
             where.setEtat(Constantes.MODEPAIEMENT_SUPPRIME);
             ModePaiement[] modePaiementSuppr=dao.select(connect, ModePaiement.class, where, Constantes.PAGINATION_LIMIT, (indiceSuppr_controller-1)*Constantes.PAGINATION_LIMIT);
             HashMap<String, Object> paginationSuppr=dao.paginate(connect, ModePaiement.class, where, Constantes.PAGINATION_LIMIT, indiceSuppr_controller);

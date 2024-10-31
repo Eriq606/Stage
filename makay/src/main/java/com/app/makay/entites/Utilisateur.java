@@ -17,6 +17,7 @@ import com.app.makay.entites.liaison.AccompagnementProduit;
 // import com.app.makay.entites.liaison.ActionPaiement;
 import com.app.makay.entites.liaison.RangeePlace;
 import com.app.makay.entites.liaison.RangeeUtilisateur;
+import com.app.makay.entites.liaison.RoleChecking;
 import com.app.makay.entites.temporary.ProduitCommandeStock;
 import com.app.makay.entites.temporary.ProduitCommandeStockForSelect;
 import com.app.makay.iris.IrisUser;
@@ -1483,6 +1484,44 @@ public class Utilisateur extends IrisUser{
             Categorie categorie=new Categorie();
             categorie.setNom(nom);
             dao.insertWithoutPrimaryKey(connect, categorie);
+        }catch(Exception e){
+            connect.rollback();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public void modifierCategorie(Connection connect, MyDAO dao, String idcategorie, String idrolesString) throws Exception{
+        try{
+            String[] idroles=HandyManUtils.fromJson(String[].class, idrolesString);
+            Role[] rolesValides=Constantes.ROLES_AUTORISES;
+            Role[] roles=new Role[idroles.length];
+            boolean valide;
+            for(int i=0;i<roles.length;i++){
+                valide=false;
+                roles[i]=new Role();
+                roles[i].setId(Integer.parseInt(idroles[i]));
+                for(Role r:rolesValides){
+                    if(r.getId()==roles[i].getId()){
+                        valide=true;
+                        break;
+                    }
+                }
+                if(valide==false){
+                    throw new Exception(Constantes.MSG_ACTION_INVALIDE);
+                }
+            }
+            RoleChecking where=new RoleChecking();
+            Categorie whereCategorie=new Categorie();
+            whereCategorie.setId(Integer.parseInt(idcategorie));
+            where.setCategorie(whereCategorie);
+            dao.delete(connect, where);
+            RoleChecking[] checkings=new RoleChecking[roles.length];
+            for(int i=0;i<checkings.length;i++){
+                checkings[i]=new RoleChecking();
+                checkings[i].setCategorie(whereCategorie);
+                checkings[i].setRole(roles[i]);
+            }
+            dao.insertWithoutPrimaryKey(connect, RoleChecking.class, checkings);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

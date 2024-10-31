@@ -8,12 +8,50 @@
                         <thead>
                             <tr>
                                 <th scope="col">Nom</th>
+                                <th>Roles pouvant y accéder</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="c:${categories}">
                                 <td th:text="${c.nom}"></td>
+                                <td><ul>
+                                    <li th:each="cr:${c.roles}" th:text="${cr.nom}"></li>
+                                </ul></td>
+                                <td>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" th:data-bs-target="'#modifCategorie'+${c.id}">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </button>
+                                    <div class="modal fade" th:id="'modifCategorie'+${c.id}" tabindex="-1" th:aria-labelledby="'modifCategorieLabel'+${c.id}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" th:id="'modifCategorieLabel'+${c.id}">Modifier la catégorie</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <!-- <form class="modif-categorie"> -->
+                                                <div class="modal-body">
+                                                    <div th:id="'alerte-modifier-categorie'+${c.id}"></div>
+                                                    <div class="mb-3">
+                                                        <label th:for="'nomChamp'+${c.id}" class="form-label">Nom</label>
+                                                        <input type="text" class="form-control" th:value="${c.nom}" th:id="'nomChamp'+${c.id}" disabled>
+                                                    </div>
+                                                    <div class="mb-3 form-check" th:each="r:${roles}">
+                                                        <input type="checkbox" th:value="${r.id}" class="form-check-input" th:id="'roleChamp'+${c.id}+${r.id}">
+                                                        <label class="form-check-label" th:for="'roleChamp'+${c.id}+${r.id}" th:text="${r.nom}"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <!-- <input type="hidden" name="idcategorie" th:value="${c.id}"> -->
+                                                    <button type="button" th:data-idcategorie="${c.id}" class="btn btn-warning modif-categorie">Modifier</button>
+                                                </div>
+                                                <!-- </form> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="'#supprCategorie'+${c.id}">
                                         <i class="fa-solid fa-trash-can"></i>
@@ -160,6 +198,8 @@
         const codeSuppr=/*[[${code_suppr}]]*/0;
         const codeRestaurer=/*[[${code_restaurer}]]*/0;
         const codeAjout=/*[[${code_ajout}]]*/0;
+        const codeModif=/*[[${code_modif}]]*/0;
+        const roles=/*[[${roles}]]*/[];
 
         function action(api, envoi, alerteEnvoye){
             fetch(api, {
@@ -236,6 +276,32 @@
                 }
             }
             action(apiAjouter, envoiAjout, alerteEnvoye);
+        }
+
+        const formModifs=document.getElementsByClassName("modif-categorie");
+        const apiModifier="http://"+ip+":8080/action-categorie";
+        for(let i=0;i<formModifs.length;i++){
+            const idcategorie=formModifs[i].dataset.idcategorie;
+            const alerteEnvoye=document.getElementById("alerte-modifier-categorie"+idcategorie);
+            formModifs[i].onclick=()=>{
+                const rolesChoisis=[];
+                for(let j=0;j<roles.length;j++){
+                    const check=document.getElementById("roleChamp"+idcategorie+roles[j].id);
+                    if(check.checked){
+                        rolesChoisis.push(roles[j].id);
+                    }
+                }
+                const envoi={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idcategorie:idcategorie,
+                        roles:JSON.stringify(rolesChoisis),
+                        action:codeModif
+                    }
+                }
+                action(apiModifier, envoi, alerteEnvoye);
+            }
         }
         /*]]*/
     </script>

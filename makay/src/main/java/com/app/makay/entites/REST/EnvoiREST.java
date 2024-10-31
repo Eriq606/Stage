@@ -10,5 +10,9 @@ public class EnvoiREST extends ObjectREST{
     public void setDonnees(HashMap<String, String> donnees) {
         this.donnees = donnees;
     }
+    @Override
+    public String toString() {
+        return "EnvoiREST [utilisateur=" + utilisateur + ", donnees=" + donnees + ", sessionid=" + sessionid + "]";
+    }
     
 }
