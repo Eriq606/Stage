@@ -1,5 +1,6 @@
 package com.app.makay.entites;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.makay.entites.annulation.AnnulationAction;
 import com.app.makay.entites.annulation.AnnulationPaiement;
@@ -1653,5 +1656,18 @@ public class Utilisateur extends IrisUser{
             e.printStackTrace();
             throw e;
         }
+    }
+    public void importProduits(Connection connect, MyDAO dao, MultipartFile fichierProduits) throws Exception{
+        File produits=HandyManUtils.createFileFromBytes(fichierProduits.getOriginalFilename(), fichierProduits.getBytes());
+        HashMap<String, String>[] mapProduits=HandyManUtils.readCSV(produits, ',');
+        ImportProduit[] imports=new ImportProduit[mapProduits.length];
+        for(int i=0;i<imports.length;i++){
+            imports[i]=new ImportProduit(mapProduits[i]);
+        }
+        dao.insertWithoutPrimaryKey(connect, ImportProduit.class, imports);
+        Categorie.insertImportCategorie(connect, dao);
+        Produit.insertImportProduits(connect, dao, this);
+        String queryDeleteImportTable="delete from import_produits";
+        dao.execute(connect, queryDeleteImportTable);
     }
 }

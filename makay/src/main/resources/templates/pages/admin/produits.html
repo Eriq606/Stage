@@ -147,11 +147,12 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <form>
+                                <form id="form-import">
                                     <div class="mb-3">
                                         <label for="formFile" class="form-label">Importer un fichier CSV</label>
-                                        <input class="form-control bg-dark" type="file" id="formFile">
+                                        <input class="form-control bg-dark" type="file" name="fichierProduits" id="formFile">
                                     </div>
+                                    <button type="submit" class="btn btn-info">Envoyer</button>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -349,6 +350,36 @@
                 }
                 action(apiModifier, envoiModif, alerteEnvoye);
             }
+        }
+        const formImport=document.getElementById("form-import");
+        const apiImport="http://"+ip+":8080/import-produits";
+        formImport.onsubmit=(ev)=>{
+            ev.preventDefault();
+            const formData=new FormData(formImport);
+            formData.append("utilisateur", JSON.stringify(utilisateur));
+            formData.append("sessionid", sessionid);
+            const alerteEnvoye=document.getElementById("alerte-ajout");
+            fetch(apiImport, {
+                method:"post",
+                body:formData
+            }).then((response)=>response.json())
+            .then((data)=>{
+                if(data.code===0){
+                    const alert=document.createElement("div");
+                    alert.className="alert alert-danger alert-dismissible show w-100";
+                    alert.setAttribute("role", "alert");
+                    alert.textContent=data.message;
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn-close';
+                    button.setAttribute('data-bs-dismiss', 'alert');
+                    button.setAttribute('aria-label', 'Close');
+                    alert.appendChild(button);
+                    alerteEnvoye.appendChild(alert);
+                    return;
+                }
+                window.location.reload();
+            });
         }
         /*]]*/
     </script>

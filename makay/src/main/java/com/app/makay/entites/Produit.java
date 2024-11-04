@@ -124,7 +124,48 @@ public class Produit {
         for(Accompagnement a:getAccompagnements()){
             accomps+=a.getNom()+",";
         }
-        accomps=accomps.substring(0, accomps.length()-1);
+        if(accomps.length()>0){
+            accomps=accomps.substring(0, accomps.length()-1);
+        }
         return accomps;
+    }
+    /*
+     * - import_produits(
+     *      nomproduit,
+     *      prix,
+     *      nomcategorie,
+     *      accompagnements
+     *  )
+     * - create view import_produit_categories as
+     *      select ip.*
+     *      from import_produits ip
+     *      left join categories;
+     * - insert into categories(nom)
+     *      select nomcategorie from import_produit_categories where idcategorie is null group by nomcategorie;
+     * - create view import_produit_produit as
+     *      select ip.*
+     *      from import_produits
+     *      join categories
+     *      left join produits
+     * - insert into produits(nom, prix, idcategorie)
+     *      select nomproduit, prix, idcategorie from import_produit_produits where idproduit is null group by nomproduit, prix, idcategorie;
+     * - select max(id) from produits
+     */
+    public static void insertImportProduits(Connection connect, MyDAO dao, Utilisateur utilisateur) throws Exception{
+        String querylastSeqValue="select last_value from produits_id_seq";
+        int lastSeqVal=dao.lastSequenceVal(connect, querylastSeqValue);
+        String queryinsertproduits="insert into produits(nom, prix, idcategorie) select nomproduit, prix, idcategorie from v_import_produit_produits where idproduit is null group by nomproduit, prix, idcategorie";
+        dao.execute(connect, queryinsertproduits);
+        String addOn="where id>%s";
+        addOn=String.format(addOn, lastSeqVal);
+        Produit[] produits=dao.select(connect, Produit.class, addOn);
+        HistoriquePrixProduit[] historiques=new HistoriquePrixProduit[produits.length];
+        for(int i=0;i<historiques.length;i++){
+            historiques[i]=new HistoriquePrixProduit();
+            historiques[i].setUtilisateur(utilisateur);
+            historiques[i].setProduit(produits[i]);
+            historiques[i].setPrix(produits[i].getPrix());
+        }
+        dao.insertWithoutPrimaryKey(connect, HistoriquePrixProduit.class, historiques);
     }
 }

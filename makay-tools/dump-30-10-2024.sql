@@ -776,3 +776,65 @@ CREATE  TABLE historique_prix_produits (
 	etat                 integer DEFAULT 0   ,
 	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
  );
+
+ create table import_produits(
+  id serial PRIMARY key,
+  nomproduit varchar not null unique,
+  prix price not null,
+  nomcategorie varchar not null
+ );
+
+-- - import_produits(
+--      nomproduit,
+--      prix,
+--      nomcategorie,
+--      accompagnements
+--  )
+-- - create view import_produit_categories as
+--      select ip.
+--      from import_produits ip
+--      left join categories;
+-- - insert into categories(nom)
+--      select nomcategorie from import_produit_categories where idcategorie is null group by nomcategorie;
+-- - create view import_produit_produit as
+--      select ip.
+--      from import_produits
+--      join categories
+--      left join produits
+-- - insert into produits(nom, prix, idcategorie)
+--      select nomproduit, prix, idcategorie from import_produit_produits where idproduit is null group by nomproduit, prix, idcategorie;
+
+create or replace view v_import_produit_categories as
+select ip.*, categories.id as idcategorie
+from import_produits ip
+left join categories on ip.nomcategorie=categories.nom;
+
+create or replace view v_import_produit_produits as
+select ip.*, categories.id as idcategorie, produits.id as idproduit
+from import_produits ip
+join categories on ip.nomcategorie=categories.nom
+left join produits on ip.nomproduit=produits.nom;
+
+drop table historique_prix_produits;
+CREATE SEQUENCE historique_prix_produits_id_seq START WITH 1 INCREMENT BY 1;
+CREATE  TABLE historique_prix_produits ( 
+	id                   integer DEFAULT nextval('historique_prix_produits_id_seq'::regclass) NOT NULL  ,
+	idutilisateur        integer  NOT NULL REFERENCES utilisateurs(id) ,
+	idproduit            integer  NOT NULL REFERENCES produits(id) ,
+	prix                 price  NOT NULL  ,
+	dateheure            timestamp  NOT NULL  ,
+	etat                 integer DEFAULT 0   ,
+	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
+ );
+
+drop table historique_prix_produits;
+CREATE SEQUENCE historique_prix_produits_id_seq START WITH 1 INCREMENT BY 1;
+CREATE  TABLE historique_prix_produits ( 
+	id                   integer DEFAULT nextval('historique_prix_produits_id_seq'::regclass) NOT NULL  ,
+	idutilisateur        integer  NOT NULL REFERENCES utilisateurs(id) ,
+	idproduit            integer  NOT NULL REFERENCES produits(id) ,
+	prix                 price  NOT NULL  ,
+	dateheure            timestamp  default CURRENT_TIMESTAMP  ,
+	etat                 integer DEFAULT 0   ,
+	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
+ );

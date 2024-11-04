@@ -49,4 +49,8 @@ public class Categorie {
         setRoles(roles);
         return roles;
     }
+    public static void insertImportCategorie(Connection connect, MyDAO dao) throws Exception{
+        String query="insert into categories(nom) select nomcategorie from v_import_produit_categories where idcategorie is null group by nomcategorie";
+        dao.execute(connect, query);
+    }
 }

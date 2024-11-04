@@ -14,5 +14,9 @@ public class EnvoiREST extends ObjectREST{
     public String toString() {
         return "EnvoiREST [utilisateur=" + utilisateur + ", donnees=" + donnees + ", sessionid=" + sessionid + "]";
     }
+    public EnvoiREST() {
+        setDonnees(new HashMap<>());
+    }
+    
     
 }

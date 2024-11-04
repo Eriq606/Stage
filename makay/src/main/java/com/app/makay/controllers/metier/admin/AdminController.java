@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.makay.entites.Categorie;
 import com.app.makay.entites.ModePaiement;
@@ -26,7 +27,6 @@ import com.app.makay.utilitaire.MyDAO;
 import com.app.makay.utilitaire.MyFilter;
 import com.app.makay.utilitaire.ReponseREST;
 import com.app.makay.utilitaire.RestData;
-
 import handyman.HandyManUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -525,6 +525,35 @@ public class AdminController {
                     modifs.getUtilisateur().ajouterMode(connect, dao, modifs.getDonnees().get("nom"));
                     break;
             }
+            connect.commit();
+            return response;
+        }catch(Exception e){
+            response.setCode(Constantes.CODE_ERROR);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+    /*
+     * - File produits=new File(fichierProduits)
+     * - HashMap mapProduits=readCSV(produits)
+     * - ImportProduit[] imports=new ImportProduits[mapProduits]
+     * - loop(imports, insert())
+     * - call_insert_categories()
+     * - call_insert_produits()
+     */
+    @PostMapping("import-produits")
+    @ResponseBody
+    public ReponseREST importProduits(MultipartFile fichierProduits, String utilisateur, String sessionid){
+        ReponseREST response=new ReponseREST();
+        EnvoiREST modifs=new EnvoiREST();
+        modifs.setUtilisateur(HandyManUtils.fromJson(Utilisateur.class, utilisateur));
+        modifs.setSessionid(sessionid);
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            response=filter.checkByRoleREST(modifs, connect, dao, new String[]{Constantes.ROLE_ADMIN});
+            if(response.getCode()==Constantes.CODE_ERROR){
+                return response;
+            }
+            modifs.getUtilisateur().importProduits(connect, dao, fichierProduits);
             connect.commit();
             return response;
         }catch(Exception e){
