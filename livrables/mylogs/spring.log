@@ -1,0 +1,15 @@
+2024-11-04T14:23:41.074+03:00  INFO 15292 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 15292 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-04T14:23:41.079+03:00  INFO 15292 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-04T14:23:43.434+03:00  INFO 15292 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-04T14:23:43.451+03:00  INFO 15292 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-04T14:23:43.451+03:00  INFO 15292 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-04T14:23:43.499+03:00  INFO 15292 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-04T14:23:43.500+03:00  INFO 15292 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2275 ms
+2024-11-04T14:23:44.821+03:00  INFO 15292 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-04T14:23:44.824+03:00  INFO 15292 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-04T14:23:44.827+03:00  INFO 15292 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1fd7a37]]
+2024-11-04T14:23:44.828+03:00  INFO 15292 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-04T14:23:44.838+03:00  INFO 15292 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 4.497 seconds (process running for 5.127)
+2024-11-04T14:23:47.828+03:00  INFO 15292 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-04T14:23:47.829+03:00  INFO 15292 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1fd7a37]]
+2024-11-04T14:23:47.830+03:00  INFO 15292 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
