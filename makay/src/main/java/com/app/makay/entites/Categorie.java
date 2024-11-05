@@ -53,4 +53,9 @@ public class Categorie {
         String query="insert into categories(nom) select nomcategorie from v_import_produit_categories where idcategorie is null group by nomcategorie";
         dao.execute(connect, query);
     }
+    public static int recupererPremierID(Connection connect, MyDAO dao) throws Exception{
+        String query="select id from categories limit 1";
+        int randomId=dao.count(connect, query);
+        return randomId;
+    }
 }

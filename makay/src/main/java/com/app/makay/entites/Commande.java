@@ -401,21 +401,50 @@ public class Commande {
      *      nbCommandes
      * }
      */
+    public static double[] chiffresTotales(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws SQLException{
+        double[] chiffres=new double[]{0,0,0,0};
+        String query="""
+            select coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise
+            from commandes where etat=? and dateheure_ouverture>=? and dateheure_ouverture<?
+        """;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(3, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery()){
+                if(result.next()){
+                    chiffres[0]=result.getDouble("montant");
+                    chiffres[1]=result.getDouble("offert");
+                    chiffres[2]=result.getDouble("suppression");
+                    chiffres[3]=result.getDouble("remise");
+                }
+                return chiffres;
+            }
+        }
+    }
     public static ChiffreSemaine[] chiffresSemaine(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws SQLException{
         String query="""
-            select sum(montant) as montant, sum(montant_offert) as offert, sum(montant_annulee) as suppression, sum(montant_remises) as remise, jour_semaine_ouverture
+            select coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise, jour_semaine_ouverture
             from v_commande_semaine where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by jour_semaine_ouverture order by jour_semaine_ouverture
         """;
-        LinkedList<Double> montants=new LinkedList<>();
-        LinkedList<Double> offerts=new LinkedList<>();
-        LinkedList<Double> supprimes=new LinkedList<>();
-        LinkedList<Double> remises=new LinkedList<>();
+        boolean vide=true;
+        LinkedList<Double> montants=new LinkedList<>(){{add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);}};
+        LinkedList<Double> offerts=new LinkedList<>(){{add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);}};
+        LinkedList<Double> supprimes=new LinkedList<>(){{add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);}};
+        LinkedList<Double> remises=new LinkedList<>(){{add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);}};
         try(PreparedStatement statement=connect.prepareStatement(query)){
             statement.setInt(1, Constantes.COMMANDE_PAYEE);
             statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
             statement.setTimestamp(3, Timestamp.valueOf(dateFin));
             try(ResultSet result=statement.executeQuery()){
                 while(result.next()){
+                    if(vide==true){
+                        montants.clear();
+                        offerts.clear();
+                        supprimes.clear();
+                        remises.clear();
+                        vide=false;
+                    }
                     montants.add(result.getDouble("montant"));
                     offerts.add(result.getDouble("offert"));
                     supprimes.add(result.getDouble("suppression"));
@@ -445,11 +474,38 @@ public class Commande {
         chiffres[3].setCouleur(Constantes.STAT_COULEUR_4);
         return chiffres;
     }
-    public static Object[] statistiques(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
-        Object[] objets=new Object[3];
+    public static Object[] statistiques(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin, String idcategorie) throws Exception{
+        Object[] objets=new Object[2];
         objets[0]=chiffresSemaine(connect, dao, dateDebut, dateFin);
-        objets[1]=Produit.chiffreProduits(connect, dao, dateDebut, dateFin);
-        objets[2]=Place.chiffrePlaces(connect, dao, dateDebut, dateFin);
+        objets[1]=Produit.chiffreProduits(connect, dao, dateDebut, dateFin, Integer.parseInt(idcategorie));
+        // objets[2]=Place.chiffrePlacesVisitees(connect, dao, dateDebut, dateFin);
+        // objets[3]=Place.chiffrePlacesNonVisitees(connect, dao, dateDebut, dateFin);
         return objets;
+    }
+    public static LocalDateTime recupererPremiereDate(Connection connect, MyDAO dao) throws SQLException{
+        String query="select coalesce(min(dateheure_ouverture),current_timestamp) as datedebut from commandes where etat=?";
+        LocalDateTime dateDebut=null;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            try(ResultSet result=statement.executeQuery()){
+                if(result.next()){
+                    dateDebut=result.getTimestamp("datedebut").toLocalDateTime();
+                }
+                return dateDebut;
+            }
+        }
+    }
+    public static LocalDateTime recupererDerniereDate(Connection connect, MyDAO dao) throws SQLException{
+        String query="select coalesce(max(dateheure_ouverture),current_timestamp) as datefin from commandes where etat=?";
+        LocalDateTime dateFin=null;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            try(ResultSet result=statement.executeQuery()){
+                if(result.next()){
+                    dateFin=result.getTimestamp("datefin").toLocalDateTime();
+                }
+                return dateFin;
+            }
+        }
     }
 }

@@ -94,9 +94,34 @@ public class Place {
     public Place(Integer etat) {
         this.etat = etat;
     }
-    public static ChiffrePlace[] chiffrePlaces(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+    public static ChiffrePlace[] chiffrePlacesVisitees(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
         String query="""
-            select idplace, count(*) as nbcommandes from commandes where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idplace
+            select idplace, count(*) as nbcommandes from commandes where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idplace order by nbcommandes desc
+        """;
+        LinkedList<ChiffrePlace> liste=new LinkedList<>();
+        ChiffrePlace chiffre;
+        Place where=new Place(), place;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(3, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery()){
+                while(result.next()){
+                    where.setId(result.getInt("idplace"));
+                    place=dao.select(connect, Place.class, where)[0];
+                    chiffre=new ChiffrePlace();
+                    chiffre.setPlace(place);
+                    chiffre.setCommandes(result.getDouble("nbcommandes"));
+                    liste.add(chiffre);
+                }
+            }
+        }
+        ChiffrePlace[] chiffres=liste.toArray(new ChiffrePlace[liste.size()]);
+        return chiffres;
+    }
+    public static ChiffrePlace[] chiffrePlacesNonVisitees(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+        String query="""
+            select idplace, count(*) as nbcommandes from commandes where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idplace order by nbcommandes
         """;
         LinkedList<ChiffrePlace> liste=new LinkedList<>();
         ChiffrePlace chiffre;

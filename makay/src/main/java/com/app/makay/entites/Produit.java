@@ -175,9 +175,10 @@ public class Produit {
         }
         dao.insertWithoutPrimaryKey(connect, HistoriquePrixProduit.class, historiques);
     }
-    public static ChiffreProduit[] chiffreProduits(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+    public static ChiffreProduit[] chiffreProduits(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin, int idcategorie) throws Exception{
         String query="""
-            select idproduit, sum(quantite) as quantite from v_commande_filles_commandes where etat=? and etat_commande=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idproduit
+            select idproduit, sum(quantite) as quantite from v_commande_filles_commandes where etat=? and etat_commande=? and idcategorie=? and dateheure_ouverture>=? and dateheure_ouverture<?
+            group by idproduit order by quantite desc
         """;
         LinkedList<ChiffreProduit> chiffres=new LinkedList<>();
         ChiffreProduit chiffre;
@@ -185,8 +186,9 @@ public class Produit {
         try(PreparedStatement statement=connect.prepareStatement(query)){
             statement.setInt(1, Constantes.COMMANDEFILLE_CREEE);
             statement.setInt(2, Constantes.COMMANDE_PAYEE);
-            statement.setTimestamp(3, Timestamp.valueOf(dateDebut));
-            statement.setTimestamp(4, Timestamp.valueOf(dateFin));
+            statement.setInt(3, idcategorie);
+            statement.setTimestamp(4, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(5, Timestamp.valueOf(dateFin));
             try(ResultSet result=statement.executeQuery()){
                 while(result.next()){
                     chiffre=new ChiffreProduit();

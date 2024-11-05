@@ -19,6 +19,7 @@ import com.app.makay.entites.ModePaiement;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
 import com.app.makay.entites.Rangee;
+import com.app.makay.entites.Role;
 import com.app.makay.entites.TypePlace;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.EnvoiREST;
@@ -79,6 +80,8 @@ public class AdminController {
             for(Map.Entry<String, Object> e:paginationSuppr.entrySet()){
                 model.addAttribute(e.getKey()+"_suppr", e.getValue());
             }
+            Role[] roles=dao.select(connect, Role.class);
+            model.addAttribute(Constantes.VAR_ROLES, roles);
         }
         model.addAttribute(Constantes.VAR_IP, ip);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());
@@ -134,7 +137,7 @@ public class AdminController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            modifs.getUtilisateur().ajouterUtilisateur(connect, dao, modifs.getDonnees().get("nom"), modifs.getDonnees().get("motdepasse"), modifs.getDonnees().get("contact"));
+            modifs.getUtilisateur().ajouterUtilisateur(connect, dao, modifs.getDonnees().get("nom"), modifs.getDonnees().get("motdepasse"), modifs.getDonnees().get("contact"), modifs.getDonnees().get("idrole"));
             connect.commit();
             return response;
         }catch(Exception e){

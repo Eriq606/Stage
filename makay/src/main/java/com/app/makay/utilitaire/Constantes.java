@@ -96,6 +96,12 @@ public class Constantes {
     public static final String VAR_CODECRUD_AJOUT="code_ajout";
     public static final String VAR_CODECRUD_MODIF="code_modif";
     public static final String VAR_TYPEPLACES="types_places";
+    public static final String VAR_CHIFFRE_SEMAINE="chiffre_semaine";
+    public static final String VAR_CHIFFRE_PRODUIT="chiffre_produit";
+    public static final String VAR_CHIFFRE_PLACE_VISITEES="chiffre_place_visitees";
+    public static final String VAR_CHIFFRE_PLACE_NON_VISITEES="chiffre_place_non_visitees";
+    public static final String VAR_CHIFFRE_TOTAUX="chiffre_totaux";
+    public static final String VAR_JOURS_SEMAINE="jours_semaine";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";
@@ -197,6 +203,10 @@ public class Constantes {
         new ModelLink("/places", "fa-solid fa-chair", "Places"),
         new ModelLink("/modes-paiement", "fa-solid fa-wallet", "Modes de paiement"),
     };
+    public static final ModelLink[] LINK_ANALYSTE={
+        new ModelLink("/tableau-bord", "fa-solid fa-tachometer", "Tableau de bord"),
+        new ModelLink("/historique-de-commande", "fa-solid fa-clock-rotate-left", "Historique de commande")
+    };
 
     public static final int PAGINATION_LIMIT=5;
 
@@ -240,17 +250,26 @@ public class Constantes {
         new Role(3, ROLE_CUISINIER, "Cuisinier"),
         new Role(6, ROLE_SUPERVISEUR, "Superviseur")
     };
-    public static final HashMap<Integer, String> JOURS_SEMAINE=new HashMap<>(){{
-        put(1, "Lundi");
-        put(2, "Mardi");
-        put(3, "Mercredi");
-        put(4, "Jeudi");
-        put(5, "Vendredi");
-        put(6, "Samedi");
-        put(7, "Dimanche");
-    }};
-    public static final String STAT_COULEUR_1="#00ff7b";
-    public static final String STAT_COULEUR_2="#00e7cc";
-    public static final String STAT_COULEUR_3="#00c7ff";
-    public static final String STAT_COULEUR_4="#009dff";
+    // public static final HashMap<Integer, String> JOURS_SEMAINE=new HashMap<>(){{
+    //     put(1, "Lundi");
+    //     put(2, "Mardi");
+    //     put(3, "Mercredi");
+    //     put(4, "Jeudi");
+    //     put(5, "Vendredi");
+    //     put(6, "Samedi");
+    //     put(7, "Dimanche");
+    // }};
+    public static final String[] JOURS_SEMAINE={
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi",
+        "Dimanche",
+    };
+    public static final String STAT_COULEUR_1="#0062ff";
+    public static final String STAT_COULEUR_2="#00ff7b";
+    public static final String STAT_COULEUR_3="#dc143c";
+    public static final String STAT_COULEUR_4="#ffa500";
 }

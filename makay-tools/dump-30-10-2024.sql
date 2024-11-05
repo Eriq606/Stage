@@ -844,6 +844,14 @@ CREATE  TABLE historique_prix_produits (
  from commandes;
 
  create or replace view v_commande_filles_commandes as
- select cf.*, commandes.dateheure_ouverture, commandes.etat as etat_commande
+ select cf.*, commandes.dateheure_ouverture, commandes.etat as etat_commande, produits.idcategorie
  from commande_filles cf
- join commandes on cf.idcommande=commandes.id;  
+ join commandes on cf.idcommande=commandes.id
+ join produits on cf.idproduit=produits.id;  
+
+ insert into type_places values(default, 'Bar', default, '1'),
+                               (default, 'Salle', default, '2'),
+                               (default, 'Terrasse', default, '3');
+
+update mode_paiements set id=0 where id=-3;
+insert into mode_paiements values(0, 'espèces', default);

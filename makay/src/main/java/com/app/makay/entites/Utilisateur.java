@@ -127,8 +127,12 @@ public class Utilisateur extends IrisUser{
                 break;
             case Constantes.ROLE_CUISINIER:
                 links=Constantes.LINK_CUISINIER;
+                break;
             case Constantes.ROLE_ADMIN:
                 links=Constantes.LINK_ADMIN;
+                break;
+            case Constantes.ROLE_ANALYSTE:
+                links=Constantes.LINK_ANALYSTE;
                 break;
         }
         return links;
@@ -969,6 +973,7 @@ public class Utilisateur extends IrisUser{
             dao.update(connect, change, where);
         }catch(Exception e){
             connect.rollback();
+            e.printStackTrace();
             throw e;
         }
     }
@@ -1282,7 +1287,7 @@ public class Utilisateur extends IrisUser{
                 addOn=String.format(addOn, "<");
                 break;
             default:
-                addOn=String.format(addOn, ">");
+                addOn=String.format(addOn, ">=");
         }
         ModePaiement[] modes=dao.select(connect, ModePaiement.class, addOn);
         return modes;
@@ -1313,7 +1318,7 @@ public class Utilisateur extends IrisUser{
             throw e;
         }
     }
-    public void ajouterUtilisateur(Connection connect, MyDAO dao, String nom, String motDePasse, String contact) throws Exception{
+    public void ajouterUtilisateur(Connection connect, MyDAO dao, String nom, String motDePasse, String contact, String idrole) throws Exception{
         try{
             if(nom==null||nom.isEmpty()||nom.isBlank()||motDePasse==null||motDePasse.isEmpty()||motDePasse.isBlank()||contact==null||contact.isEmpty()||contact.isBlank()){
                 throw new Exception(Constantes.MSG_VALEUR_INVALIDE);
@@ -1324,7 +1329,7 @@ public class Utilisateur extends IrisUser{
             Utilisateur utilisateur=new Utilisateur();
             utilisateur.setNom(nom);
             Role role=new Role();
-            role.setId(Constantes.IDROLE_OFF);
+            role.setId(Integer.parseInt(idrole));
             utilisateur.setRole(role);
             utilisateur.setEmail(nom);
             utilisateur.setMotdepasse(motDePasse);
@@ -1608,6 +1613,7 @@ public class Utilisateur extends IrisUser{
             place.setNom(nom);
             TypePlace type=new TypePlace();
             type.setId(Integer.parseInt(idtype));
+            type.setNumero(idtype);
             place.setTypePlace(type);
             dao.insertWithoutPrimaryKey(connect, place);
         }catch(Exception e){

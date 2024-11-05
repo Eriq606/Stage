@@ -158,6 +158,8 @@ public class MyFilter implements IrisFilter{
                 return new RedirectView("/demande-addition");
             case Constantes.ROLE_CUISINIER:
                 return new RedirectView("/commandes-en-cours");
+            case Constantes.ROLE_ANALYSTE:
+                return new RedirectView("/tableau-bord");
         }
         return new RedirectView("/logout");
     }

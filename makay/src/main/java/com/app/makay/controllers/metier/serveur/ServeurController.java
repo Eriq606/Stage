@@ -261,7 +261,7 @@ public class ServeurController {
         HttpSession session=req.getSession();
         Utilisateur utilisateur=(Utilisateur)session.getAttribute(Constantes.VAR_SESSIONUTILISATEUR);
         Object iris=filter.checkByRole(utilisateur,
-                                        new String[]{Constantes.ROLE_SERVEUR,Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER,Constantes.ROLE_SUPERVISEUR,Constantes.ROLE_CAISSE},
+                                        new String[]{Constantes.ROLE_SERVEUR,Constantes.ROLE_BAR,Constantes.ROLE_CUISINIER,Constantes.ROLE_SUPERVISEUR,Constantes.ROLE_CAISSE,Constantes.ROLE_ANALYSTE},
                                         "Makay - Historique des commandes", "pages/serveur/historique-des-commandes", "layout/layout", model);
         if(utilisateur==null){
             return iris;
