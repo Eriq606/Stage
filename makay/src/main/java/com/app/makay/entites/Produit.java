@@ -2,9 +2,16 @@ package com.app.makay.entites;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import com.app.makay.entites.liaison.AccompagnementProduit;
+import com.app.makay.entites.statistiques.ChiffreProduit;
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
 import handyman.HandyManUtils;
@@ -167,5 +174,31 @@ public class Produit {
             historiques[i].setPrix(produits[i].getPrix());
         }
         dao.insertWithoutPrimaryKey(connect, HistoriquePrixProduit.class, historiques);
+    }
+    public static ChiffreProduit[] chiffreProduits(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+        String query="""
+            select idproduit, sum(quantite) as quantite from v_commande_filles_commandes where etat=? and etat_commande=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idproduit
+        """;
+        LinkedList<ChiffreProduit> chiffres=new LinkedList<>();
+        ChiffreProduit chiffre;
+        Produit where=new Produit(), produit;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDEFILLE_CREEE);
+            statement.setInt(2, Constantes.COMMANDE_PAYEE);
+            statement.setTimestamp(3, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(4, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery()){
+                while(result.next()){
+                    chiffre=new ChiffreProduit();
+                    where.setId(result.getInt("idproduit"));
+                    produit=dao.select(connect, Produit.class, where)[0];
+                    chiffre.setProduit(produit);
+                    chiffre.setQuantite(result.getDouble("quantite"));
+                    chiffres.add(chiffre);
+                }
+            }
+        }
+        ChiffreProduit[] chiffresTableau=chiffres.toArray(new ChiffreProduit[chiffres.size()]);
+        return chiffresTableau;
     }
 }

@@ -838,3 +838,12 @@ CREATE  TABLE historique_prix_produits (
 	etat                 integer DEFAULT 0   ,
 	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
  );
+
+ create or replace view v_commande_semaine as
+ select *, extract(isodow from date (dateheure_ouverture::date)) as jour_semaine_ouverture
+ from commandes;
+
+ create or replace view v_commande_filles_commandes as
+ select cf.*, commandes.dateheure_ouverture, commandes.etat as etat_commande
+ from commande_filles cf
+ join commandes on cf.idcommande=commandes.id;  

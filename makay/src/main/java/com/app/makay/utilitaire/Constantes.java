@@ -240,4 +240,17 @@ public class Constantes {
         new Role(3, ROLE_CUISINIER, "Cuisinier"),
         new Role(6, ROLE_SUPERVISEUR, "Superviseur")
     };
+    public static final HashMap<Integer, String> JOURS_SEMAINE=new HashMap<>(){{
+        put(1, "Lundi");
+        put(2, "Mardi");
+        put(3, "Mercredi");
+        put(4, "Jeudi");
+        put(5, "Vendredi");
+        put(6, "Samedi");
+        put(7, "Dimanche");
+    }};
+    public static final String STAT_COULEUR_1="#00ff7b";
+    public static final String STAT_COULEUR_2="#00e7cc";
+    public static final String STAT_COULEUR_3="#00c7ff";
+    public static final String STAT_COULEUR_4="#009dff";
 }

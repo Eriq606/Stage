@@ -1,16 +1,190 @@
 <div class="container-fluid pt-4 px-4" th:fragment="content">
     <div class="row">
         <div class="col-12">
-            <!-- 
-                - chiffres d'affaires
-                    - par jour de la semaine entre 2 dates
-                    - 
-                - top 10 boissons
-                - top 
-            -->
-            <div class="bg-secondary p-4">
-
+            <div class="bg-secondary rounded p-4">
+                <fieldset class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Date</legend>
+                    <div class="col-sm-10">
+                        <div class="row mb-3">
+                            <label for="date-debut" class="col-sm-2 col-form-label">Du: </label>
+                            <div class="col-sm-10">
+                                <input type="datetime-local" class="form-control" name="dateDebut" id="date-debut">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="date-fin" class="col-sm-2 col-form-label">Au: </label>
+                            <div class="col-sm-10">
+                                <input type="datetime-local" class="form-control" name="dateFin" id="date-fin">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <button class="btn btn-primary">Actualiser</button>
             </div>
         </div>
     </div>
+    <br>
+    <div class="row">
+            <!-- 
+                - graphs
+                    - par jour de la semaine entre 2 dates
+                    - total entre deux dates
+                        - montant
+                        - offert
+                        - suppression
+                        - remise
+                - classement articles chaque catégorie
+                - classement tables ayant eu un service
+            -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total chiffres d'affaires</p>
+                    <h6 class="mb-0">$1234</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total offerts</p>
+                    <h6 class="mb-0">$1234</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total suppressions</p>
+                    <h6 class="mb-0">$1234</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total remises</p>
+                    <h6 class="mb-0">$1234</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Chiffres d'affaires</h6>
+                <canvas id="chiffres-affaires"></canvas>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <h1>Produits les plus populaires durant cette période</h1>
+                <select class="form-select form-select-sm mb-3" aria-label=".form-select-sm example">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Commandés</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="">
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded p-4">
+                <h1>Tables les plus visitées</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Clients</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="">
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded p-4">
+                <h1>Tables les moins visitées</h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Clients</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="">
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const joursSemaine=/*[[${semaine}]]*/[];
+        const chiffresSemaine=/*[[${chiffres}]]*/[];
+
+        var ctx1 = $("#chiffres-affaires").get(0).getContext("2d");
+        var myChart1 = new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: joursSemaine,
+                // datasets: [{
+                //         label: "USA",
+                //         data: [15, 30, 55, 65, 60, 80, 95],
+                //         backgroundColor: "#80ff00"
+                //     },
+                //     {
+                //         label: "UK",
+                //         data: [8, 35, 40, 60, 70, 55, 75],
+                //         backgroundColor: "#80ff008f"
+                //     },
+                //     {
+                //         label: "AU",
+                //         data: [12, 25, 45, 55, 65, 70, 60],
+                //         backgroundColor: "#80ff002c"
+                //     }
+                // ]
+                datasets:chiffresSemaine
+                },
+            options: {
+                responsive: true
+            }
+        });
+        /*]]*/
+    </script>
 </div>

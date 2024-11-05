@@ -1,6 +1,15 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+
+import com.app.makay.entites.statistiques.ChiffrePlace;
 import com.app.makay.utilitaire.Constantes;
+import com.app.makay.utilitaire.MyDAO;
 
 import veda.godao.annotations.Column;
 import veda.godao.annotations.ForeignKey;
@@ -85,5 +94,29 @@ public class Place {
     public Place(Integer etat) {
         this.etat = etat;
     }
-    
+    public static ChiffrePlace[] chiffrePlaces(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+        String query="""
+            select idplace, count(*) as nbcommandes from commandes where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by idplace
+        """;
+        LinkedList<ChiffrePlace> liste=new LinkedList<>();
+        ChiffrePlace chiffre;
+        Place where=new Place(), place;
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(3, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery()){
+                while(result.next()){
+                    where.setId(result.getInt("idplace"));
+                    place=dao.select(connect, Place.class, where)[0];
+                    chiffre=new ChiffrePlace();
+                    chiffre.setPlace(place);
+                    chiffre.setCommandes(result.getDouble("nbcommandes"));
+                    liste.add(chiffre);
+                }
+            }
+        }
+        ChiffrePlace[] chiffres=liste.toArray(new ChiffrePlace[liste.size()]);
+        return chiffres;
+    }
 }

@@ -2,11 +2,17 @@ package com.app.makay.entites;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 
+import com.app.makay.entites.statistiques.ChiffreSemaine;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
@@ -370,5 +376,80 @@ public class Commande {
         }
         setRemises(remises);
         return remises;
+    }
+    /*
+     * select sum(montant / montant_offert / montant_annule / montant_remise) from commandes where etat=20 and ouverture>=%s and ouverture<%s;
+     * select *, extract(isodow from date (dateheure_ouverture::date)) as jour_semaine from commandes as v_commande_semaine;
+     * select sum(montant), sum(offert), sum(annule), sum(remise), jour_semaine from v_commande_semaine where etat=20 and ouverture>=%s and ouverture<%s group by jour_semaine;
+     * select * from commande_filles join commandes as v_commandefilles_commandes;
+     * select idproduit, sum(quantite) from v_commandefilles_commandes where etat=0 and ouverture>=%s and ouverture<%s and idcategorie=%s group by idproduit order by sum desc;
+     * select idplace, count(*) from commandes where etat=20 and ouverture>=%s and ouverture<%s group by idplace;
+     * 
+     * ChiffreSemaine{
+     *      etiquette,
+     *      donnees,
+     *      couleur
+     * }
+     * 
+     * ChiffreProduit{
+     *      Produit,
+     *      quantite
+     * }
+     * 
+     * ChiffrePlace{
+     *      Place,
+     *      nbCommandes
+     * }
+     */
+    public static ChiffreSemaine[] chiffresSemaine(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws SQLException{
+        String query="""
+            select sum(montant) as montant, sum(montant_offert) as offert, sum(montant_annulee) as suppression, sum(montant_remises) as remise, jour_semaine_ouverture
+            from v_commande_semaine where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by jour_semaine_ouverture order by jour_semaine_ouverture
+        """;
+        LinkedList<Double> montants=new LinkedList<>();
+        LinkedList<Double> offerts=new LinkedList<>();
+        LinkedList<Double> supprimes=new LinkedList<>();
+        LinkedList<Double> remises=new LinkedList<>();
+        try(PreparedStatement statement=connect.prepareStatement(query)){
+            statement.setInt(1, Constantes.COMMANDE_PAYEE);
+            statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(3, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery()){
+                while(result.next()){
+                    montants.add(result.getDouble("montant"));
+                    offerts.add(result.getDouble("offert"));
+                    supprimes.add(result.getDouble("suppression"));
+                    remises.add(result.getDouble("remise"));
+                }
+            }
+        }
+        ChiffreSemaine[] chiffres=new ChiffreSemaine[4];
+        chiffres[0]=new ChiffreSemaine();
+        chiffres[0].setEtiquette("Montant");
+        chiffres[0].setDonnees(montants.toArray(new Double[montants.size()]));
+        chiffres[0].setCouleur(Constantes.STAT_COULEUR_1);
+
+        chiffres[1]=new ChiffreSemaine();
+        chiffres[1].setEtiquette("Offerts");
+        chiffres[1].setDonnees(offerts.toArray(new Double[offerts.size()]));
+        chiffres[1].setCouleur(Constantes.STAT_COULEUR_2);
+
+        chiffres[2]=new ChiffreSemaine();
+        chiffres[2].setEtiquette("Suppressions");
+        chiffres[2].setDonnees(supprimes.toArray(new Double[supprimes.size()]));
+        chiffres[2].setCouleur(Constantes.STAT_COULEUR_3);
+
+        chiffres[3]=new ChiffreSemaine();
+        chiffres[3].setEtiquette("Remises");
+        chiffres[3].setDonnees(remises.toArray(new Double[remises.size()]));
+        chiffres[3].setCouleur(Constantes.STAT_COULEUR_4);
+        return chiffres;
+    }
+    public static Object[] statistiques(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws Exception{
+        Object[] objets=new Object[3];
+        objets[0]=chiffresSemaine(connect, dao, dateDebut, dateFin);
+        objets[1]=Produit.chiffreProduits(connect, dao, dateDebut, dateFin);
+        objets[2]=Place.chiffrePlaces(connect, dao, dateDebut, dateFin);
+        return objets;
     }
 }
