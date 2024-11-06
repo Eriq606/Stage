@@ -855,3 +855,31 @@ CREATE  TABLE historique_prix_produits (
 
 update mode_paiements set id=0 where id=-3;
 insert into mode_paiements values(0, 'espèces', default);
+
+create or replace view v_paiement_mode_paiements as
+select paiements.*, mp.nom as nom_mode
+from paiements join mode_paiements mp on paiements.idmodepaiement=mp.id;
+
+create table semaine(
+  id serial primary key,
+  jour varchar unique not null
+);
+insert into semaine values(default, 'Lundi'),
+                          (default, 'Mardi'),
+                          (default, 'Mercredi'),
+                          (default, 'Jeudi'),
+                          (default, 'Vendredi'),
+                          (default, 'Samedi'),
+                          (default, 'Dimanche');
+
+select semaine.jour, coalesce(sum(vcs.montant), 0) as montant, coalesce(sum(vcs.montant_offert),0) as offert, coalesce(sum(vcs.montant_annulee),0) as suppression, coalesce(sum(vcs.montant_remises),0) as remise
+            from semaine left join v_commande_semaine vcs on semaine.id=vcs.jour_semaine_ouverture group by semaine.jour order by semaine.jour
+
+
+select semaine.id , coalesce(sum(vcs.montant), 0) as montant, coalesce(sum(vcs.montant_offert),0) as offert, coalesce(sum(vcs.montant_annulee),0) as suppression, coalesce(sum(vcs.montant_remises),0) as remise
+from semaine left join v_commande_semaine vcs on semaine.id=vcs.jour_semaine_ouverture group by semaine.id order by semaine.id;
+
+select id, vcs.* from semaine
+left join
+(select jour_semaine_ouverture , coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise
+from v_commande_semaine where etat=20 group by jour_semaine_ouverture) vcs on semaine.id=vcs.jour_semaine_ouverture;

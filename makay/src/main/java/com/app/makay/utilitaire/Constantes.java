@@ -101,6 +101,7 @@ public class Constantes {
     public static final String VAR_CHIFFRE_PLACE_VISITEES="chiffre_place_visitees";
     public static final String VAR_CHIFFRE_PLACE_NON_VISITEES="chiffre_place_non_visitees";
     public static final String VAR_CHIFFRE_TOTAUX="chiffre_totaux";
+    public static final String VAR_CHIFFRE_PAIEMENTS="chiffre_paiements";
     public static final String VAR_JOURS_SEMAINE="jours_semaine";
 
     public static final String PLACE_BAR="1";
@@ -268,8 +269,10 @@ public class Constantes {
         "Samedi",
         "Dimanche",
     };
+    public static final int LIMIT_CLASSEMENT_PAIEMENT=4;
     public static final String STAT_COULEUR_1="#0062ff";
     public static final String STAT_COULEUR_2="#00ff7b";
     public static final String STAT_COULEUR_3="#dc143c";
     public static final String STAT_COULEUR_4="#ffa500";
+    public static final String STAT_COULEUR_5="#808080";
 }

@@ -76,10 +76,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-sm-12 col-xl-6">
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Chiffres d'affaires</h6>
                 <canvas id="chiffres-affaires"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Paiements</h6>
+                <canvas id="paiements"></canvas>
             </div>
         </div>
     </div>
@@ -125,6 +131,7 @@
         /*<![CDATA[*/
         const joursSemaine=/*[[${jours_semaine}]]*/[];
         const chiffresSemaine=/*[[${chiffre_semaine}]]*/[];
+        const chiffrePaiements=/*[[${chiffre_paiements}]]*/{};
         const dataset=[];
         for(let i=0;i<chiffresSemaine.length;i++){
             dataset.push({
@@ -141,6 +148,21 @@
                 labels: joursSemaine,
                 datasets:dataset
                 },
+            options: {
+                responsive: true
+            }
+        });
+
+        var ctx5 = $("#paiements").get(0).getContext("2d");
+        var myChart5 = new Chart(ctx5, {
+            type: "pie",
+            data: {
+                labels: chiffrePaiements.etiquettes,
+                datasets: [{
+                    backgroundColor: chiffrePaiements.couleurs,
+                    data: chiffrePaiements.donnees
+                }]
+            },
             options: {
                 responsive: true
             }

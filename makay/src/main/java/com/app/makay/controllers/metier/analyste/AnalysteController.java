@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.app.makay.entites.Categorie;
 import com.app.makay.entites.Commande;
+import com.app.makay.entites.Paiement;
 import com.app.makay.entites.Utilisateur;
+import com.app.makay.entites.statistiques.ChiffrePaiement;
 // import com.app.makay.entites.statistiques.ChiffrePlace;
 import com.app.makay.entites.statistiques.ChiffreProduit;
 import com.app.makay.entites.statistiques.ChiffreSemaine;
@@ -77,6 +79,9 @@ public class AnalysteController {
             model.addAttribute(Constantes.VAR_CHIFFRE_TOTAUX, totalsFormat);
             Categorie[] categories=dao.select(connect, Categorie.class);
             model.addAttribute(Constantes.VAR_CATEGORIES, categories);
+
+            ChiffrePaiement chiffrePaiement=Paiement.chiffrePaiements(connect, dao, dateDebutTime, dateFinTime);
+            model.addAttribute(Constantes.VAR_CHIFFRE_PAIEMENTS, chiffrePaiement);
         }
         model.addAttribute(Constantes.VAR_JOURS_SEMAINE, Constantes.JOURS_SEMAINE);
         model.addAttribute(Constantes.VAR_LINKS, utilisateur.recupererLinks());

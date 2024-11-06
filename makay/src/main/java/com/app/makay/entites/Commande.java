@@ -424,8 +424,10 @@ public class Commande {
     }
     public static ChiffreSemaine[] chiffresSemaine(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws SQLException{
         String query="""
-            select coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise, jour_semaine_ouverture
-            from v_commande_semaine where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by jour_semaine_ouverture order by jour_semaine_ouverture
+            select semaine.id, coalesce(vcs.montant,0) as montant, coalesce(vcs.offert,0) as offert, coalesce(vcs.suppression,0) as suppression, coalesce(vcs.remise,0) as remise from semaine
+            left join
+            (select coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise, jour_semaine_ouverture
+            from v_commande_semaine where etat=? and dateheure_ouverture>=? and dateheure_ouverture<? group by jour_semaine_ouverture) vcs on semaine.id=vcs.jour_semaine_ouverture order by semaine.id
         """;
         boolean vide=true;
         LinkedList<Double> montants=new LinkedList<>(){{add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);add(0.);}};

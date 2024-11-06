@@ -1,7 +1,17 @@
 package com.app.makay.entites;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+
+import com.app.makay.entites.statistiques.ChiffrePaiement;
+import com.app.makay.utilitaire.Constantes;
+import com.app.makay.utilitaire.MyDAO;
 
 import handyman.HandyManUtils;
 import veda.godao.annotations.Column;
@@ -105,5 +115,54 @@ public class Paiement {
         """;
         html=String.format(html, recupererHeureStringDocument(), getUtilisateur().getNom(), getModePaiement().getNom(), recupererMontantString());
         return html;
+    }
+    /* 
+     * select *, nommode from paiements join mode_paiements  
+     * select nommode, sum(montant) from paiements group by nommode as v_paiements_somme
+     * select * from v_paiements_somme order by somme desc limit 4
+     * 
+     * 
+     */
+    public static ChiffrePaiement chiffrePaiements(Connection connect, MyDAO dao, LocalDateTime dateDebut, LocalDateTime dateFin) throws SQLException{
+        String queryChiffres="select nom_mode, coalesce(sum(montant),0) as somme from v_paiement_mode_paiements where etat=? and dateheure>=? and dateheure<? group by nom_mode order by somme desc limit ?";
+        String queryTotal="select coalesce(sum(montant),0) as somme from paiements where etat=? and dateheure>=? and dateheure<?";
+        ChiffrePaiement chiffre=new ChiffrePaiement();
+        chiffre.setCouleurs(new String[]{
+            Constantes.STAT_COULEUR_1,
+            Constantes.STAT_COULEUR_2,
+            Constantes.STAT_COULEUR_3,
+            Constantes.STAT_COULEUR_4,
+            Constantes.STAT_COULEUR_5
+        });
+        LinkedList<String> listeEtiquettes=new LinkedList<>();
+        LinkedList<Double> listeDonnees=new LinkedList<>();
+        double totalPaiements=0;
+        double totalChiffres=0;
+        try(PreparedStatement statement=connect.prepareStatement(queryChiffres);
+        PreparedStatement statement2=connect.prepareStatement(queryTotal)){
+            statement.setInt(1, Constantes.PAIEMENT_CREE);
+            statement.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement.setTimestamp(3, Timestamp.valueOf(dateFin));
+            statement.setInt(4, Constantes.LIMIT_CLASSEMENT_PAIEMENT);
+            statement2.setInt(1, Constantes.PAIEMENT_CREE);
+            statement2.setTimestamp(2, Timestamp.valueOf(dateDebut));
+            statement2.setTimestamp(3, Timestamp.valueOf(dateFin));
+            try(ResultSet result=statement.executeQuery();
+            ResultSet result2=statement2.executeQuery()){
+                if(result2.next()){
+                    totalPaiements=result2.getDouble("somme");
+                }
+                while(result.next()){
+                    listeEtiquettes.add(result.getString("nom_mode"));
+                    listeDonnees.add(result.getDouble("somme"));
+                    totalChiffres+=result.getDouble("somme");
+                }
+                listeEtiquettes.add("Autres");
+                listeDonnees.add(totalPaiements-totalChiffres);
+                chiffre.setDonnees(listeDonnees.toArray(new Double[listeDonnees.size()]));
+                chiffre.setEtiquettes(listeEtiquettes.toArray(new String[listeEtiquettes.size()]));
+                return chiffre;
+            }
+        }
     }
 }
