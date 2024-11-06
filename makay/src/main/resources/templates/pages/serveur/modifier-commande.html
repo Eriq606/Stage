@@ -13,9 +13,21 @@
                     <button type="button" id="reset-recherche" class="btn btn-primary"><i class="fa fa-xmark"></i></button>
                 </div>
                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Produit</th>
+                            <th scope="col">En stock</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody id="suggestion-table">
                         <!-- Autocomplete suggestions -->
                     </tbody>
+                    <tfoot>
+                        <br>
+                        <button type="button" class="btn btn-primary" id="actualiser-cache">Actualiser l'état de stock</button>
+                        <br>
+                    </tfoot>
                 </table>
                 <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#commandeModal" type="button">Commande en cours</button>
                 <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
@@ -506,6 +518,7 @@
                     window.onbeforeunload=()=>{
                         stompclient.deactivate();
                     }
+                    const apiActualiserCache="http://"+ip+":8080/actualiser-cache-serveur";
                     function envoiCommandeFonction(commande, commandes, utilisateur, sessionid, indicePagination, table){
                         let montant=commande.montant;
                         for(let i=0;i<commandes.length;i++){
@@ -587,6 +600,9 @@
                             }else if(table!=="null"&&indicePagination==="null"){
                                 urlAddOn=urlAddOnTable;
                             }
+                            fetch(apiActualiserCache,{
+                                method:"get"
+                            });
                             window.location.href="http://"+ip+":8080/liste-commande?"+urlAddOn;
                         });
                     }
@@ -595,6 +611,14 @@
                     envoyerCommande.addEventListener("click", ()=>{
                         envoiCommandeFonction(commande, commandes, utilisateur, sessionid, indicePagination, table)
                     });
+                    const actualiserCache=document.getElementById("actualiser-cache");
+                    actualiserCache.onclick=()=>{
+                        fetch(apiActualiserCache,{
+                            method:"get"
+                        }).then(()=>{
+                            window.location.reload();
+                        })
+                    }
                     /*]]*/
                 </script>
             </div>

@@ -42,7 +42,7 @@
                     </tbody>
                     <tfoot>
                         <br>
-                        <a href="/actualiser-stock"><button type="button" class="btn btn-primary">Actualiser l'état de stock</button></a>
+                        <button type="button" class="btn btn-primary" id="actualiser-cache">Actualiser l'état de stock</button>
                         <br>
                     </tfoot>
                 </table>
@@ -487,6 +487,7 @@
                     }
 
                     const envoyerCommande=document.getElementById("envoyer-commande");
+                    const apiActualiserCache="http://"+ip+":8080/actualiser-cache-serveur";
                     envoyerCommande.addEventListener("click", ()=>{
                         let montant=0;
                         for(let i=0;i<commandes.length;i++){
@@ -564,11 +565,22 @@
                             alert.setAttribute("role", "alert");
                             alert.textContent="Commande envoyée";
                             alerteEnvoye.appendChild(alert);
+                            fetch(apiActualiserCache,{
+                                method:"get"
+                            });
                             setTimeout(()=>{
                                 alerteEnvoye.removeChild(alert);
                             }, 1000);
                         });
                     });
+                    const actualiserCache=document.getElementById("actualiser-cache");
+                    actualiserCache.onclick=()=>{
+                        fetch(apiActualiserCache,{
+                            method:"get"
+                        }).then(()=>{
+                            window.location.reload();
+                        })
+                    }
                     /*]]*/
                 </script>
             </div>

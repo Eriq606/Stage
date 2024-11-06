@@ -27,6 +27,20 @@ public class Remise {
     private Integer etat;
     @Column("dateheure")
     private LocalDateTime dateheure;
+    private String commandeLabel;
+    private String taux;
+    public String getTaux() {
+        return taux;
+    }
+    public void setTaux(String taux) {
+        this.taux = taux;
+    }
+    public String getCommandeLabel() {
+        return commandeLabel;
+    }
+    public void setCommandeLabel(String commandeLabel) {
+        this.commandeLabel = commandeLabel;
+    }
     public LocalDateTime getDateheure() {
         return dateheure;
     }

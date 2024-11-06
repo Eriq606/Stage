@@ -146,6 +146,8 @@ public class CaissierController {
             remise.getRemise().setDateheure(now.minusNanos(now.getNano()));
             CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
             remise.getRemise().setCommandeFille(commandeFille);
+            remise.getRemise().setCommandeLabel(remise.getRemise().recupererCommandeLabel());
+            remise.getRemise().setTaux(remise.getRemise().recupererTaux());
         }
         return remise;
     }

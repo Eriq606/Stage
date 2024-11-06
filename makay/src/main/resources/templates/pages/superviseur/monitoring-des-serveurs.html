@@ -259,6 +259,17 @@
 
             return p;
         }
+        function createRemise(r){
+            let remise=`
+                <p class="d-flex justify-content-between">
+                    <span>${r.quantite}</span>
+                    <span>${r.utilisateur.nom}</span>
+                    <span>${r.commandeLabel}</span>
+                    <span>${r.taux}</span>
+                </p>
+            `;
+            return remise;
+        }
         function createCommande(c, s){
             let commandesFilles=``;
             for(const cf of c.commandeFilles){
@@ -288,6 +299,9 @@
                                             <button class="nav-link" id="nav-actions-tab${c.id}" data-bs-toggle="tab"
                                                 data-bs-target="#nav-actions${c.id}" type="button" role="tab"
                                                 aria-controls="nav-actions${c.id}" aria-selected="false">Actions</button>
+                                            <button class="nav-link" id="nav-remises-tab${c.id}" data-bs-toggle="tab"
+                                                data-bs-target="#nav-remises${c.id}" type="button" role="tab"
+                                                aria-controls="nav-remises${c.id}" aria-selected="false">Remises</button>
                                         </div>
                                     </nav>
                                     <div class="tab-content pt-3" id="nav-tabContent">
@@ -307,9 +321,15 @@
                                         </div>
                                         <div class="tab-pane fade" id="nav-paiements${c.id}" role="tabpanel" aria-labelledby="nav-paiements-tab${c.id}">
                                             <p>Paiements:</p>
+                                            <div id="paiements-commande${c.id}"></div>
                                         </div>
                                         <div class="tab-pane fade" id="nav-actions${c.id}" role="tabpanel" aria-labelledby="nav-actions-tab${c.id}">
                                             <p>Actions de superviseurs:</p>
+                                            <div id="actions-commande${c.id}"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-remises${c.id}" role="tabpanel" aria-labelledby="nav-remises-tab${c.id}">
+                                            <p>Remises:</p>
+                                            <div id="remises-commande${c.id}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -375,18 +395,15 @@
                 const action=envoiAction.actionSuperviseur;
                 const divAction=document.getElementById("actions-commande"+action.commandeFille.commande.id);
                 divAction.appendChild(createAction(action));
-                if(action.action!=10){
-                    return;
-                }
-                const divPaiement=document.getElementById("paiements-commande"+action.commandeFille.commande.id);
-                const paiement={
-                    dateheure:action.dateheure,
-                    montant:action.montant,
-                    modePaiement:{
-                        nom:"V.A.T"
-                    }
-                }
-                divPaiement.appendChild(createPaiement(paiement));
+                navigator.vibrate(500);
+            });
+        }
+        function receiveRemise(){
+            stompclient.subscribe("/notify/recevoir-remise", (remiseEnvoye)=>{
+                const envoiRemise=JSON.parse(remiseEnvoye.body);
+                const remise=envoiRemise.remise;
+                const divRemise=document.getElementById("remises-commande"+remise.commandeFille.commande.id);
+                divRemise.appendChild(createRemise(remise));
                 navigator.vibrate(500);
             });
         }

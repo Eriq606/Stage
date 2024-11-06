@@ -407,64 +407,64 @@
                 const tableAdditions=document.getElementById("table-demande-additions");
                 if(tableAdditions.children.length<paginationLimit+1){
                     notification.play();
-                    navigator.vibrate(500);
-                    tableAdditions.appendChild(generateCommande(envoiAddition.commande));
-                    const formulaire=document.getElementById("formulaire-payer-commande"+envoiAddition.commande.id);
-                    formulaire.onsubmit=(ev)=>{
-                        ev.preventDefault();
-                        const idcommande=formulaire.dataset.idcommande;
-                        const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
-                        let resteAPayer=Number(formulaire.dataset.resteapayer);
-                        const formData=new FormData(formulaire);
-                        const paiement={
-                            commande:{ id:idcommande, resteAPayer:resteAPayer },
-                            modePaiement:{ id:formData.get("mode-paiement") },
-                            montant:formData.get("montant")
-                        }
-                        const envoiPaiement={
-                            utilisateur:utilisateur,
-                            sessionid:sessionid,
-                            paiement:paiement
-                        }
-                        fetch(apiPayer, {
-                            method:"POST",
-                            headers:{
-                                "Content-type":"application/json"
-                            },
-                            body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
-                        }).then((response)=>{return response.json()})
-                        .then((data)=>{
-                            if(data.code===0){
-                                const alert=document.createElement("div");
-                                alert.className="alert alert-danger alert-dismissible show w-100";
-                                alert.setAttribute("role", "alert");
-                                alert.textContent=data.message;
-                                const button = document.createElement('button');
-                                button.type = 'button';
-                                button.className = 'btn-close';
-                                button.setAttribute('data-bs-dismiss', 'alert');
-                                button.setAttribute('aria-label', 'Close');
-                                alert.appendChild(button);
-                                alerteEnvoye.appendChild(alert);
-                                return;
-                            }
-                            notifierSuperviseurPaiement(envoiPaiement);
-                            const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
-                            const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
-                            resteAPayer-=Number(formData.get("montant"));
-                            resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                            resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                            formulaire.setAttribute("data-resteapayer", resteAPayer);
-                            if(resteAPayer==0){
-                                const commandeRow=document.getElementById("commande-row"+idcommande);
-                                commandeRow.style.backgroundColor="#9cff9c";
-                                const button=document.getElementById("payer-submit-commande"+idcommande);
-                                button.innerHTML="<i class='fa-solid fa-check'></i>";
-                                button.disabled=true;
-                                // window.location.href="http://"+ip+":8080/demande-addition";
-                            }
-                        });
-                    }
+                    window.location.reload();
+                    // tableAdditions.appendChild(generateCommande(envoiAddition.commande));
+                    // const formulaire=document.getElementById("formulaire-payer-commande"+envoiAddition.commande.id);
+                    // formulaire.onsubmit=(ev)=>{
+                    //     ev.preventDefault();
+                    //     const idcommande=formulaire.dataset.idcommande;
+                    //     const alerteEnvoye=document.getElementById("alerte-envoye-commande"+idcommande);
+                    //     let resteAPayer=Number(formulaire.dataset.resteapayer);
+                    //     const formData=new FormData(formulaire);
+                    //     const paiement={
+                    //         commande:{ id:idcommande, resteAPayer:resteAPayer },
+                    //         modePaiement:{ id:formData.get("mode-paiement") },
+                    //         montant:formData.get("montant")
+                    //     }
+                    //     const envoiPaiement={
+                    //         utilisateur:utilisateur,
+                    //         sessionid:sessionid,
+                    //         paiement:paiement
+                    //     }
+                    //     fetch(apiPayer, {
+                    //         method:"POST",
+                    //         headers:{
+                    //             "Content-type":"application/json"
+                    //         },
+                    //         body:JSON.stringify({restdata:JSON.stringify(envoiPaiement)})
+                    //     }).then((response)=>{return response.json()})
+                    //     .then((data)=>{
+                    //         if(data.code===0){
+                    //             const alert=document.createElement("div");
+                    //             alert.className="alert alert-danger alert-dismissible show w-100";
+                    //             alert.setAttribute("role", "alert");
+                    //             alert.textContent=data.message;
+                    //             const button = document.createElement('button');
+                    //             button.type = 'button';
+                    //             button.className = 'btn-close';
+                    //             button.setAttribute('data-bs-dismiss', 'alert');
+                    //             button.setAttribute('aria-label', 'Close');
+                    //             alert.appendChild(button);
+                    //             alerteEnvoye.appendChild(alert);
+                    //             return;
+                    //         }
+                    //         notifierSuperviseurPaiement(envoiPaiement);
+                    //         const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                    //         const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
+                    //         resteAPayer-=Number(formData.get("montant"));
+                    //         resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    //         resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    //         formulaire.setAttribute("data-resteapayer", resteAPayer);
+                    //         if(resteAPayer==0){
+                    //             const commandeRow=document.getElementById("commande-row"+idcommande);
+                    //             commandeRow.style.backgroundColor="#9cff9c";
+                    //             const button=document.getElementById("payer-submit-commande"+idcommande);
+                    //             button.innerHTML="<i class='fa-solid fa-check'></i>";
+                    //             button.disabled=true;
+                    //             // window.location.href="http://"+ip+":8080/demande-addition";
+                    //         }
+                    //     });
+                    // }
                 }
             })
         }

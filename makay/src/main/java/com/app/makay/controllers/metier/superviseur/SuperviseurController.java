@@ -431,6 +431,7 @@ public class SuperviseurController {
                 return iris;
             }
             commande[0].recupererCommandeFilles(connect, dao);
+            commande[0].recupereUtilisateur(connect, dao);
             Remise[] remises=commande[0].recupererRemises(connect, dao);
             model.addAttribute(Constantes.VAR_COMMANDE, commande[0]);
             model.addAttribute(Constantes.VAR_REMISE, remises);

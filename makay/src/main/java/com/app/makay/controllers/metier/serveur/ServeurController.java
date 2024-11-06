@@ -396,4 +396,17 @@ public class ServeurController {
         }
         return addition;
     }
+    @GetMapping("/actualiser-cache-serveur")
+    public void actualiserCache() throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            Produit whereProduit=new Produit(0);
+            produits=dao.select(connect, Produit.class, whereProduit);
+            for(Produit p:produits){
+                p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
+            }
+            Place where=new Place();
+            where.setEtat(0);
+            places=dao.select(connect, Place.class, where);
+        }
+    }
 }
