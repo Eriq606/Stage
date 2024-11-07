@@ -601,7 +601,7 @@
                                 urlAddOn=urlAddOnTable;
                             }
                             fetch(apiActualiserCache,{
-                                method:"get"
+                                method:"post"
                             });
                             window.location.href="http://"+ip+":8080/liste-commande?"+urlAddOn;
                         });
@@ -614,7 +614,7 @@
                     const actualiserCache=document.getElementById("actualiser-cache");
                     actualiserCache.onclick=()=>{
                         fetch(apiActualiserCache,{
-                            method:"get"
+                            method:"post"
                         }).then(()=>{
                             window.location.reload();
                         })

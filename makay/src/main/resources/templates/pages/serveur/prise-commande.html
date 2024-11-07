@@ -566,7 +566,7 @@
                             alert.textContent="Commande envoyée";
                             alerteEnvoye.appendChild(alert);
                             fetch(apiActualiserCache,{
-                                method:"get"
+                                method:"post"
                             });
                             setTimeout(()=>{
                                 alerteEnvoye.removeChild(alert);
@@ -576,7 +576,7 @@
                     const actualiserCache=document.getElementById("actualiser-cache");
                     actualiserCache.onclick=()=>{
                         fetch(apiActualiserCache,{
-                            method:"get"
+                            method:"post"
                         }).then(()=>{
                             window.location.reload();
                         })

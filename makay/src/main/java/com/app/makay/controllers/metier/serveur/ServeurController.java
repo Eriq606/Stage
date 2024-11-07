@@ -397,7 +397,8 @@ public class ServeurController {
         }
         return addition;
     }
-    @GetMapping("/actualiser-cache-serveur")
+    @PostMapping("/actualiser-cache-serveur")
+    @ResponseBody
     public void actualiserCache() throws SQLException, Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
             Produit whereProduit=new Produit(0);
