@@ -669,3 +669,117 @@ org.thymeleaf.exceptions.TemplateInputException: Error resolving template [actua
 2024-11-07T10:31:14.360+03:00  INFO 13728 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
 2024-11-07T10:31:14.360+03:00  INFO 13728 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@61bb1e4d]]
 2024-11-07T10:31:14.361+03:00  INFO 13728 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-07T10:58:44.975+03:00  INFO 13644 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 13644 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T10:58:44.979+03:00  INFO 13644 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T10:58:46.050+03:00  INFO 13644 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T10:58:46.063+03:00  INFO 13644 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T10:58:46.063+03:00  INFO 13644 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T10:58:46.102+03:00  INFO 13644 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T10:58:46.103+03:00  INFO 13644 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1051 ms
+2024-11-07T10:58:47.070+03:00  INFO 13644 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T10:58:47.073+03:00  INFO 13644 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T10:58:47.076+03:00  INFO 13644 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@773014d3]]
+2024-11-07T10:58:47.077+03:00  INFO 13644 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T10:58:47.085+03:00  INFO 13644 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.629 seconds (process running for 3.101)
+2024-11-07T10:59:16.100+03:00  INFO 13644 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T10:59:16.101+03:00  INFO 13644 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T10:59:16.105+03:00  INFO 13644 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-07T10:59:47.058+03:00  INFO 13644 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T11:05:43.375+03:00  INFO 13644 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-07T11:05:43.376+03:00  INFO 13644 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@773014d3]]
+2024-11-07T11:05:43.376+03:00  INFO 13644 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-07T11:05:52.841+03:00  INFO 15536 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 15536 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T11:05:52.844+03:00  INFO 15536 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T11:05:53.729+03:00  INFO 15536 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T11:05:53.738+03:00  INFO 15536 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T11:05:53.739+03:00  INFO 15536 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T11:05:53.773+03:00  INFO 15536 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T11:05:53.774+03:00  INFO 15536 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 867 ms
+2024-11-07T11:05:54.858+03:00  INFO 15536 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T11:05:54.860+03:00  INFO 15536 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T11:05:54.862+03:00  INFO 15536 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3b009e7b]]
+2024-11-07T11:05:54.862+03:00  INFO 15536 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T11:05:54.870+03:00  INFO 15536 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.488 seconds (process running for 2.95)
+2024-11-07T11:06:00.958+03:00  INFO 15536 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T11:06:00.958+03:00  INFO 15536 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T11:06:00.960+03:00  INFO 15536 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-07T11:06:54.862+03:00  INFO 15536 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[2 current WS(2)-HttpStream(0)-HttpPoll(0), 4 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(4)-CONNECTED(4)-DISCONNECT(2)], stompBrokerRelay[null], inboundChannel[pool size = 24, active threads = 0, queued tasks = 0, completed tasks = 60], outboundChannel[pool size = 11, active threads = 0, queued tasks = 0, completed tasks = 11], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T11:13:15.686+03:00 ERROR 15536 --- [makay] [http-nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+
+java.io.FileNotFoundException: class path resource [static/htmlpdf/commande.html] cannot be resolved to absolute file path because it does not reside in the file system: jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/static/htmlpdf/commande.html
+	at org.springframework.util.ResourceUtils.getFile(ResourceUtils.java:222) ~[spring-core-6.1.11.jar!/:6.1.11]
+	at org.springframework.core.io.AbstractFileResolvingResource.getFile(AbstractFileResolvingResource.java:173) ~[spring-core-6.1.11.jar!/:6.1.11]
+	at com.app.makay.controllers.metier.serveur.ServeurController.exporter(ServeurController.java:346) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.11.jar!/:6.1.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.11.jar!/:6.1.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.26.jar!/:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2024-11-07T11:17:45.020+03:00  INFO 15536 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-07T11:17:45.028+03:00  INFO 15536 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3b009e7b]]
+2024-11-07T11:17:45.029+03:00  INFO 15536 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-07T11:18:04.745+03:00  INFO 11512 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 11512 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T11:18:04.751+03:00  INFO 11512 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T11:18:05.778+03:00  INFO 11512 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T11:18:05.788+03:00  INFO 11512 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T11:18:05.789+03:00  INFO 11512 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T11:18:05.827+03:00  INFO 11512 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T11:18:05.827+03:00  INFO 11512 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1001 ms
+2024-11-07T11:18:06.868+03:00  INFO 11512 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T11:18:06.871+03:00  INFO 11512 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T11:18:06.873+03:00  INFO 11512 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@26865482]]
+2024-11-07T11:18:06.874+03:00  INFO 11512 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T11:18:06.882+03:00  INFO 11512 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.678 seconds (process running for 3.157)
+2024-11-07T11:18:07.315+03:00  INFO 11512 --- [makay] [http-nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T11:18:07.315+03:00  INFO 11512 --- [makay] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T11:18:07.317+03:00  INFO 11512 --- [makay] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-07T11:19:06.857+03:00  INFO 11512 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[4 current WS(4)-HttpStream(0)-HttpPoll(0), 6 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(5)-CONNECTED(5)-DISCONNECT(2)], stompBrokerRelay[null], inboundChannel[pool size = 24, active threads = 0, queued tasks = 0, completed tasks = 66], outboundChannel[pool size = 9, active threads = 0, queued tasks = 0, completed tasks = 9], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T11:40:10.818+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-07T11:40:10.827+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@26865482]]
+2024-11-07T11:40:10.828+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.

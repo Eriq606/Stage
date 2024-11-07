@@ -343,8 +343,8 @@ public class ServeurController {
     public void exporter(String idcommande, HttpServletResponse response) throws SQLException, Exception{
         Resource htmlresource=loader.getResource("classpath:static/htmlpdf/commande.html");
         Resource fauxresource=loader.getResource("classpath:static/htmlpdf/faux.html");
-        File html=htmlresource.getFile();
-        File faux=fauxresource.getFile();
+        File html=HandyManUtils.createFileFromBytes(htmlresource.getFilename(), htmlresource.getInputStream().readAllBytes());
+        File faux=HandyManUtils.createFileFromBytes(fauxresource.getFilename(), fauxresource.getInputStream().readAllBytes());
         Commande where=new Commande();
         where.setId(Integer.parseInt(idcommande));
         try(Connection connect=DAOConnexion.getConnexion(dao)){
