@@ -103,6 +103,7 @@ public class Constantes {
     public static final String VAR_CHIFFRE_TOTAUX="chiffre_totaux";
     public static final String VAR_CHIFFRE_PAIEMENTS="chiffre_paiements";
     public static final String VAR_JOURS_SEMAINE="jours_semaine";
+    public static final String VAR_ETAT_COMMANDEFILLE_TERMINEE="etat_termine";
 
     public static final String PLACE_BAR="1";
     public static final String CLASSE_BAR="place-bar";

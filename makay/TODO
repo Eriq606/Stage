@@ -95,3 +95,11 @@ Offert/Suppression:
 Restants:
     Tableau de bord:
         ☐ graphes
+
+Commande:
+    Bouton pour envoyer une relance
+    Contenu de la relance
+        table
+        serveur
+    ✔ notification de rappel des cuisiniers @done(24-11-07 10:16)
+    

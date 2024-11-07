@@ -20,6 +20,7 @@
     </div>
     <br>
     <div class="accordion" id="accordionCommande">
+        <div id="alerte-relance"></div>
         <div th:each="c:${commandes}" th:id="'accordion-commande'+${c.id}" class="accordion-item bg-transparent">
             <h2 class="accordion-header" th:id="'headingOne'+${c.id}">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -179,6 +180,7 @@
             receiveNouvelleCommande();
             recevoirModificationCommande();
             recevoirDemandeAddition();
+            receiveRelance();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -287,6 +289,37 @@
                 // const accordionCommande=document.getElementById("accordion-commande"+envoiDemandeAddition.commande.id);
                 // accordionCommande.parentNode.removeChild(accordionCommande);
                 window.location.href="http://"+ip+":8080/commandes-en-cours";
+            })
+        }
+        /*
+            relance{
+                utilisateur
+                table
+                heureRelance
+            }
+        */
+        function alerteRelance(relance){
+            const relanceHTML=`
+                <div>
+                    <p><i class="fa fa-exclamation-circle me-2"></i>Relance : ${relance.utilisateur.nom} - Table ${relance.place.nom} - ${relance.dateheure}</p>
+                    <p>${relance.commandeFille.quantite} ${relance.commandeFille.produit.nom} ${relance.commandeFille.notes}</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            const relanceDiv=document.createElement("div");
+            relanceDiv.className="alert alert-info alert-dismissible fade show";
+            relanceDiv.setAttribute("role", "alert");
+            relanceDiv.innerHTML=relanceHTML;
+            return relanceDiv;
+        }
+        function receiveRelance(){
+            stompclient.subscribe("/notify/receive-relance-commande", (relanceEnvoye)=>{
+                const envoiRelance=JSON.parse(relanceEnvoye.body);
+                const divNotif=document.getElementById("alerte-relance");
+                const divAlerteRelance=alerteRelance(envoiRelance);
+                divNotif.appendChild(divAlerteRelance);
+                notification.play();
+                navigator.vibrate(500);
             })
         }
         /*]]*/

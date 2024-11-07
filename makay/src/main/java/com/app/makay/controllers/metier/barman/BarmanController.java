@@ -2,6 +2,7 @@ package com.app.makay.controllers.metier.barman;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.app.makay.entites.CommandeEnCours;
+import com.app.makay.entites.CommandeFille;
 import com.app.makay.entites.Place;
 import com.app.makay.entites.Produit;
+import com.app.makay.entites.Relance;
 import com.app.makay.entites.Utilisateur;
 import com.app.makay.entites.REST.CheckCommandeFilleREST;
+import com.app.makay.entites.REST.EnvoiREST;
 import com.app.makay.entites.REST.ModificationStockREST;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -196,6 +200,22 @@ public class BarmanController {
             utilisateur.modifierStock(connect, dao, produit, quantite);
             connect.commit();
             return new RedirectView("/modifier-stock");
+        }
+    }
+    @MessageMapping("/relance-commande")
+    @SendTo("/notify/receive-relance-commande")
+    public Relance relanceCommande(EnvoiREST modifs) throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            CommandeFille where=new CommandeFille();
+            where.setId(Integer.parseInt(modifs.getDonnees().get("idcommandefille")));
+            CommandeFille commandeFille=dao.select(connect, CommandeFille.class, where)[0];
+            commandeFille.getCommande().recupereUtilisateur(connect, dao);
+            Relance relance=new Relance();
+            relance.setUtilisateur(commandeFille.getCommande().getUtilisateur());
+            relance.setPlace(commandeFille.getCommande().getPlace());
+            relance.setDateheure(LocalDateTime.now());
+            relance.setCommandeFille(commandeFille);
+            return relance;
         }
     }
 }

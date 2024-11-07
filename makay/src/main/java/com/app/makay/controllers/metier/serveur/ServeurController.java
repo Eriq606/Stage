@@ -145,6 +145,7 @@ public class ServeurController {
                 model.addAttribute(entry.getKey(), entry.getValue());
             }
         }
+        model.addAttribute(Constantes.VAR_ETAT_COMMANDEFILLE_TERMINEE, Constantes.COMMANDEFILLE_ESTTERMINEE);
         model.addAttribute(Constantes.VAR_NOTIF_PATH, Constantes.SND_NOTIFICATION);
         model.addAttribute(Constantes.VAR_INDICE_PAGINATION, indice_actu_controller);
         model.addAttribute(Constantes.VAR_TABLE, table);

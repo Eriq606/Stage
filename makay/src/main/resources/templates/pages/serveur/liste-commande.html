@@ -48,6 +48,7 @@
                                                 <li th:each="cfa:${cf.accompagnements}" th:text="${cfa.nom}"></li>
                                             </ul>
                                         </td>
+                                        <td><button th:unless="${cf.estTermine==etat_termine}" class="btn btn-info boutonRelance" th:data-idcommandefille="${cf.id}">Relance</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -199,6 +200,29 @@
                 notif.play();
                 navigator.vibrate(500);
             });
+        }
+        function notifierRelance(envoiRelance){
+            stompclient.publish({
+                destination:"/makay/relance-commande",
+                body:JSON.stringify(envoiRelance)
+            });
+        }
+        const boutonsRelance=document.getElementsByClassName("boutonRelance");
+        for(let i=0;i<boutonsRelance.length;i++){
+            const idcommandefille=boutonsRelance[i].dataset.idcommandefille;
+            boutonsRelance[i].onclick=()=>{
+                const envoiRelance={
+                    utilisateur:utilisateur,
+                    sessionid:sessionid,
+                    donnees:{
+                        idcommandefille:idcommandefille
+                    }
+                }   
+                stompclient.publish({
+                    destination:"/makay/relance-commande",
+                    body:JSON.stringify(envoiRelance)
+                });
+            }
         }
         /*]]*/
     </script>
