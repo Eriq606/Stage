@@ -103,3 +103,36 @@ Commande:
         serveur
     ✔ notification de rappel des cuisiniers @done(24-11-07 10:16)
     
+Tests:
+    CRUD:
+        ☐ categories
+        ☐ produits
+        ☐ rangees
+        ☐ places
+        ☐ utilisateurs
+        ☐ modes de paiement
+    Planning:
+        ☐ plan de table
+        ☐ attribution de role
+        ☐ dispatch du staff
+    Passer commande:
+        ☐ passer commande
+        ☐ check commande
+        ☐ modifier commande
+        ☐ check commande
+    Traitement commande:
+        ☐ payer commande
+        ☐ offert
+        ☐ suppression
+        ☐ remise
+        ☐ annuler paiement
+        ☐ annuler offert
+        ☐ annuler suppression
+        ☐ annuler remise
+        ☐ cloturer
+    Sorties:
+        ☐ historique commande
+        ☐ historique filtré
+        ☐ export PDF
+        ☐ tableau de bord
+        ☐ tableau de bord filtré

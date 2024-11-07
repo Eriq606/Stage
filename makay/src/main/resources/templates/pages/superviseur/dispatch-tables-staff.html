@@ -27,6 +27,7 @@
             <div class="bg-secondary rounded h-100 p-4">
                 <div class="alerte-envoye"></div>
                 <h1>Dispatch du staff aux tables respectives</h1>
+                <button type="button" class="btn btn-primary" id="actualiser-cache">Actualiser le cache</button>
                 <hr>
                 <div class="table-responsive">
                     <table class="table">
@@ -313,6 +314,14 @@
                 }
                 notifierToutUtilisateur();
             });
+        }
+        const actualiserCache=document.getElementById("actualiser-cache");
+        actualiserCache.onclick=()=>{
+            fetch("/actualiser-cache-responsable",{
+                method:"post"
+            }).then(()=>{
+                window.location.reload();
+            })
         }
         /*]]*/
     </script>

@@ -4,6 +4,7 @@
             <div class="bg-secondary rounded h-100 p-4">
                 <div id="alerte-envoye"></div>
                 <h1>Attribution des rôles aux utilisateurs</h1>
+                <button type="button" class="btn btn-primary" id="actualiser-cache">Actualiser le cache</button>
                 <hr>
                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#roleActuModal">Rôles actuels</button>
                 <div class="modal fade" id="roleActuModal" tabindex="-1" aria-labelledby="roleActuModalLabel" aria-hidden="true">
@@ -205,6 +206,14 @@
                 notifierToutUtilisateur();
             });
         });
+        const actualiserCache=document.getElementById("actualiser-cache");
+        actualiserCache.onclick=()=>{
+            fetch("/actualiser-cache-responsable",{
+                method:"post"
+            }).then(()=>{
+                window.location.reload();
+            })
+        }
         /*]]*/
     </script>
 </div>

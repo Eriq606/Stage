@@ -91,6 +91,9 @@ public class Remise {
         return date+" "+heure+":"+minute+":"+secondes;
     }
     public String recupererCommandeLabel(){
+        if(getCommandeFille().getAccompagnements()==null){
+            return getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes();
+        }
         if(getCommandeFille().getAccompagnements().length==0){
             return getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes();
         }

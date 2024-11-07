@@ -101,7 +101,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="m:${modes_suppr}">
+                            <tr th:each="m:${modespaiement_suppr}">
                                 <td th:text="${m.nom}"></td>
                                 <td>
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" th:data-bs-target="'#restaurerMode'+${m.id}">

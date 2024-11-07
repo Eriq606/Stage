@@ -503,4 +503,25 @@ public class SuperviseurController {
             return response;
         }
     }
+    @PostMapping("/actualiser-cache-responsable")
+    @ResponseBody
+    public void actualiserCache() throws SQLException, Exception{
+        try(Connection connect=DAOConnexion.getConnexion(dao)){
+            places=dao.select(connect, Place.class, new Place(0));
+            for(Place p:places){
+                p.setClasseHTML(p.getClasse());
+            }
+            rangees=Rangee.getRangees(connect, dao);
+            for(Rangee r:rangees){
+                r.getDispatchUtilisateursActuel(connect, dao);
+                r.recupererPlaces(connect, dao);
+            }
+            rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
+            utilisateurs=dao.select(connect, UtilisateurSafe.class);
+            roles=dao.select(connect, Role.class, new Role(0));
+            attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
+            String addOn="where etat=0 and id<0";
+            modePaiements=dao.select(connect, ModePaiement.class, addOn);
+        }
+    }
 }

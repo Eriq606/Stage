@@ -28,6 +28,7 @@
             </style>
             <div class="bg-secondary rounded h-100 p-4 gridd" ondrop="defaultDrop(event)" ondragover="allowDrop(event)">
                 <button class="btn btn-primary no-drop" style="grid-column: 1/4;" data-bs-toggle="modal" data-bs-target="#dispoActuModal">Disposition actuelle</button>
+                <button type="button" class="btn btn-primary no-drop" style="grid-column: 1/4;" id="actualiser-cache">Actualiser le cache</button>
                 <div class="modal fade" id="dispoActuModal" tabindex="-1" aria-labelledby="dispoActuModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content" id="dispoActuModalContent">
@@ -250,6 +251,14 @@
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
+        }
+        const actualiserCache=document.getElementById("actualiser-cache");
+        actualiserCache.onclick=()=>{
+            fetch("/actualiser-cache-responsable",{
+                method:"post"
+            }).then(()=>{
+                window.location.reload();
+            })
         }
         /*]]*/
     </script>

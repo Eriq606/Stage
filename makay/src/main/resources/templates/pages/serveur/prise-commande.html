@@ -3,7 +3,6 @@
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
                 <h1>Prise de commande</h1>
-                <div id="alerte-envoye"></div>
                 <div class="row mb-3">
                     <label for="tableOuter" class="col-3 offset-3 col-form-label">Table</label>
                     <div class="col-6">
@@ -75,6 +74,7 @@
                                 </div>
                                 <input type="hidden" name="commandes" id="submitCommand">
                             </div>
+                            <div id="alerte-envoye"></div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <tbody id="commandes-ajoutees">
@@ -571,6 +571,7 @@
                             setTimeout(()=>{
                                 alerteEnvoye.removeChild(alert);
                             }, 1000);
+                            window.location.reload();
                         });
                     });
                     const actualiserCache=document.getElementById("actualiser-cache");

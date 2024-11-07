@@ -783,3 +783,254 @@ java.io.FileNotFoundException: class path resource [static/htmlpdf/commande.html
 2024-11-07T11:40:10.818+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
 2024-11-07T11:40:10.827+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@26865482]]
 2024-11-07T11:40:10.828+03:00  INFO 11512 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-07T13:57:25.153+03:00  INFO 13528 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 13528 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T13:57:25.159+03:00  INFO 13528 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T13:57:26.580+03:00  INFO 13528 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T13:57:26.593+03:00  INFO 13528 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T13:57:26.594+03:00  INFO 13528 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T13:57:26.644+03:00  INFO 13528 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T13:57:26.645+03:00  INFO 13528 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1373 ms
+2024-11-07T13:57:27.936+03:00  INFO 13528 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T13:57:27.939+03:00  INFO 13528 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T13:57:27.943+03:00  INFO 13528 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6f347d7]]
+2024-11-07T13:57:27.944+03:00  INFO 13528 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T13:57:27.960+03:00  INFO 13528 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 3.537 seconds (process running for 4.163)
+2024-11-07T13:57:40.818+03:00  INFO 13528 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T13:57:40.819+03:00  INFO 13528 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T13:57:40.825+03:00  INFO 13528 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2024-11-07T13:58:27.934+03:00  INFO 13528 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T13:59:10.232+03:00  INFO 13528 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-07T13:59:10.233+03:00  INFO 13528 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6f347d7]]
+2024-11-07T13:59:10.237+03:00  INFO 13528 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-07T14:00:02.292+03:00  INFO 8024 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 8024 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T14:00:02.306+03:00  INFO 8024 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T14:00:04.163+03:00  INFO 8024 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T14:00:04.177+03:00  INFO 8024 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T14:00:04.178+03:00  INFO 8024 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T14:00:04.236+03:00  INFO 8024 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T14:00:04.237+03:00  INFO 8024 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1800 ms
+2024-11-07T14:00:05.849+03:00  INFO 8024 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T14:00:05.852+03:00  INFO 8024 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T14:00:05.855+03:00  INFO 8024 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6f347d7]]
+2024-11-07T14:00:05.856+03:00  INFO 8024 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T14:00:05.869+03:00  INFO 8024 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 4.547 seconds (process running for 5.181)
+2024-11-07T14:00:25.193+03:00  INFO 8024 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T14:00:25.194+03:00  INFO 8024 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T14:00:25.196+03:00  INFO 8024 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-07T14:01:05.845+03:00  INFO 8024 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T14:31:05.850+03:00  INFO 8024 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 10 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(10)-CONNECTED(10)-DISCONNECT(9)], stompBrokerRelay[null], inboundChannel[pool size = 24, active threads = 0, queued tasks = 0, completed tasks = 192], outboundChannel[pool size = 10, active threads = 0, queued tasks = 0, completed tasks = 30], sockJsScheduler[pool size = 2, active threads = 1, queued tasks = 0, completed tasks = 1]
+2024-11-07T14:41:58.782+03:00 ERROR 8024 --- [makay] [clientInboundChannel-156] .WebSocketAnnotationMethodMessageHandler : Unhandled exception from message handler method
+
+java.lang.NullPointerException: Cannot read the array length because the return value of "com.app.makay.entites.CommandeFille.getAccompagnements()" is null
+	at com.app.makay.entites.Remise.recupererCommandeLabel(Remise.java:94) ~[!/:0.0.1-SNAPSHOT]
+	at com.app.makay.controllers.metier.caissier.CaissierController.notifierRemise(CaissierController.java:149) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:169) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMatch(AbstractMethodMessageHandler.java:567) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:529) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:93) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessageInternal(AbstractMethodMessageHandler.java:522) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessage(AbstractMethodMessageHandler.java:457) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.support.ExecutorSubscribableChannel$SendTask.run(ExecutorSubscribableChannel.java:152) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2024-11-07T14:42:15.754+03:00 ERROR 8024 --- [makay] [clientInboundChannel-148] .WebSocketAnnotationMethodMessageHandler : Unhandled exception from message handler method
+
+java.lang.NullPointerException: Cannot read the array length because the return value of "com.app.makay.entites.CommandeFille.getAccompagnements()" is null
+	at com.app.makay.entites.Remise.recupererCommandeLabel(Remise.java:94) ~[!/:0.0.1-SNAPSHOT]
+	at com.app.makay.controllers.metier.caissier.CaissierController.notifierRemise(CaissierController.java:149) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:169) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMatch(AbstractMethodMessageHandler.java:567) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:529) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:93) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessageInternal(AbstractMethodMessageHandler.java:522) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessage(AbstractMethodMessageHandler.java:457) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.support.ExecutorSubscribableChannel$SendTask.run(ExecutorSubscribableChannel.java:152) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2024-11-07T14:49:22.421+03:00  INFO 12820 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 12820 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T14:49:22.423+03:00  INFO 12820 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T14:49:23.390+03:00  INFO 12820 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T14:49:23.405+03:00  INFO 12820 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T14:49:23.405+03:00  INFO 12820 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T14:49:23.437+03:00  INFO 12820 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T14:49:23.437+03:00  INFO 12820 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 934 ms
+2024-11-07T14:49:23.550+03:00  WARN 12820 --- [makay] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'adminController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/admin/AdminController.class]: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+2024-11-07T14:49:23.550+03:00  INFO 12820 --- [makay] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-11-07T14:49:23.578+03:00  INFO 12820 --- [makay] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-11-07T14:49:23.594+03:00 ERROR 12820 --- [makay] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'adminController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/admin/AdminController.class]: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at com.app.makay.MakayApplication.main(MakayApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:221) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:94) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1331) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 24 common frames omitted
+Caused by: java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at handyman.HandyManUtils.getIP(HandyManUtils.java:837) ~[HandyMan.jar!/:na]
+	at com.app.makay.controllers.metier.admin.AdminController.<init>(AdminController.java:45) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:195) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 26 common frames omitted
+
+2024-11-07T14:49:29.837+03:00  INFO 6624 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 6624 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T14:49:29.918+03:00  INFO 6624 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T14:49:30.826+03:00  INFO 6624 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T14:49:30.842+03:00  INFO 6624 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T14:49:30.842+03:00  INFO 6624 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T14:49:30.873+03:00  INFO 6624 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T14:49:30.873+03:00  INFO 6624 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 910 ms
+2024-11-07T14:49:30.974+03:00  WARN 6624 --- [makay] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'adminController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/admin/AdminController.class]: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+2024-11-07T14:49:30.974+03:00  INFO 6624 --- [makay] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-11-07T14:49:30.999+03:00  INFO 6624 --- [makay] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-11-07T14:49:31.015+03:00 ERROR 6624 --- [makay] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'adminController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/admin/AdminController.class]: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at com.app.makay.MakayApplication.main(MakayApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.app.makay.controllers.metier.admin.AdminController]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:221) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:94) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1331) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 24 common frames omitted
+Caused by: java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at handyman.HandyManUtils.getIP(HandyManUtils.java:837) ~[HandyMan.jar!/:na]
+	at com.app.makay.controllers.metier.admin.AdminController.<init>(AdminController.java:45) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:195) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 26 common frames omitted
+
+2024-11-07T14:51:23.964+03:00  INFO 9256 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 9256 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-07T14:51:23.968+03:00  INFO 9256 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-07T14:51:24.945+03:00  INFO 9256 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-07T14:51:24.955+03:00  INFO 9256 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-07T14:51:24.956+03:00  INFO 9256 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-07T14:51:24.995+03:00  INFO 9256 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-07T14:51:24.996+03:00  INFO 9256 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 955 ms
+2024-11-07T14:51:26.119+03:00  INFO 9256 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-07T14:51:26.121+03:00  INFO 9256 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-07T14:51:26.123+03:00  INFO 9256 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@715a70e9]]
+2024-11-07T14:51:26.123+03:00  INFO 9256 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-07T14:51:26.132+03:00  INFO 9256 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.663 seconds (process running for 3.116)
+2024-11-07T14:51:43.900+03:00  INFO 9256 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-07T14:51:43.901+03:00  INFO 9256 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-07T14:51:43.904+03:00  INFO 9256 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-11-07T14:52:26.141+03:00  INFO 9256 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[2 current WS(2)-HttpStream(0)-HttpPoll(0), 5 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(5)-CONNECTED(5)-DISCONNECT(3)], stompBrokerRelay[null], inboundChannel[pool size = 24, active threads = 0, queued tasks = 0, completed tasks = 105], outboundChannel[pool size = 11, active threads = 0, queued tasks = 0, completed tasks = 11], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-07T14:53:24.130+03:00 ERROR 9256 --- [makay] [clientInboundChannel-37] .WebSocketAnnotationMethodMessageHandler : Unhandled exception from message handler method
+
+java.lang.NullPointerException: Cannot read the array length because the return value of "com.app.makay.entites.CommandeFille.getAccompagnements()" is null
+	at com.app.makay.entites.Remise.recupererCommandeLabel(Remise.java:94) ~[!/:0.0.1-SNAPSHOT]
+	at com.app.makay.controllers.metier.caissier.CaissierController.notifierRemise(CaissierController.java:149) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:169) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMatch(AbstractMethodMessageHandler.java:567) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:529) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:93) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessageInternal(AbstractMethodMessageHandler.java:522) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessage(AbstractMethodMessageHandler.java:457) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.support.ExecutorSubscribableChannel$SendTask.run(ExecutorSubscribableChannel.java:152) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2024-11-07T14:53:35.371+03:00 ERROR 9256 --- [makay] [clientInboundChannel-28] .WebSocketAnnotationMethodMessageHandler : Unhandled exception from message handler method
+
+java.lang.NullPointerException: Cannot read the array length because the return value of "com.app.makay.entites.CommandeFille.getAccompagnements()" is null
+	at com.app.makay.entites.Remise.recupererCommandeLabel(Remise.java:94) ~[!/:0.0.1-SNAPSHOT]
+	at com.app.makay.controllers.metier.caissier.CaissierController.notifierRemise(CaissierController.java:149) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:169) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMatch(AbstractMethodMessageHandler.java:567) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:529) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler.handleMatch(SimpAnnotationMethodMessageHandler.java:93) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessageInternal(AbstractMethodMessageHandler.java:522) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.handler.invocation.AbstractMethodMessageHandler.handleMessage(AbstractMethodMessageHandler.java:457) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at org.springframework.messaging.support.ExecutorSubscribableChannel$SendTask.run(ExecutorSubscribableChannel.java:152) ~[spring-messaging-6.1.11.jar!/:6.1.11]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+2024-11-07T15:08:45.594+03:00  INFO 9256 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-07T15:08:45.604+03:00  INFO 9256 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@715a70e9]]
+2024-11-07T15:08:45.605+03:00  INFO 9256 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.

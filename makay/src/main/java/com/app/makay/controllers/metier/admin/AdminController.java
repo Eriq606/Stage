@@ -482,7 +482,7 @@ public class AdminController {
             String addOn="where etat=0 and id>0 limit %s offset %s";
             addOn=String.format(addOn, Constantes.PAGINATION_LIMIT, (indiceListe_controller-1)*Constantes.PAGINATION_LIMIT);
             ModePaiement[] modePaiements=dao.select(connect, ModePaiement.class, addOn);
-            String count="select count(*) from rangees where etat=0 and id>0";
+            String count="select count(*) from mode_paiements where etat=0 and id>0";
             HashMap<String, Object> paginationListe=dao.paginate(connect, count, Constantes.PAGINATION_LIMIT, indiceListe_controller);
             for(Map.Entry<String, Object> e:paginationListe.entrySet()){
                 model.addAttribute(e.getKey()+"_liste", e.getValue());
