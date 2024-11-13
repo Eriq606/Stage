@@ -233,20 +233,20 @@
                         return;
                     }
                     notifierSuperviseurPaiement(envoiPaiement);
-                    const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
-                    const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
-                    resteAPayer-=Number(formData.get("montant"));
-                    resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                    resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
-                    formulaires[i].setAttribute("data-resteapayer", resteAPayer);
-                    if(resteAPayer==0){
+                    // const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
+                    // const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
+                    // resteAPayer-=Number(formData.get("montant"));
+                    // resteAPayerCommande.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    // resteAPayerColonne.textContent=new Intl.NumberFormat("de-DE").format(resteAPayer).replace(".", " ")+" Ar";
+                    // formulaires[i].setAttribute("data-resteapayer", resteAPayer);
+                    // if(resteAPayer==0){
                         // const commandeRow=document.getElementById("commande-row"+idcommande);
                         // commandeRow.style.backgroundColor="#9cff9c";
                         // const button=document.getElementById("payer-submit-commande"+idcommande);
                         // button.innerHTML="<i class='fa-solid fa-check'></i>";
                         // button.disabled=true;
-                        window.location.href="http://"+ip+":8080/demande-addition";
-                    }
+                        // window.location.href="http://"+ip+":8080/demande-addition";
+                    // }
                 });
             }
         }
@@ -270,6 +270,11 @@
             receiveDemandeAddition();
             receiveActionSuperviseur();
             receiveRemise();
+            receivePaiement();
+            receiveAnnulerPaiement();
+            receiveAnnulerAction();
+            receiveAnnulerRemise();
+            receiveCloture();
         }
         window.onbeforeunload=()=>{
             stompclient.deactivate();
@@ -470,36 +475,38 @@
         }
         function receiveActionSuperviseur(){
             stompclient.subscribe("/notify/recevoir-action-superviseur", (actionEnvoye)=>{
-                const envoiAction=JSON.parse(actionEnvoye.body);
-                const action=envoiAction.actionSuperviseur;
-                const commandeRow=document.getElementById("commande-row"+action.commandeFille.commande.id);
-                if(action.commandeFille.commande.resteAPayer==0){
-                    commandeRow.parentNode.removeChild(commandeRow);
-                    return;
-                }
-                const resteAPayer=document.getElementById("reste-a-payer-colonne"+action.commandeFille.commande.id);
-                resteAPayer.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
-                const resteAPayerCmd=document.getElementById("reste-a-payer-commande"+action.commandeFille.commande.id);
-                resteAPayerCmd.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
-                const formulairePayer=document.getElementById("formulaire-payer-commande"+action.commandeFille.commande.id);
-                formulairePayer.setAttribute("data-resteapayer", action.commandeFille.commande.resteAPayer);
+                // const envoiAction=JSON.parse(actionEnvoye.body);
+                // const action=envoiAction.actionSuperviseur;
+                // const commandeRow=document.getElementById("commande-row"+action.commandeFille.commande.id);
+                // if(action.commandeFille.commande.resteAPayer==0){
+                //     commandeRow.parentNode.removeChild(commandeRow);
+                //     return;
+                // }
+                // const resteAPayer=document.getElementById("reste-a-payer-colonne"+action.commandeFille.commande.id);
+                // resteAPayer.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
+                // const resteAPayerCmd=document.getElementById("reste-a-payer-commande"+action.commandeFille.commande.id);
+                // resteAPayerCmd.textContent=numberFormat(action.commandeFille.commande.resteAPayer);
+                // const formulairePayer=document.getElementById("formulaire-payer-commande"+action.commandeFille.commande.id);
+                // formulairePayer.setAttribute("data-resteapayer", action.commandeFille.commande.resteAPayer);
+                window.location.reload();
             });
         }
         function receiveRemise(){
             stompclient.subscribe("/notify/recevoir-remise", (remiseEnvoye)=>{
-                const envoiRemise=JSON.parse(remiseEnvoye.body);
-                const remise=envoiRemise.remise;
-                const commandeRow=document.getElementById("commande-row"+remise.commandeFille.commande.id);
-                if(remise.commandeFille.commande.resteAPayer==0){
-                    commandeRow.parentNode.removeChild(commandeRow);
-                    return;
-                }
-                const resteAPayer=document.getElementById("reste-a-payer-colonne"+remise.commandeFille.commande.id);
-                resteAPayer.textContent=numberFormat(remise.commandeFille.commande.resteAPayer);
-                const resteAPayerCmd=document.getElementById("reste-a-payer-commande"+remise.commandeFille.commande.id);
-                resteAPayerCmd.textContent=numberFormat(remise.commandeFille.commande.resteAPayer);
-                const formulairePayer=document.getElementById("formulaire-payer-commande"+remise.commandeFille.commande.id);
-                formulairePayer.setAttribute("data-resteapayer", remise.commandeFille.commande.resteAPayer);
+                // const envoiRemise=JSON.parse(remiseEnvoye.body);
+                // const remise=envoiRemise.remise;
+                // const commandeRow=document.getElementById("commande-row"+remise.commandeFille.commande.id);
+                // if(remise.commandeFille.commande.resteAPayer==0){
+                //     commandeRow.parentNode.removeChild(commandeRow);
+                //     return;
+                // }
+                // const resteAPayer=document.getElementById("reste-a-payer-colonne"+remise.commandeFille.commande.id);
+                // resteAPayer.textContent=numberFormat(remise.commandeFille.commande.resteAPayer);
+                // const resteAPayerCmd=document.getElementById("reste-a-payer-commande"+remise.commandeFille.commande.id);
+                // resteAPayerCmd.textContent=numberFormat(remise.commandeFille.commande.resteAPayer);
+                // const formulairePayer=document.getElementById("formulaire-payer-commande"+remise.commandeFille.commande.id);
+                // formulairePayer.setAttribute("data-resteapayer", remise.commandeFille.commande.resteAPayer);
+                window.location.reload();
             });
         }
         const cloturerCommande=document.getElementsByClassName("cloturer-commande");
@@ -537,7 +544,8 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
-                    window.location.reload();
+                    notifierCloture();
+                    // window.location.reload();
                 });
             }
         }
@@ -577,9 +585,45 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
-                    window.location.reload();
+                    notifierAnnulerPaiement({idpaiement:idpaiement, idcommande:idcommande});
                 });
             }
+        }
+        function receivePaiement(){
+            stompclient.subscribe("/notify/recevoir-payer-commande", (paiementEnvoye)=>{
+                window.location.reload();
+            });
+        }
+        function notifierAnnulerPaiement(annulationPaiement){
+            stompclient.publish({
+                destination:"/makay/notify-annuler-paiement",
+                body:annulationPaiement
+            });
+        }
+        function receiveAnnulerPaiement(){
+            stompclient.subscribe("/notify/receive-notify-annuler-paiement", (annulationEnvoye)=>{
+                window.location.reload();
+            });
+        }
+        function receiveAnnulerAction(){
+            stompclient.subscribe("/notify/receive-notify-annuler-action", (annulationEnvoye)=>{
+                window.location.reload();
+            });
+        }
+        function receiveAnnulerRemise(){
+            stompclient.subscribe("/notify/receive-notify-annuler-remise", (annulationEnvoye)=>{
+                window.location.reload();
+            });
+        }
+        function notifierCloture(){
+            stompclient.publish({
+                destination:"/makay/notify-cloture"
+            });
+        }
+        function receiveCloture(){
+            stompclient.subscribe("/notify/receive-notify-cloture", (clotureEnvoye)=>{
+                window.location.reload();
+            })
         }
         /*]]*/
     </script>

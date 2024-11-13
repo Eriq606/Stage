@@ -208,9 +208,15 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierAnnulerRemise();
                     window.location.reload();
                 });
             }
+        }
+        function notifierAnnulerRemise(){
+            stompclient.publish({
+                destination:"/makay/notify-annuler-remise"
+            });
         }
         /*]]*/
     </script>

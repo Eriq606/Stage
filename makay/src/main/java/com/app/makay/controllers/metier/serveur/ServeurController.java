@@ -362,6 +362,9 @@ public class ServeurController {
             try(InputStream is=new FileInputStream(pdf);OutputStream os=response.getOutputStream()){
                 os.write(is.readAllBytes());
             }
+            pdf.delete();
+            html.delete();
+            faux.delete();
         }
     }
     @PostMapping("/recherche-produit")

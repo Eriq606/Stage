@@ -186,9 +186,15 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    notifierAnnulerAction();
                     window.location.reload();
                 });
             }
+        }
+        function notifierAnnulerAction(){
+            stompclient.publish({
+                destination:"/makay/notify-annuler-action"
+            });
         }
         /*]]*/
     </script>

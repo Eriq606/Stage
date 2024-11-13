@@ -524,4 +524,14 @@ public class SuperviseurController {
             modePaiements=dao.select(connect, ModePaiement.class, addOn);
         }
     }
+    @MessageMapping("/notify-annuler-action")
+    @SendTo("/notify/receive-notify-annuler-action")
+    public String notifierAnnulerAction(){
+        return "refresh";
+    }
+    @MessageMapping("/notify-annuler-remise")
+    @SendTo("/notify/receive-notify-annuler-remise")
+    public String notifierAnnulerRemise(){
+        return "refresh";
+    }
 }

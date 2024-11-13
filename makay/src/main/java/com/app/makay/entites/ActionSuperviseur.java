@@ -129,15 +129,7 @@ public class ActionSuperviseur {
         return getQuantite()+" "+getCommandeFille().getProduit().getNom()+" "+getCommandeFille().getNotes();
     }
     public String toHtml(){
-        String html="""
-        <tr class="details-travaux">
-            <td style="padding: 10px; border: 1px solid;">%s</td>
-            <td style="padding: 10px; border: 1px solid;">%s</td>
-            <td style="padding: 10px; border: 1px solid;">%s</td>
-            <td style="padding: 10px; border: 1px solid;">%s</td>
-            <td style="padding: 10px; border: 1px solid;text-align:right">%s</td>
-        </tr>
-        """;
+        String html="<tr class=\"details-travaux\"> <td style=\"padding: 10px; border: 1px solid;\">%s</td> <td style=\"padding: 10px; border: 1px solid;\">%s</td> <td style=\"padding: 10px; border: 1px solid;\">%s</td> <td style=\"padding: 10px; border: 1px solid;\">%s</td> <td style=\"padding: 10px; border: 1px solid;text-align:right\">%s</td> </tr>";
         html=String.format(html, recupererHeureStringDocument(), recupererCommandeDocument(), getUtilisateur().getNom(), recupererActionString(), recupererMontantString());
         return html;
     }

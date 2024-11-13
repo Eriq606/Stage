@@ -83,7 +83,7 @@
                                                             <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
                                                                 <p>Paiements:</p>
                                                                 <div th:id="'paiements-commande'+${c.id}">
-                                                                    <p th:each="cp:${c.paiements}">
+                                                                    <p th:each="cp:${c.paiements}" th:id="'paiement-'+${cp.id}+'-commande-'+${c.id}">
                                                                         <span th:text="${cp.recupererHeure()}+' : '"></span>
                                                                         <span style="font-weight: bold;" th:text="${cp.recupererMontantString()}"></span>
                                                                         <span th:text="' ('+${cp.modePaiement.nom}+')'"></span>
@@ -204,9 +204,10 @@
 
             return cfDiv;
         }
-        function createPaiement(cp){
+        function createPaiement(cp, c){
             // Create a paragraph for each paiement
             const p = document.createElement("p");
+            p.id=`dernier`;
 
             // Create a span for the payment time (recupererHeure)
             const spanHeure = document.createElement("span");
@@ -431,6 +432,18 @@
                 navigator.vibrate(500);
             });
         }
+        function receiveCloture(){
+            stompclient.subscribe("/notify/receive-notify-cloture", (clotureEnvoye)=>{
+                window.location.reload();
+            })
+        }
+        function receiveAnnulerPaiement(){
+            stompclient.subscribe("notify/receive-notify-annuler-paiement",(annulationEnvoye)=>{
+                const annulation=JSON.parse(annulationEnvoye.body);
+                const pPaiement=document.getElementById(`paiement-${annulation.idpaiement}-commande-${annulation.idcommande}`);
+                pPaiement.parentElement.removeChild(pPaiement);
+            });
+        }
         stompclient.onConnect=(frame)=>{
             receiveNotificationCommande();
             receiveNotificationRedirect();
@@ -439,6 +452,7 @@
             receiveActionSuperviseur();
             receiveCheckCommandeFille();
             receiveDemandeAddition();
+            receiveCloture();
         };
 
         const api="http://"+ip+":8080/action-superviseur";

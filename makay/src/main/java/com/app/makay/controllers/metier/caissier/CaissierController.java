@@ -151,6 +151,16 @@ public class CaissierController {
         }
         return remise;
     }
+    @MessageMapping("/notify-annuler-paiement")
+    @SendTo("/notify/receive-notify-annuler-paiement")
+    public HashMap<String, String> notifierAnnulerPaiement(HashMap<String, String> annulation){
+        return annulation;
+    }
+    @MessageMapping("/notify-cloture")
+    @SendTo("/notify/receive-notify-cloture")
+    public String notifierCloture(){
+        return "refresh";
+    }
 
     @GetMapping("/reset-cache-caissier")
     public RedirectView resetCache(HttpServletRequest req) throws Exception{
