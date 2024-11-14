@@ -199,3 +199,88 @@ Caused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot d
 2024-11-14T15:48:11.828+03:00  INFO 12072 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
 2024-11-14T15:48:11.828+03:00  INFO 12072 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4c3de38e]]
 2024-11-14T15:48:11.829+03:00  INFO 12072 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2024-11-14T15:48:58.026+03:00  INFO 3220 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 3220 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-14T15:48:58.030+03:00  INFO 3220 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-14T15:48:58.961+03:00  INFO 3220 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-14T15:48:58.971+03:00  INFO 3220 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-14T15:48:58.972+03:00  INFO 3220 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-14T15:48:59.008+03:00  INFO 3220 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-14T15:48:59.009+03:00  INFO 3220 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 902 ms
+2024-11-14T15:48:59.284+03:00  WARN 3220 --- [makay] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'barmanController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/barman/BarmanController.class]: Failed to instantiate [com.app.makay.controllers.metier.barman.BarmanController]: Constructor threw exception
+2024-11-14T15:48:59.287+03:00  INFO 3220 --- [makay] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-11-14T15:48:59.296+03:00  INFO 3220 --- [makay] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-11-14T15:48:59.310+03:00 ERROR 3220 --- [makay] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'barmanController' defined in URL [jar:nested:/D:/Eriq_RohWeltall/Assigns/Stage/livrables/bin/makay-0.0.1-SNAPSHOT.jar/!BOOT-INF/classes/!/com/app/makay/controllers/metier/barman/BarmanController.class]: Failed to instantiate [com.app.makay.controllers.metier.barman.BarmanController]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1222) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.11.jar!/:6.1.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.2.jar!/:3.3.2]
+	at com.app.makay.MakayApplication.main(MakayApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58) ~[makay-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.app.makay.controllers.metier.barman.BarmanController]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:221) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:94) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1331) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 24 common frames omitted
+Caused by: org.postgresql.util.PSQLException: FATAL: database "m" does not exist
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713) ~[Veda.jar!/:na]
+	at org.postgresql.core.v3.QueryExecutorImpl.readStartupMessages(QueryExecutorImpl.java:2825) ~[Veda.jar!/:na]
+	at org.postgresql.core.v3.QueryExecutorImpl.<init>(QueryExecutorImpl.java:175) ~[Veda.jar!/:na]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:313) ~[Veda.jar!/:na]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54) ~[Veda.jar!/:na]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:263) ~[Veda.jar!/:na]
+	at org.postgresql.Driver.makeConnection(Driver.java:443) ~[Veda.jar!/:na]
+	at org.postgresql.Driver.connect(Driver.java:297) ~[Veda.jar!/:na]
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:681) ~[java.sql:na]
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:252) ~[java.sql:na]
+	at veda.godao.utils.DAOConnexion.getConnexion(DAOConnexion.java:33) ~[Veda.jar!/:na]
+	at com.app.makay.controllers.metier.barman.BarmanController.<init>(BarmanController.java:66) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:195) ~[spring-beans-6.1.11.jar!/:6.1.11]
+	... 26 common frames omitted
+
+2024-11-14T15:49:11.936+03:00  INFO 9668 --- [makay] [main] com.app.makay.MakayApplication           : Starting MakayApplication v0.0.1-SNAPSHOT using Java 17.0.2 with PID 9668 (D:\Eriq_RohWeltall\Assigns\Stage\livrables\bin\makay-0.0.1-SNAPSHOT.jar started by iqhim in D:\Eriq_RohWeltall\Assigns\Stage\livrables)
+2024-11-14T15:49:11.940+03:00  INFO 9668 --- [makay] [main] com.app.makay.MakayApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-11-14T15:49:12.937+03:00  INFO 9668 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-11-14T15:49:12.946+03:00  INFO 9668 --- [makay] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-14T15:49:12.947+03:00  INFO 9668 --- [makay] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-14T15:49:12.987+03:00  INFO 9668 --- [makay] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-11-14T15:49:12.987+03:00  INFO 9668 --- [makay] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 976 ms
+2024-11-14T15:49:14.006+03:00  INFO 9668 --- [makay] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-14T15:49:14.008+03:00  INFO 9668 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2024-11-14T15:49:14.010+03:00  INFO 9668 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@536b71b4]]
+2024-11-14T15:49:14.011+03:00  INFO 9668 --- [makay] [main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2024-11-14T15:49:14.020+03:00  INFO 9668 --- [makay] [main] com.app.makay.MakayApplication           : Started MakayApplication in 2.624 seconds (process running for 3.076)
+2024-11-14T15:49:19.291+03:00  INFO 9668 --- [makay] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-14T15:49:19.292+03:00  INFO 9668 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-11-14T15:49:19.296+03:00  INFO 9668 --- [makay] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-11-14T15:50:14.006+03:00  INFO 9668 --- [makay] [MessageBroker-1] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 24, active threads = 0, queued tasks = 0, completed tasks = 39], outboundChannel[pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 1], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2024-11-14T15:52:32.953+03:00  INFO 9668 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2024-11-14T15:52:32.953+03:00  INFO 9668 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@536b71b4]]
+2024-11-14T15:52:32.954+03:00  INFO 9668 --- [makay] [SpringApplicationShutdownHook] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.

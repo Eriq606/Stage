@@ -1,0 +1,27 @@
+nomproduit,prix,nomcategorie
+brownie,5000,patisserie
+souris d�agneau,35000,plat
+cake,5000,patisserie
+Pizza Margherita,8.50,Plat
+Pâtes Carbonara,12.00,Plat
+Salade César,7.00,Entrée
+Soupe à l'oignon,6.00,Entrée
+Quiche Lorraine,5.50,Entrée
+Bœuf Bourguignon,15.00,Plat
+Poulet Rôti,12.50,Plat
+Ratatouille,9.00,Plat
+Mousse au Chocolat,4.00,Dessert
+Crème Brûlée,5.00,Dessert
+Tarte Tatin,5.50,Dessert
+Éclair au Chocolat,3.00,Pâtisserie
+Croissant,1.50,Pâtisserie
+Pain au Chocolat,1.80,Pâtisserie
+Macaron,2.00,Pâtisserie
+Baguette,1.20,Pâtisserie
+Vin Rouge,4.00,Boisson
+Vin Blanc,4.00,Boisson
+Bière Blonde,3.00,Boisson
+Café Espresso,2.00,Boisson
+Thé Vert,2.50,Boisson
+Jus d'Orange,2.80,Boisson
+Eau Minérale,1.00,Boisson
