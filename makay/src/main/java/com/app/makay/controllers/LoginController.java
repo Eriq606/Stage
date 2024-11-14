@@ -1,5 +1,6 @@
 package com.app.makay.controllers;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -23,8 +24,12 @@ import veda.godao.utils.DAOConnexion;
 
 @Controller
 public class LoginController {
-    private MyDAO dao=new MyDAO();
+    private MyDAO dao;
     private MyFilter filterChain=new MyFilter();
+    
+    public LoginController() throws IOException {
+        dao=new MyDAO();
+    }
 
     @GetMapping("/login")
     public String login(HttpServletRequest req, String message, Model model){

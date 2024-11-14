@@ -1,5 +1,6 @@
 package com.app.makay.controllers.metier.superviseur;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +23,7 @@ public class SuperviseurRESTController {
     private MyDAO dao;
     private MyFilter filter;
     
-    public SuperviseurRESTController() {
+    public SuperviseurRESTController() throws IOException {
         dao=new MyDAO();
         filter=new MyFilter();
     }

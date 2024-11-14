@@ -1,0 +1,7 @@
+{
+    "database":"makay2",
+    "host":"localhost",
+    "port":"5432",
+    "user":"eriq",
+    "password":"root"
+}
