@@ -28,6 +28,8 @@ CREATE SEQUENCE historique_prix_produits_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE historique_role_utilisateurs_id_seq START WITH 1 INCREMENT BY 1;
 
+CREATE SEQUENCE import_produits_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE SEQUENCE mode_paiements_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE paiements_id_seq START WITH 1 INCREMENT BY 1;
@@ -48,6 +50,8 @@ CREATE SEQUENCE role_categorie_produits_checkings_id_seq START WITH 1 INCREMENT 
 
 CREATE SEQUENCE roles_id_seq START WITH 1 INCREMENT BY 1;
 
+CREATE SEQUENCE semaine_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE SEQUENCE session_utilisateurs_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE stock_produits_id_seq START WITH 1 INCREMENT BY 1;
@@ -65,69 +69,76 @@ CREATE DOMAIN price numeric(16,2) CONSTRAINT price_check CHECK (VALUE >= 0::nume
 CREATE DOMAIN quantity numeric(16,2) CONSTRAINT quantity_check CHECK (VALUE >= 0::numeric);
 
 CREATE  TABLE accompagnements ( 
-	id                   integer DEFAULT nextval('accompagnements_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	CONSTRAINT accompagnements_pkey PRIMARY KEY ( id ),
 	CONSTRAINT accompagnements_nom_key UNIQUE ( nom ) 
  );
 
 CREATE  TABLE categories ( 
-	id                   integer DEFAULT nextval('categories_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	CONSTRAINT categories_pkey PRIMARY KEY ( id ),
 	CONSTRAINT categories_nom_key UNIQUE ( nom ) 
  );
 
+CREATE  TABLE import_produits ( 
+	id                   serial primary key  ,
+	nomproduit           varchar  NOT NULL  ,
+	prix                 price  NOT NULL  ,
+	nomcategorie         varchar  NOT NULL  ,
+	CONSTRAINT import_produits_nomproduit_key UNIQUE ( nomproduit ) 
+ );
+
 CREATE  TABLE mode_paiements ( 
-	id                   integer DEFAULT nextval('mode_paiements_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	CONSTRAINT mode_paiements_pkey PRIMARY KEY ( id ),
 	CONSTRAINT mode_paiements_nom_key UNIQUE ( nom ) 
  );
 
 CREATE  TABLE produits ( 
-	id                   integer DEFAULT nextval('produits_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	prix                 price  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	idcategorie          integer  NOT NULL  ,
 	dernier_stock        numeric(16,2) DEFAULT '-1'::integer   ,
-	CONSTRAINT produits_pkey PRIMARY KEY ( id ),
 	CONSTRAINT produits_nom_key UNIQUE ( nom ) 
  );
 
 CREATE  TABLE rangees ( 
-	id                   integer DEFAULT nextval('rangees_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	CONSTRAINT rangees_pkey PRIMARY KEY ( id ),
 	CONSTRAINT rangees_nom_key UNIQUE ( nom ) 
  );
 
 CREATE  TABLE roles ( 
-	id                   integer DEFAULT nextval('roles_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	numero               varchar    ,
-	CONSTRAINT roles_pkey PRIMARY KEY ( id ),
 	CONSTRAINT roles_numero_key UNIQUE ( numero ) 
  );
 
+CREATE  TABLE semaine ( 
+	id                   serial primary key  ,
+	jour                 varchar  NOT NULL  ,
+	CONSTRAINT semaine_jour_key UNIQUE ( jour ) 
+ );
+
 CREATE  TABLE type_places ( 
-	id                   integer DEFAULT nextval('type_places_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	numero               varchar  NOT NULL  ,
-	CONSTRAINT type_places_pkey PRIMARY KEY ( id ),
 	CONSTRAINT type_places_nom_key UNIQUE ( nom ) ,
 	CONSTRAINT type_places_numero_key UNIQUE ( numero ) 
  );
 
 CREATE  TABLE utilisateurs ( 
-	id                   integer DEFAULT nextval('utilisateurs_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idrole               integer  NOT NULL  ,
 	nom                  varchar  NOT NULL  ,
 	email                email    ,
@@ -135,97 +146,87 @@ CREATE  TABLE utilisateurs (
 	motdepasse           text  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	autorisation         integer DEFAULT 0   ,
-	CONSTRAINT utilisateurs_pkey PRIMARY KEY ( id ),
 	CONSTRAINT utilisateurs_email_key UNIQUE ( email ) ,
 	CONSTRAINT unique_nom_motdepasse UNIQUE ( nom, motdepasse ) 
  );
 
 CREATE  TABLE accompagnement_produits ( 
-	id                   integer DEFAULT nextval('accompagnement_produits_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idproduit            integer  NOT NULL  ,
 	idaccompagnement     integer  NOT NULL  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT accompagnement_produits_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE historique_prix_produits ( 
-	id                   integer DEFAULT nextval('historique_prix_produits_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idutilisateur        integer  NOT NULL  ,
 	idproduit            integer  NOT NULL  ,
 	prix                 price  NOT NULL  ,
-	dateheure            timestamp  NOT NULL  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
+	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE historique_role_utilisateurs ( 
-	id                   integer DEFAULT nextval('historique_role_utilisateurs_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idutilisateur        integer  NOT NULL  ,
 	idrole               integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT now()   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT historique_role_utilisateurs_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE places ( 
-	id                   integer DEFAULT nextval('places_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	nom                  varchar  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	idtypeplace          integer  NOT NULL  ,
-	CONSTRAINT places_pkey PRIMARY KEY ( id ),
 	CONSTRAINT places_nom_key UNIQUE ( nom ) 
  );
 
 CREATE  TABLE rangee_places ( 
-	id                   integer DEFAULT nextval('rangee_places_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idrangee             integer  NOT NULL  ,
 	idplace              integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT now()   ,
 	etat                 integer DEFAULT 0   ,
-	idutilisateur        integer  NOT NULL  ,
-	CONSTRAINT rangee_places_pkey PRIMARY KEY ( id )
+	idutilisateur        integer  NOT NULL  
  );
 
 CREATE  TABLE rangee_utilisateurs ( 
-	id                   integer DEFAULT nextval('rangee_utilisateurs_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idrangee             integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT now()   ,
 	etat                 integer DEFAULT 0   ,
-	idutilisateur_responsable integer  NOT NULL  ,
-	CONSTRAINT rangee_utilisateurs_pkey PRIMARY KEY ( id )
+	idutilisateur_responsable integer  NOT NULL  
  );
 
 CREATE  TABLE role_categorie_produits_checkings ( 
-	id                   integer DEFAULT nextval('role_categorie_produits_checkings_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idrole               integer  NOT NULL  ,
 	idcategorie          integer  NOT NULL  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT role_categorie_produits_checkings_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE session_utilisateurs ( 
-	id                   integer DEFAULT nextval('session_utilisateurs_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	sessionid            varchar  NOT NULL  ,
 	expiration           timestamp  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	estvalide            integer DEFAULT 0   ,
-	CONSTRAINT session_utilisateurs_pkey PRIMARY KEY ( id ),
 	CONSTRAINT session_utilisateurs_sessionid_key UNIQUE ( sessionid ) 
  );
 
 CREATE  TABLE stock_produits ( 
-	id                   integer DEFAULT nextval('stock_produits_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idproduit            integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
 	etat                 integer DEFAULT 0   ,
-	stock                numeric(16,2) DEFAULT '-1'::integer   ,
-	CONSTRAINT stock_produits_pkey PRIMARY KEY ( id )
+	stock                numeric(16,2) DEFAULT '-1'::integer   
  );
 
 CREATE  TABLE commandes ( 
-	id                   integer DEFAULT nextval('commandes_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idutilisateur        integer  NOT NULL  ,
 	idplace              integer  NOT NULL  ,
 	dateheure_ouverture  timestamp  NOT NULL  ,
@@ -235,41 +236,37 @@ CREATE  TABLE commandes (
 	reste_a_payer        price    ,
 	montant_offert       price DEFAULT 0   ,
 	montant_annulee      price DEFAULT 0   ,
-	montant_remises      price DEFAULT 0   ,
-	CONSTRAINT commandes_pkey PRIMARY KEY ( id )
+	montant_remises      price DEFAULT 0   
  );
 
 CREATE  TABLE paiements ( 
-	id                   integer DEFAULT nextval('paiements_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idcommande           integer  NOT NULL  ,
 	idmodepaiement       integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
 	montant              price  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	idutilisateur        integer  NOT NULL  ,
-	CONSTRAINT paiements_pkey PRIMARY KEY ( id )
+	idutilisateur        integer  NOT NULL  
  );
 
 CREATE  TABLE annulation_paiements ( 
-	id                   integer DEFAULT nextval('annulation_paiements_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idpaiement           integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT annulation_paiements_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE clotures ( 
-	id                   integer DEFAULT nextval('clotures_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idcommande           integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT clotures_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE commande_filles ( 
-	id                   integer DEFAULT nextval('commande_filles_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idcommande           integer  NOT NULL  ,
 	idproduit            integer  NOT NULL  ,
 	prix_unitaire        price  NOT NULL  ,
@@ -277,67 +274,60 @@ CREATE  TABLE commande_filles (
 	montant              price  NOT NULL  ,
 	notes                text    ,
 	etat                 integer DEFAULT 0   ,
-	quantite_restante    quantity    ,
-	CONSTRAINT commande_filles_pkey PRIMARY KEY ( id )
+	quantite_restante    quantity    
  );
 
 CREATE  TABLE commande_filles_terminees ( 
-	id                   integer DEFAULT nextval('commande_filles_terminees_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idutilisateur        integer  NOT NULL  ,
 	idcommandefille      integer  NOT NULL  ,
 	dateheure            timestamp  NOT NULL  ,
 	est_termine          integer DEFAULT 1   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT commande_filles_terminees_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE remises ( 
-	id                   integer DEFAULT nextval('remises_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idutilisateur        integer  NOT NULL  ,
 	idcommandefille      integer  NOT NULL  ,
 	quantite             quantity  NOT NULL  ,
 	nouveau_montant      price  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
-	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
-	CONSTRAINT remises_pkey PRIMARY KEY ( id )
+	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   
  );
 
 CREATE  TABLE accompagnement_commandes ( 
-	id                   integer DEFAULT nextval('accompagnement_commandes_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idcommandefille      integer  NOT NULL  ,
 	idaccompagnement     integer  NOT NULL  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT accompagnement_commandes_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE action_superviseurs ( 
-	id                   integer DEFAULT nextval('action_superviseurs_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idcommandefille      integer  NOT NULL  ,
 	quantite             quantity  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
 	"action"             integer  NOT NULL  ,
 	etat                 integer DEFAULT 0   ,
 	montant              price  NOT NULL  ,
-	idutilisateur        integer  NOT NULL  ,
-	CONSTRAINT action_superviseurs_pkey PRIMARY KEY ( id )
+	idutilisateur        integer  NOT NULL  
  );
 
 CREATE  TABLE annulation_actions ( 
-	id                   integer DEFAULT nextval('annulation_actions_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idaction             integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT annulation_actions_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 CREATE  TABLE annulation_remises ( 
-	id                   integer DEFAULT nextval('annulation_remises_id_seq'::regclass) NOT NULL  ,
+	id                   serial primary key  ,
 	idremise             integer  NOT NULL  ,
 	idutilisateur        integer  NOT NULL  ,
 	dateheure            timestamp DEFAULT CURRENT_TIMESTAMP   ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT annulation_remises_pkey PRIMARY KEY ( id )
+	etat                 integer DEFAULT 0   
  );
 
 ALTER TABLE accompagnement_commandes ADD CONSTRAINT accompagnement_commandes_idaccompagnement_fkey FOREIGN KEY ( idaccompagnement ) REFERENCES accompagnements( id );
@@ -456,6 +446,22 @@ CREATE VIEW v_commande_filles AS SELECT commande_filles.id,
    FROM commande_filles
   WHERE (commande_filles.etat < 20);
 
+CREATE VIEW v_commande_filles_commandes AS SELECT cf.id,
+    cf.idcommande,
+    cf.idproduit,
+    cf.prix_unitaire,
+    cf.quantite,
+    cf.montant,
+    cf.notes,
+    cf.etat,
+    cf.quantite_restante,
+    commandes.dateheure_ouverture,
+    commandes.etat AS etat_commande,
+    produits.idcategorie
+   FROM ((commande_filles cf
+     JOIN commandes ON ((cf.idcommande = commandes.id)))
+     JOIN produits ON ((cf.idproduit = produits.id)));
+
 CREATE VIEW v_commande_filles_terminees AS SELECT commande_filles_terminees.id,
     commande_filles_terminees.idutilisateur,
     commande_filles_terminees.idcommandefille,
@@ -464,6 +470,20 @@ CREATE VIEW v_commande_filles_terminees AS SELECT commande_filles_terminees.id,
     commande_filles_terminees.etat
    FROM commande_filles_terminees
   WHERE (commande_filles_terminees.etat = 0);
+
+CREATE VIEW v_commande_semaine AS SELECT commandes.id,
+    commandes.idutilisateur,
+    commandes.idplace,
+    commandes.dateheure_ouverture,
+    commandes.dateheure_cloture,
+    commandes.montant,
+    commandes.etat,
+    commandes.reste_a_payer,
+    commandes.montant_offert,
+    commandes.montant_annulee,
+    commandes.montant_remises,
+    date_part('isodow'::text, (commandes.dateheure_ouverture)::date) AS jour_semaine_ouverture
+   FROM commandes;
 
 CREATE VIEW v_commandefille_accompagnements AS SELECT vcf.id,
     vcf.idcommande,
@@ -521,6 +541,35 @@ CREATE VIEW v_historique_utilisateur_roles AS SELECT historique_role_utilisateur
     historique_role_utilisateurs.etat
    FROM historique_role_utilisateurs
   WHERE (historique_role_utilisateurs.etat = 0);
+
+CREATE VIEW v_import_produit_categories AS SELECT ip.id,
+    ip.nomproduit,
+    ip.prix,
+    ip.nomcategorie,
+    categories.id AS idcategorie
+   FROM (import_produits ip
+     LEFT JOIN categories ON (((ip.nomcategorie)::text = (categories.nom)::text)));
+
+CREATE VIEW v_import_produit_produits AS SELECT ip.id,
+    ip.nomproduit,
+    ip.prix,
+    ip.nomcategorie,
+    categories.id AS idcategorie,
+    produits.id AS idproduit
+   FROM ((import_produits ip
+     JOIN categories ON (((ip.nomcategorie)::text = (categories.nom)::text)))
+     LEFT JOIN produits ON (((ip.nomproduit)::text = (produits.nom)::text)));
+
+CREATE VIEW v_paiement_mode_paiements AS SELECT paiements.id,
+    paiements.idcommande,
+    paiements.idmodepaiement,
+    paiements.dateheure,
+    paiements.montant,
+    paiements.etat,
+    paiements.idutilisateur,
+    mp.nom AS nom_mode
+   FROM (paiements
+     JOIN mode_paiements mp ON ((paiements.idmodepaiement = mp.id)));
 
 CREATE VIEW v_places AS SELECT places.id,
     places.nom,
@@ -638,19 +687,19 @@ CREATE VIEW v_arrangement_place_part AS SELECT rp.id,
     rp.dateheure,
     rp.etat,
     rp.idutilisateur,
-    v_rangees.nom AS nom_rangee,
-    v_places.nom AS nom_place,
-    v_type_places.nom AS nom_type_place,
-    v_type_places.numero AS numero_type_place,
+    rangees.nom AS nom_rangee,
+    places.nom AS nom_place,
+    type_places.nom AS nom_type_place,
+    type_places.numero AS numero_type_place,
     dm.max_dateheure,
-    v_type_places.id AS idtypeplace
+    type_places.id AS idtypeplace
    FROM ((((v_rangee_places rp
-     JOIN v_rangees ON ((rp.idrangee = v_rangees.id)))
-     JOIN v_places ON ((rp.idplace = v_places.id)))
-     JOIN v_type_places ON ((v_places.idtypeplace = v_type_places.id)))
+     JOIN rangees ON ((rp.idrangee = rangees.id)))
+     JOIN places ON ((rp.idplace = places.id)))
+     JOIN type_places ON ((places.idtypeplace = type_places.id)))
      LEFT JOIN v_dateheure_max_rangee_places dm ON ((rp.dateheure = dm.max_dateheure)));
 
-CREATE OR REPLACE VIEW v_attribution_roles_part AS SELECT vh.id,
+CREATE VIEW v_attribution_roles_part AS SELECT vh.id,
     vh.idutilisateur,
     vh.idrole,
     vh.dateheure,
@@ -702,7 +751,7 @@ CREATE VIEW v_arrangement_place AS SELECT v_arrangement_place_part.id,
    FROM v_arrangement_place_part
   WHERE (v_arrangement_place_part.max_dateheure IS NOT NULL);
 
-CREATE OR REPLACE VIEW v_attribution_roles AS SELECT v_attribution_roles_part.id,
+CREATE VIEW v_attribution_roles AS SELECT v_attribution_roles_part.id,
     v_attribution_roles_part.idutilisateur,
     v_attribution_roles_part.idrole,
     v_attribution_roles_part.dateheure,
@@ -735,7 +784,7 @@ CREATE VIEW v_places_utilisateurs AS SELECT vds.id,
    FROM (v_dispatch_staff vds
      JOIN v_arrangement_place vap ON ((vds.idrangee = vap.idrangee)));
 
-CREATE VIEW v_serveurs_encours AS SELECT vu.id,
+CREATE OR REPLACE VIEW v_serveurs_encours AS SELECT vu.id,
     vu.idrole,
     vu.nom,
     vu.email,
@@ -745,7 +794,7 @@ CREATE VIEW v_serveurs_encours AS SELECT vu.id,
    FROM ((utilisateurs vu
      JOIN roles ON ((vu.idrole = roles.id)))
      LEFT JOIN v_serveurs_encours_1 v1 ON ((vu.id = v1.idutilisateur)))
-  WHERE ((v1.idutilisateur IS NULL) AND ((roles.numero)::text = ANY (ARRAY[('1'::character varying)::text, ('2'::character varying)::text, ('6'::character varying)::text])));
+  WHERE ((v1.idutilisateur IS NULL) AND ((roles.numero)::text = ANY (ARRAY[('1'::character varying)::text, ('2'::character varying)::text])));
 
 insert into roles values(default, 'serveur', 0, '1'),
                         (default, 'bar', 0, '2'),
@@ -754,6 +803,8 @@ insert into roles values(default, 'serveur', 0, '1'),
                         (default, 'analyste', 0, '5'),
                         (default, 'superviseur', 0, '6'),
                         (default, 'off', 0, '7');
+
+insert into roles values(8, 'admin', 0, '8');
 
 insert into utilisateurs values(-1, 8, 'ADMIN', 'ADMIN', '', 'root', 0, 0),
                                (default, 6, 'Responsable_1', 'Resp_1', '', 'root', 0, 0);
@@ -764,121 +815,10 @@ insert into rangees values(0, 'Inutilisée', 0),
 insert into mode_paiements values(-1, 'V.A.T cadre', 0),
                                  (-2, 'V.A.T client', 0);
 
-insert into categories values(default, 'Boisson', 0);
-
-drop table historique_prix_produits;
-CREATE  TABLE historique_prix_produits ( 
-	id                   serial  ,
-	idutilisateur        integer  NOT NULL  ,
-	idproduit            integer  NOT NULL  ,
-	prix                 price  NOT NULL  ,
-	dateheure            timestamp  default CURRENT_TIMESTAMP  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
- );
-
- create table import_produits(
-  id serial PRIMARY key,
-  nomproduit varchar not null unique,
-  prix price not null,
-  nomcategorie varchar not null
- );
-
--- - import_produits(
---      nomproduit,
---      prix,
---      nomcategorie,
---      accompagnements
---  )
--- - create view import_produit_categories as
---      select ip.
---      from import_produits ip
---      left join categories;
--- - insert into categories(nom)
---      select nomcategorie from import_produit_categories where idcategorie is null group by nomcategorie;
--- - create view import_produit_produit as
---      select ip.
---      from import_produits
---      join categories
---      left join produits
--- - insert into produits(nom, prix, idcategorie)
---      select nomproduit, prix, idcategorie from import_produit_produits where idproduit is null group by nomproduit, prix, idcategorie;
-
-create or replace view v_import_produit_categories as
-select ip.*, categories.id as idcategorie
-from import_produits ip
-left join categories on ip.nomcategorie=categories.nom;
-
-create or replace view v_import_produit_produits as
-select ip.*, categories.id as idcategorie, produits.id as idproduit
-from import_produits ip
-join categories on ip.nomcategorie=categories.nom
-left join produits on ip.nomproduit=produits.nom;
-
-drop table historique_prix_produits;
-CREATE SEQUENCE historique_prix_produits_id_seq START WITH 1 INCREMENT BY 1;
-CREATE  TABLE historique_prix_produits ( 
-	id                   integer DEFAULT nextval('historique_prix_produits_id_seq'::regclass) NOT NULL  ,
-	idutilisateur        integer  NOT NULL REFERENCES utilisateurs(id) ,
-	idproduit            integer  NOT NULL REFERENCES produits(id) ,
-	prix                 price  NOT NULL  ,
-	dateheure            timestamp  NOT NULL  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
- );
-
-drop table historique_prix_produits;
-CREATE SEQUENCE historique_prix_produits_id_seq START WITH 1 INCREMENT BY 1;
-CREATE  TABLE historique_prix_produits ( 
-	id                   integer DEFAULT nextval('historique_prix_produits_id_seq'::regclass) NOT NULL  ,
-	idutilisateur        integer  NOT NULL REFERENCES utilisateurs(id) ,
-	idproduit            integer  NOT NULL REFERENCES produits(id) ,
-	prix                 price  NOT NULL  ,
-	dateheure            timestamp  default CURRENT_TIMESTAMP  ,
-	etat                 integer DEFAULT 0   ,
-	CONSTRAINT historique_prix_produits_pkey PRIMARY KEY ( id )
- );
-
- create or replace view v_commande_semaine as
- select *, extract(isodow from date (dateheure_ouverture::date)) as jour_semaine_ouverture
- from commandes;
-
- create or replace view v_commande_filles_commandes as
- select cf.*, commandes.dateheure_ouverture, commandes.etat as etat_commande, produits.idcategorie
- from commande_filles cf
- join commandes on cf.idcommande=commandes.id
- join produits on cf.idproduit=produits.id;  
-
- insert into type_places values(default, 'Bar', default, '1'),
-                               (default, 'Salle', default, '2'),
-                               (default, 'Terrasse', default, '3');
-
-insert into mode_paiements values(0, 'espèces', default);
-
-create or replace view v_paiement_mode_paiements as
-select paiements.*, mp.nom as nom_mode
-from paiements join mode_paiements mp on paiements.idmodepaiement=mp.id;
-
-create table semaine(
-  id serial primary key,
-  jour varchar unique not null
-);
 insert into semaine values(default, 'Lundi'),
                           (default, 'Mardi'),
                           (default, 'Mercredi'),
                           (default, 'Jeudi'),
                           (default, 'Vendredi'),
                           (default, 'Samedi'),
-                          (default, 'Dimanche');
-
-select semaine.jour, coalesce(sum(vcs.montant), 0) as montant, coalesce(sum(vcs.montant_offert),0) as offert, coalesce(sum(vcs.montant_annulee),0) as suppression, coalesce(sum(vcs.montant_remises),0) as remise
-            from semaine left join v_commande_semaine vcs on semaine.id=vcs.jour_semaine_ouverture group by semaine.jour order by semaine.jour
-
-
-select semaine.id , coalesce(sum(vcs.montant), 0) as montant, coalesce(sum(vcs.montant_offert),0) as offert, coalesce(sum(vcs.montant_annulee),0) as suppression, coalesce(sum(vcs.montant_remises),0) as remise
-from semaine left join v_commande_semaine vcs on semaine.id=vcs.jour_semaine_ouverture group by semaine.id order by semaine.id;
-
-select id, vcs.* from semaine
-left join
-(select jour_semaine_ouverture , coalesce(sum(montant), 0) as montant, coalesce(sum(montant_offert),0) as offert, coalesce(sum(montant_annulee),0) as suppression, coalesce(sum(montant_remises),0) as remise
-from v_commande_semaine where etat=20 group by jour_semaine_ouverture) vcs on semaine.id=vcs.jour_semaine_ouverture;
+                          (default, 'Dimanche');                                                         

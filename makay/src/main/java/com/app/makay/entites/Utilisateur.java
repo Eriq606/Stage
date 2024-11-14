@@ -1342,7 +1342,13 @@ public class Utilisateur extends IrisUser{
             utilisateur.setEmail(nom);
             utilisateur.setMotdepasse(motDePasse);
             utilisateur.setContact(contact);
-            dao.insertWithoutPrimaryKey(connect, utilisateur);
+            int idutilisateur=dao.insertWithoutPrimaryKey(connect, utilisateur);
+            System.out.println(idutilisateur);
+            utilisateur.setId(idutilisateur);
+            HistoriqueRoleUtilisateur hUtilisateur=new HistoriqueRoleUtilisateur();
+            hUtilisateur.setUtilisateur(utilisateur);
+            hUtilisateur.setRole(role);
+            dao.insertWithoutPrimaryKey(connect, hUtilisateur);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
@@ -1623,7 +1629,15 @@ public class Utilisateur extends IrisUser{
             type.setId(Integer.parseInt(idtype));
             type.setNumero(idtype);
             place.setTypePlace(type);
-            dao.insertWithoutPrimaryKey(connect, place);
+            RangeePlace rangeePlace=new RangeePlace();
+            int idplace=dao.insertWithoutPrimaryKey(connect, place);
+            place.setId(idplace);
+            rangeePlace.setPlace(place);
+            Rangee rangeeInutilisee=new Rangee();
+            rangeeInutilisee.setId(Constantes.INUTILISEE_ID);
+            rangeePlace.setRangee(rangeeInutilisee);
+            rangeePlace.setUtilisateur(this);
+            dao.insertWithoutPrimaryKey(connect, rangeePlace);
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();

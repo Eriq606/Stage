@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
+import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
 
 @Table("historique_role_utilisateurs")
@@ -58,7 +59,8 @@ public class HistoriqueRoleUtilisateur {
     }
     public static HistoriqueRoleUtilisateur[] getRolesActuels(Connection connect, MyDAO dao) throws Exception{
         // String query="select id, idutilisateur, idrole, dateheure, nom_utilisateur, nom_role, numero_role from v_attribution_roles";
-        String query="select * from v_utilisateurs";
+        String query="select * from v_utilisateurs where idrole<%s";
+        query=String.format(query, Constantes.IDROLE_ADMIN);
         HashMap<String, Object>[] objets=dao.select(connect, query);
         HistoriqueRoleUtilisateur[] attributions=new HistoriqueRoleUtilisateur[objets.length];
         Utilisateur utilisateur;

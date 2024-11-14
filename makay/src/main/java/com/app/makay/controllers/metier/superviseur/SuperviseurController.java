@@ -156,8 +156,11 @@ public class SuperviseurController {
                 r.recupererPlaces(connect, dao);
             }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
-            utilisateurs=dao.select(connect, UtilisateurSafe.class);
-            roles=dao.select(connect, Role.class, new Role(0));
+            String addOnUtilisateur="where id>0";
+            utilisateurs=dao.select(connect, UtilisateurSafe.class, addOnUtilisateur);
+            String addOnRoles="where etat=0 and id<%s";
+            addOnRoles=String.format(addOnRoles, Constantes.IDROLE_ADMIN);
+            roles=dao.select(connect, Role.class, addOnRoles);
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
             String addOn="where etat=0 and id<0";
             modePaiements=dao.select(connect, ModePaiement.class, addOn);
@@ -323,8 +326,11 @@ public class SuperviseurController {
                 r.recupererPlaces(connect, dao);
             }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
-            utilisateurs=dao.select(connect, UtilisateurSafe.class);
-            roles=dao.select(connect, Role.class, new Role(0));
+            String addOnUtilisateur="where id>0";
+            utilisateurs=dao.select(connect, UtilisateurSafe.class, addOnUtilisateur);
+            String addOnRoles="where etat=0 and id<%s";
+            addOnRoles=String.format(addOnRoles, Constantes.IDROLE_ADMIN);
+            roles=dao.select(connect, Role.class, addOnRoles);
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
         }
         return resetRole(req);
@@ -519,8 +525,11 @@ public class SuperviseurController {
                 r.recupererPlaces(connect, dao);
             }
             rangeePlaces=RangeePlace.getArrangementActuel(connect, dao);
-            utilisateurs=dao.select(connect, UtilisateurSafe.class);
-            roles=dao.select(connect, Role.class, new Role(0));
+            String addOnUtilisateur="where id>0";
+            utilisateurs=dao.select(connect, UtilisateurSafe.class, addOnUtilisateur);
+            String addOnRoles="where etat=0 and id<%s";
+            addOnRoles=String.format(addOnRoles, Constantes.IDROLE_ADMIN);
+            roles=dao.select(connect, Role.class, addOnRoles);
             attributionRoles=HistoriqueRoleUtilisateur.getRolesActuels(connect, dao);
             String addOn="where etat=0 and id<0";
             modePaiements=dao.select(connect, ModePaiement.class, addOn);

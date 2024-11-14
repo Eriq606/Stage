@@ -178,8 +178,9 @@ public class ServeurController {
     @GetMapping("/reset-cache-serveur")
     public RedirectView resetCacheProduits(HttpServletRequest req) throws Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Produit whereProduit=new Produit(0);
-            produits=dao.select(connect, Produit.class, whereProduit);
+            String addOn="where etat=0 and idcategorie in (select id from categories where etat=0)";
+            // produits=dao.select(connect, Produit.class, whereProduit);
+            produits=dao.select(connect, Produit.class, addOn);
             for(Produit p:produits){
                 p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
             }

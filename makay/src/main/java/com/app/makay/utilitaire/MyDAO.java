@@ -5,7 +5,7 @@ import veda.godao.DAO;
 public class MyDAO extends DAO{
     public MyDAO(){
         setAllowKeyRetrieval(true);
-        setDatabase("makay");
+        setDatabase("makay2");
         setDriver("org.postgresql.Driver");
         setHost("localhost");
         setPort("5432");
