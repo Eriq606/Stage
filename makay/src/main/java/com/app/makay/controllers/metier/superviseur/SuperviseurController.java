@@ -35,6 +35,8 @@ import com.app.makay.entites.REST.EnvoiCommandeREST;
 import com.app.makay.entites.REST.ModificationDispatchREST;
 import com.app.makay.entites.REST.PayerCommandeREST;
 import com.app.makay.entites.REST.RemiseREST;
+import com.app.makay.entites.annulation.AnnulationAction;
+import com.app.makay.entites.annulation.AnnulationRemise;
 import com.app.makay.entites.liaison.RangeePlace;
 import com.app.makay.utilitaire.Constantes;
 import com.app.makay.utilitaire.MyDAO;
@@ -370,9 +372,9 @@ public class SuperviseurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            boolean estTermine=modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
+            int idaction=modifs.getUtilisateur().actionSuperviseur(connect, dao, modifs.getActionSuperviseur());
             connect.commit();
-            response.addItem("estTermine", estTermine);
+            response.addItem("idaction", idaction);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
@@ -455,9 +457,9 @@ public class SuperviseurController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            boolean estTermine=modifs.getUtilisateur().remise(connect, dao, modifs.getRemise());
+            Remise remise=modifs.getUtilisateur().remise(connect, dao, modifs.getRemise());
             connect.commit();
-            response.addItem("estTermine", estTermine);
+            response.addItem("remise", remise);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);
@@ -526,12 +528,12 @@ public class SuperviseurController {
     }
     @MessageMapping("/notify-annuler-action")
     @SendTo("/notify/receive-notify-annuler-action")
-    public String notifierAnnulerAction(){
-        return "refresh";
+    public AnnulationAction notifierAnnulerAction(AnnulationAction annulationAction){
+        return annulationAction;
     }
     @MessageMapping("/notify-annuler-remise")
     @SendTo("/notify/receive-notify-annuler-remise")
-    public String notifierAnnulerRemise(){
-        return "refresh";
+    public AnnulationRemise notifierAnnulerRemise(AnnulationRemise annulationRemise){
+        return annulationRemise;
     }
 }

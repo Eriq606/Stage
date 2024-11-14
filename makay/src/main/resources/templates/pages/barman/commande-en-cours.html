@@ -254,10 +254,9 @@
                 const envoiCommande=JSON.parse(commandeEnvoye.body);
                 const accordionCommande=document.getElementById("accordionCommande");
                 const element=generateCommande(envoiCommande.commande, categories);
-                if(accordionCommande.children.length<paginationLimit&&element[1]>0){
+                if(accordionCommande.children.length<paginationLimit+1&&element[1]>0){
                     accordionCommande.appendChild(element[0]);
                     notification.play();
-                    navigator.vibrate(500);
                 }
             })
         }
@@ -279,7 +278,6 @@
                 }
                 if(sousJuridiction>0){
                     notification.play();
-                    navigator.vibrate(500);
                 }
             });
         }
@@ -319,7 +317,6 @@
                 const divAlerteRelance=alerteRelance(envoiRelance);
                 divNotif.appendChild(divAlerteRelance);
                 notification.play();
-                navigator.vibrate(500);
             })
         }
         /*]]*/

@@ -91,6 +91,7 @@
                     utilisateur:utilisateur,
                     sessionid:sessionid,
                     actionSuperviseur:{
+                        id:null,
                         commandeFille:{id:idcommandefille},
                         quantite:quantite,
                         action:action
@@ -119,12 +120,14 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    envoiAction.actionSuperviseur.id=data.donnees.idaction;
                     notifierActionSuperviseur(envoiAction);
-                    if(data.donnees.estTermine==true){
-                        window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
-                    }else{
-                        location.reload();
-                    }
+                    // if(data.donnees.estTermine==true){
+                    //     window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
+                    // }else{
+                    //     location.reload();
+                    // }
+                    window.location.reload();
                 });
             }
         }
@@ -186,14 +189,15 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
-                    notifierAnnulerAction();
+                    notifierAnnulerAction(envoiAnnulation.annulationAction);
                     window.location.reload();
                 });
             }
         }
-        function notifierAnnulerAction(){
+        function notifierAnnulerAction(annulationAction){
             stompclient.publish({
-                destination:"/makay/notify-annuler-action"
+                destination:"/makay/notify-annuler-action",
+                body:JSON.stringify(annulationAction)
             });
         }
         /*]]*/

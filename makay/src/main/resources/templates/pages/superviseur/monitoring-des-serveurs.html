@@ -19,8 +19,8 @@
                                     <tr>
                                         <th scope="col">Table</th>
                                         <th scope="col">Date et heure</th>
-                                        <th scope="col">Montant total</th>
-                                        <th scope="col">Reste à payer</th>
+                                        <!-- <th scope="col">Montant total</th> -->
+                                        <!-- <th scope="col">Reste à payer</th> -->
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -74,11 +74,11 @@
                                                                         </ul></p>
                                                                     </div>
                                                                 </div>
-                                                                <hr>
+                                                                <!-- <hr>
                                                                 <p>
                                                                     <span>Montant total : </span>
                                                                     <span th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-inner-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></span>
-                                                                </p>
+                                                                </p> -->
                                                             </div>
                                                             <div class="tab-pane fade" th:id="'nav-paiements'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-paiements-tab'+${c.id}">
                                                                 <p>Paiements:</p>
@@ -93,7 +93,7 @@
                                                             <div class="tab-pane fade" th:id="'nav-actions'+${c.id}" role="tabpanel" th:aria-labelledby="'nav-actions-tab'+${c.id}">
                                                                 <p>Actions de superviseurs:</p>
                                                                 <div th:id="'actions-commande'+${c.id}">
-                                                                    <p th:each="a:${c.actions}" class="d-flex justify-content-between">
+                                                                    <p th:each="a:${c.actions}" th:id="'action-'+${a.id}" class="d-flex justify-content-between">
                                                                         <span th:text="${a.quantite}"></span>
                                                                         <span th:text="${a.utilisateur.nom}"></span>
                                                                         <span th:text="${a.recupererCommandeLabel()}"></span>
@@ -111,7 +111,7 @@
                                                                         <span>Commande</span>
                                                                         <span>Taux</span>
                                                                     </div>
-                                                                    <p th:each="r:${c.remises}" class="d-flex justify-content-between">
+                                                                    <p th:each="r:${c.remises}" th:id="'remise-'+${r.id}" class="d-flex justify-content-between">
                                                                         <span th:text="${r.quantite}"></span>
                                                                         <span th:text="${r.utilisateur.nom}"></span>
                                                                         <span th:text="${r.recupererCommandeLabel()}"></span>
@@ -127,8 +127,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <td th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td>
-                                        <td th:class="'montant-restant-commande'+${c.id}" th:id="'montant-restant-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></td>
+                                        <!-- <td th:class="'montant-total-commande'+${c.id}" th:id="'montant-total-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererMontantString()}"></td> -->
+                                        <!-- <td th:class="'montant-restant-commande'+${c.id}" th:id="'montant-restant-outer-commande'+${c.id}" style="font-weight: bold;" th:text="${c.recupererResteAPayerString()}"></td> -->
                                         <td><a th:href="'/action-superviseur?idcommande='+${c.id}"><button class="btn btn-primary"><i class="fa-regular fa-clipboard"></i><span th:text="' '"></span>Intéragir</button></a></td>
                                         <td><a th:href="'/remise?idcommande='+${c.id}"><button class="btn btn-warning"><i class="fa-solid fa-money-bills"></i><span th:text="' '"></span>Remise</button></a></td>
                                     </tr>
@@ -207,7 +207,7 @@
         function createPaiement(cp, c){
             // Create a paragraph for each paiement
             const p = document.createElement("p");
-            p.id=`dernier`;
+            p.id=`paiement-${cp.id}-commande-${c.id}`;
 
             // Create a span for the payment time (recupererHeure)
             const spanHeure = document.createElement("span");
@@ -234,6 +234,7 @@
             const p = document.createElement("p");
             p.style.display="flex";
             p.style.justifyContent="space-between";
+            p.id=`action-${a.id}`;
 
             // Create a span for the quantity (quantite)
             const spanQuantite = document.createElement("span");
@@ -262,14 +263,18 @@
         }
         function createRemise(r){
             let remise=`
-                <p class="d-flex justify-content-between">
+                <p>
                     <span>${r.quantite}</span>
                     <span>${r.utilisateur.nom}</span>
                     <span>${r.commandeLabel}</span>
                     <span>${r.taux}</span>
                 </p>
             `;
-            return remise;
+            let pRemise=document.createElement("p");
+            pRemise.className="d-flex justify-content-between";
+            pRemise.id=`remise-${r.id}`;
+            pRemise.innerHTML=remise;
+            return pRemise;
         }
         function createCommande(c, s){
             let commandesFilles=``;
@@ -314,11 +319,6 @@
                                             </div>
                                             <br>
                                             `+commandesFilles+`
-                                            <hr>
-                                            <p>
-                                                <span>Montant total : </span>
-                                                <span class="montant-total-commande${c.id}" style="font-weight: bold;">${montantString}</span>
-                                            </p>
                                         </div>
                                         <div class="tab-pane fade" id="nav-paiements${c.id}" role="tabpanel" aria-labelledby="nav-paiements-tab${c.id}">
                                             <p>Paiements:</p>
@@ -362,7 +362,7 @@
                 div.id="ligne-commande"+commande.id;
                 const thbody=document.getElementById("commandes-"+commande.utilisateur.id);
                 thbody.appendChild(div);
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function receiveModificationCommande(){
@@ -378,7 +378,7 @@
                 for(let i=0;i<envoiCommande.commandeFilles.length;i++){
                     divCommandeFilles.appendChild(createCommandeFille(envoiCommande.commandeFilles[i]));
                 }
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function receivePaiementCommande(){
@@ -386,8 +386,8 @@
                 const envoiPaiement=JSON.parse(paiementEnvoye.body);
                 const paiement=envoiPaiement.paiement;
                 const divPaiement=document.getElementById("paiements-commande"+paiement.commande.id);
-                divPaiement.appendChild(createPaiement(paiement));
-                navigator.vibrate(500);
+                divPaiement.appendChild(createPaiement(paiement, paiement.commande));
+                //navigator.vibrate(500);
             });
         }
         function receiveActionSuperviseur(){
@@ -396,7 +396,7 @@
                 const action=envoiAction.actionSuperviseur;
                 const divAction=document.getElementById("actions-commande"+action.commandeFille.commande.id);
                 divAction.appendChild(createAction(action));
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function receiveRemise(){
@@ -405,7 +405,7 @@
                 const remise=envoiRemise.remise;
                 const divRemise=document.getElementById("remises-commande"+remise.commandeFille.commande.id);
                 divRemise.appendChild(createRemise(remise));
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function redirigerVersResetCache(){
@@ -421,7 +421,7 @@
                 const envoiCheck=JSON.parse(checkEnvoye.body);
                 const ligneCmdFille=document.getElementById("ligne-commandefille"+envoiCheck.commandeFille.id);
                 ligneCmdFille.style.backgroundColor="#70ff9b";
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function receiveDemandeAddition(){
@@ -429,7 +429,7 @@
                 const envoiAddition=JSON.parse(additionEnvoye.body);
                 const ligneCommande=document.getElementById("ligne-commande"+envoiAddition.commande.id);
                 ligneCommande.style.backgroundColor="#70ff9b";
-                navigator.vibrate(500);
+                //navigator.vibrate(500);
             });
         }
         function receiveCloture(){
@@ -438,10 +438,24 @@
             })
         }
         function receiveAnnulerPaiement(){
-            stompclient.subscribe("notify/receive-notify-annuler-paiement",(annulationEnvoye)=>{
+            stompclient.subscribe("/notify/receive-notify-annuler-paiement",(annulationEnvoye)=>{
                 const annulation=JSON.parse(annulationEnvoye.body);
                 const pPaiement=document.getElementById(`paiement-${annulation.idpaiement}-commande-${annulation.idcommande}`);
                 pPaiement.parentElement.removeChild(pPaiement);
+            });
+        }
+        function receiveAnnulerAction(){
+            stompclient.subscribe("/notify/receive-notify-annuler-action",(annulationEnvoye)=>{
+                const annulation=JSON.parse(annulationEnvoye.body);
+                const pAction=document.getElementById(`action-${annulation.action.id}`);
+                pAction.parentElement.removeChild(pAction);
+            });
+        }
+        function receiveAnnulerRemise(){
+            stompclient.subscribe("/notify/receive-notify-annuler-remise",(annulationEnvoye)=>{
+                const annulation=JSON.parse(annulationEnvoye.body);
+                const pRemise=document.getElementById(`remise-${annulation.remise.id}`);
+                pRemise.parentElement.removeChild(pRemise);
             });
         }
         stompclient.onConnect=(frame)=>{
@@ -450,9 +464,13 @@
             receiveModificationCommande();
             receivePaiementCommande();
             receiveActionSuperviseur();
+            receiveRemise();
             receiveCheckCommandeFille();
             receiveDemandeAddition();
             receiveCloture();
+            receiveAnnulerPaiement();
+            receiveAnnulerAction();
+            receiveAnnulerRemise();
         };
 
         const api="http://"+ip+":8080/action-superviseur";

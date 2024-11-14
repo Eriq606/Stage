@@ -60,8 +60,10 @@ public class ServeurController {
         dao=new MyDAO();
         ip=HandyManUtils.getIP();
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Produit whereProduit=new Produit(0);
-            produits=dao.select(connect, Produit.class, whereProduit);
+            // Produit whereProduit=new Produit(0);
+            String addOn="where etat=0 and idcategorie in (select id from categories where etat=0)";
+            // produits=dao.select(connect, Produit.class, whereProduit);
+            produits=dao.select(connect, Produit.class, addOn);
             for(Produit p:produits){
                 p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
             }
@@ -404,8 +406,9 @@ public class ServeurController {
     @ResponseBody
     public void actualiserCache() throws SQLException, Exception{
         try(Connection connect=DAOConnexion.getConnexion(dao)){
-            Produit whereProduit=new Produit(0);
-            produits=dao.select(connect, Produit.class, whereProduit);
+            // Produit whereProduit=new Produit(0);
+            String addOn="where etat=0 and idcategorie in (select id from categories where etat=0)";
+            produits=dao.select(connect, Produit.class, addOn);
             for(Produit p:produits){
                 p.setAccompagnements(p.recupererAllAccompagnements(connect, dao));
             }

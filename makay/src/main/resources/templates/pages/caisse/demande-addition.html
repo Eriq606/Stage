@@ -201,6 +201,7 @@
                 ev.preventDefault();
                 const formData=new FormData(formulaires[i]);
                 const paiement={
+                    id:null,
                     commande:{ id:idcommande, resteAPayer:resteAPayer },
                     modePaiement:{ id:formData.get("mode-paiement") },
                     montant:formData.get("montant")
@@ -232,6 +233,7 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    envoiPaiement.paiement.id=data.donnees.idpaiement;
                     notifierSuperviseurPaiement(envoiPaiement);
                     // const resteAPayerCommande=document.getElementById("reste-a-payer-commande"+idcommande);
                     // const resteAPayerColonne=document.getElementById("reste-a-payer-colonne"+idcommande);
@@ -597,7 +599,7 @@
         function notifierAnnulerPaiement(annulationPaiement){
             stompclient.publish({
                 destination:"/makay/notify-annuler-paiement",
-                body:annulationPaiement
+                body:JSON.stringify(annulationPaiement)
             });
         }
         function receiveAnnulerPaiement(){

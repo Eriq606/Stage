@@ -121,8 +121,9 @@ public class CaissierController {
             if(response.getCode()==Constantes.CODE_ERROR){
                 return response;
             }
-            modifs.getUtilisateur().payer(connect, dao, modifs.getPaiement());
+            int idpaiement=modifs.getUtilisateur().payer(connect, dao, modifs.getPaiement());
             connect.commit();
+            response.addItem("idpaiement", idpaiement);
             return response;
         }catch(Exception e){
             response.setCode(Constantes.CODE_ERROR);

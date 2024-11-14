@@ -137,9 +137,13 @@
                     utilisateur:utilisateur,
                     sessionid:sessionid,
                     remise:{
+                        id:null,
                         commandeFille:{id:idcommandefille},
                         quantite:qteCmdFille,
-                        nouveauMontant:montantCmdFille
+                        nouveauMontant:montantCmdFille,
+                        commandeLabel:null,
+                        taux:null,
+                        utilisateur:null
                     }
                 }
                 fetch(api, {
@@ -165,12 +169,17 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
+                    envoiRemise.remise.id=data.donnees.remise.id;
+                    envoiRemise.remise.commandeLabel=data.donnees.remise.commandeLabel;
+                    envoiRemise.remise.taux=data.donnees.remise.taux;
+                    envoiRemise.remise.utilisateur=data.donnees.remise.utilisateur;
                     notifierCaisse(envoiRemise);
-                    if(data.donnees.estTermine==true){
-                        window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
-                    }else{
-                        location.reload();
-                    }
+                    // if(data.donnees.estTermine==true){
+                    //     window.location.href="http://"+ip+":8080/monitoring-des-serveurs";
+                    // }else{
+                    //     location.reload();
+                    // }
+                    window.location.reload();
                 });
             }
         }
@@ -208,14 +217,15 @@
                         alerteEnvoye.appendChild(alert);
                         return;
                     }
-                    notifierAnnulerRemise();
+                    notifierAnnulerRemise(envoiAnnulation.annulation);
                     window.location.reload();
                 });
             }
         }
-        function notifierAnnulerRemise(){
+        function notifierAnnulerRemise(annulation){
             stompclient.publish({
-                destination:"/makay/notify-annuler-remise"
+                destination:"/makay/notify-annuler-remise",
+                body:JSON.stringify(annulation)
             });
         }
         /*]]*/

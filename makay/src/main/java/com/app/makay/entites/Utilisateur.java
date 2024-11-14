@@ -952,7 +952,8 @@ public class Utilisateur extends IrisUser{
         }
         return commandes;
     }
-    public void payer(Connection connect, MyDAO dao, Paiement paiement) throws Exception{
+    public int payer(Connection connect, MyDAO dao, Paiement paiement) throws Exception{
+        int idpaiement;
         try{
             Commande where=new Commande();
             where.setId(paiement.getCommande().getId());
@@ -964,13 +965,14 @@ public class Utilisateur extends IrisUser{
                 throw new Exception(Constantes.MSG_COMMANDE_INTOUCHABLE);
             }
             paiement.setUtilisateur(this);
-            dao.insertWithoutPrimaryKey(connect, paiement);
+            idpaiement=dao.insertWithoutPrimaryKey(connect, paiement);
             Commande change=new Commande();
             change.setResteAPayer(commande.getResteAPayer()-paiement.getMontant());
             // if(change.getResteAPayer()==0){
             //     change.setEtat(Constantes.COMMANDE_PAYEE);
             // }
             dao.update(connect, change, where);
+            return idpaiement;
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
@@ -1006,8 +1008,9 @@ public class Utilisateur extends IrisUser{
         Produit[] produits=dao.select(connect, Produit.class, addOn);
         return produits;
     }
-    public boolean actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur actionSuperviseur) throws Exception{
-        boolean estTermine=false;
+    public int actionSuperviseur(Connection connect, MyDAO dao, ActionSuperviseur actionSuperviseur) throws Exception{
+        // boolean estTermine=false;
+        int idaction;
         try{
             CommandeFille where=new CommandeFille();
             where.setId(actionSuperviseur.getCommandeFille().getId());
@@ -1041,7 +1044,7 @@ public class Utilisateur extends IrisUser{
             actionSuperviseur.setUtilisateur(this);
             // ActionPaiement actionPaiement;
             // int idpaiement;
-            dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
+            idaction=dao.insertWithoutPrimaryKey(connect, actionSuperviseur);
             switch(actionSuperviseur.getAction()){
                 case Constantes.COMMANDEFILLE_OFFERT:
                     changeCommande.setMontantOffert(commandeFille.getCommande().getMontantOffert()+montantAction);
@@ -1065,7 +1068,7 @@ public class Utilisateur extends IrisUser{
             // }
             dao.update(connect, changeCommandeFille, where);
             dao.update(connect, changeCommande, whereCommande);
-            return estTermine;
+            return idaction;
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
@@ -1091,8 +1094,9 @@ public class Utilisateur extends IrisUser{
         }
         return serveurs;
     }
-    public boolean remise(Connection connect, MyDAO dao, Remise remise) throws Exception{
-        boolean estTermine=false;
+    public Remise remise(Connection connect, MyDAO dao, Remise remise) throws Exception{
+        // boolean estTermine=false;
+        int idremise;
         try{
             CommandeFille where=new CommandeFille();
             where.setId(remise.getCommandeFille().getId());
@@ -1124,10 +1128,14 @@ public class Utilisateur extends IrisUser{
             CommandeFille changeCommandeFille=new CommandeFille();
             changeCommandeFille.setQuantiteRestante(commandeFille.getQuantiteRestante()-remise.getQuantite());
             remise.setUtilisateur(this);
-            dao.insertWithoutPrimaryKey(connect, remise);
+            idremise=dao.insertWithoutPrimaryKey(connect, remise);
             dao.update(connect, changeCommande, whereCommande);
             dao.update(connect, changeCommandeFille, where);
-            return estTermine;
+            remise.setId(idremise);
+            remise.setCommandeFille(commandeFille);
+            remise.setCommandeLabel(remise.recupererCommandeLabel());
+            remise.setTaux(remise.recupererTaux());
+            return remise;
         }catch(Exception e){
             connect.rollback();
             e.printStackTrace();
